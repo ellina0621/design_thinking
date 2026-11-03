@@ -1,0 +1,1650 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Concept prototype: timetable-aware event recommendations for a campus life platform, with SDG tags and a phone view.">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font-size:14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Smart Campus Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap">
+<style>
+/* Layout: indigo app bar + left nav rail + event feed, mirroring the campus platform. Home holds the personalised "Proposed events" box (web + app); every event card carries a fit strip explaining why it was or wasn't suggested. */
+:root{
+  --brand:#2a0f9e; --brand-2:#3b20c2; --on-brand:#ffffff;
+  --green:#4f7f2a; --green-hover:#426d22; --on-green:#ffffff;
+  --bg:#eceef3; --panel:#ffffff; --panel-2:#f5f6f9; --line:#dcdfe7; --filter:#d6d8df;
+  --fg:#1d1f2a; --muted:#5b5f70; --link:#2c5ea8; --tag:#62656f; --on-tag:#ffffff;
+  --ok:#2e7d45; --ok-bg:#e2f2e6; --warn:#9a5b0c; --warn-bg:#fcefd8; --bad:#b3261e; --bad-bg:#fbe3e1; --info:#3443b8; --info-bg:#e7e9fb;
+  --live:#c62828; --soon:#4f7f2a; --tomorrow:#2c5ea8;
+  --class:#7c8197; --class-bg:#e6e8ef;
+  --c-career:#2a0f9e; --c-academic:#0f6b66; --c-conference:#1d4f91; --c-sports:#3a7f35; --c-life:#b9502c; --c-social:#9b2f76;
+  --accent-yellow:#f2c230; --phone:#14151c;
+  --m-app:#24007c; --m-app-fixed:#24007c; --m-bg:#eef0f4; --m-link:#2a0f9e;
+  --m-font:"Mulish","Roboto",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font:"Roboto",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"Roboto Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --brand:#25108a; --brand-2:#3a22b8; --green:#5c9634; --green-hover:#6aa83f;
+  --bg:#0f1017; --panel:#191a24; --panel-2:#1f2130; --line:#2c2f3f; --filter:#232532;
+  --fg:#e7e8ef; --muted:#9ea2b4; --link:#93b4f2; --tag:#3a3d4b; --on-tag:#e7e8ef;
+  --ok:#74d08f; --ok-bg:#183224; --warn:#f0b65e; --warn-bg:#382811; --bad:#ff8c82; --bad-bg:#3c1917; --info:#aab3ff; --info-bg:#22264a;
+  --live:#ef5350; --tomorrow:#6f9be6; --class:#8e93aa; --class-bg:#262938; --phone:#000000;
+  --m-app:#2d0f9a; --m-bg:#0f1017; --m-link:#aab3ff;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --brand:#25108a; --brand-2:#3a22b8; --green:#5c9634; --green-hover:#6aa83f;
+  --bg:#0f1017; --panel:#191a24; --panel-2:#1f2130; --line:#2c2f3f; --filter:#232532;
+  --fg:#e7e8ef; --muted:#9ea2b4; --link:#93b4f2; --tag:#3a3d4b; --on-tag:#e7e8ef;
+  --ok:#74d08f; --ok-bg:#183224; --warn:#f0b65e; --warn-bg:#382811; --bad:#ff8c82; --bad-bg:#3c1917; --info:#aab3ff; --info-bg:#22264a;
+  --live:#ef5350; --tomorrow:#6f9be6; --class:#8e93aa; --class-bg:#262938; --phone:#000000;
+  --m-app:#2d0f9a; --m-bg:#0f1017; --m-link:#aab3ff;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--brand)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* App bar */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--brand);color:var(--on-brand)}
+.appbar .inner{display:flex;align-items:stretch;gap:16px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:.2px;white-space:nowrap}
+.brand-mark{width:30px;height:30px;border-radius:7px;background:var(--on-brand);color:#2a0f9e;display:grid;place-items:center;font-size:14px;font-weight:700}
+.brand small{display:block;font-size:10px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;opacity:.75}
+.nav{display:flex;margin-inline:auto;overflow-x:auto}
+.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 22px;color:var(--on-brand);background:none;border:0;font-size:14px;font-weight:500;position:relative}
+.nav button[disabled]{cursor:default;opacity:.85}
+.nav svg{width:22px;height:22px;fill:currentColor}
+.nav button.on{background:var(--panel);color:var(--brand)}
+:root[data-theme="dark"] .nav button.on{color:var(--fg)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nav button.on{color:var(--fg)}}
+.nav .count{position:absolute;top:6px;right:8px;background:var(--green);color:var(--on-green);font-size:11px;font-weight:700;border-radius:10px;padding:0 6px}
+.me{display:flex;align-items:center;gap:10px}
+.me .name{line-height:1.2;text-align:right;font-size:14px}
+.me .name small{display:block;opacity:.75;font-family:var(--mono);font-size:11px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-yellow);color:#2a0f9e;display:grid;place-items:center;font-weight:700}
+
+/* Shell */
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:0;padding-block:0 40px}
+.side{background:var(--panel);border-right:1px solid var(--line);padding-block:20px;min-height:calc(100vh - 64px)}
+.side h4{margin:0 0 8px;padding:0 24px;font-size:12px;font-weight:500;letter-spacing:1.2px;color:var(--muted)}
+.side button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;text-align:left;padding:12px 24px;font-size:16px}
+.side button svg{width:20px;height:20px;fill:currentColor;flex:none}
+.side button.on{background:var(--green);color:var(--on-green);font-weight:700}
+.side button:not(.on):hover{background:var(--panel-2)}
+.side .new{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.8px;background:var(--accent-yellow);color:#2a0f9e;border-radius:4px;padding:2px 6px}
+.side hr{border:0;border-top:1px solid var(--line);margin:14px 24px}
+.main{min-width:0;padding:20px 0 0 24px}
+
+/* Filter bar */
+.filters{background:var(--filter);border-top:5px solid var(--green);padding:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.search{display:flex;background:var(--panel);min-width:0;flex:1 1 220px;max-width:320px}
+.search input{border:0;background:none;padding:10px 14px;flex:1;min-width:0}
+.search span{display:grid;place-items:center;padding:0 12px;border-left:1px solid var(--line)}
+.filters select{background:var(--panel);border:0;padding:10px 12px;min-width:0}
+.seg{margin-left:auto;display:flex;background:var(--panel);border-radius:4px;overflow:hidden}
+.seg button{border:0;background:none;padding:9px 16px;font-weight:500}
+.seg button.on{background:var(--fg);color:var(--panel)}
+
+/* Smart bar */
+.smart{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--brand-2);padding:14px 16px;display:grid;gap:10px}
+.smart-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.switch{display:flex;align-items:center;gap:10px;font-weight:700;border:0;background:none;padding:0;text-align:left}
+.switch .trk{width:40px;height:22px;border-radius:11px;background:var(--class);position:relative;transition:background .15s;flex:none}
+.switch .trk::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
+.switch[aria-checked="true"] .trk{background:var(--green)}
+.switch[aria-checked="true"] .trk::after{left:21px}
+.smart .sub{color:var(--muted);font-size:14px}
+.smart .sub b{color:var(--fg);font-weight:500}
+.linkbtn{border:0;background:none;color:var(--link);padding:0;font-weight:500;text-decoration:underline;text-underline-offset:3px}
+.toggles{display:flex;flex-wrap:wrap;gap:8px}
+.tog{border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:5px 12px;font-size:13px}
+.tog[aria-pressed="true"]{background:var(--info-bg);border-color:var(--info);color:var(--info);font-weight:500}
+.stats{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.stats span b{font-variant-numeric:tabular-nums;font-weight:700}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0}
+
+/* Event list */
+.group-h{font-size:22px;font-weight:400;margin:26px 0 10px 4px}
+.list{background:var(--panel);border:1px solid var(--line)}
+.ev{display:grid;grid-template-columns:240px minmax(0,1fr) 190px;gap:22px;padding:16px;border-top:1px solid var(--line);scroll-margin-top:90px}
+.mobile .ev{scroll-margin-top:110px}
+.ev:first-child{border-top:0}
+.ev.dim{opacity:.55}
+.ev.flash{animation:flash 1.4s ease}
+@keyframes flash{0%{background:var(--info-bg)}100%{background:transparent}}
+.thumbcol{display:flex;flex-direction:column;min-width:0}
+.thumb{aspect-ratio:2/1;max-width:100%;color:#fff;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.thumb .k{font-weight:700;font-size:15px;letter-spacing:.6px;text-transform:uppercase}
+.thumb .h{font-size:11px;opacity:.9;line-height:1.3}
+.thumb .stripe{position:absolute;left:0;right:0;bottom:0;height:22%;background:var(--accent-yellow);opacity:.95}
+.thumb .d{position:relative;z-index:1;font-size:11px;font-weight:700;color:#2a0f9e;align-self:center}
+.thumb.noStripe .d{color:#fff}
+.free{background:var(--panel-2);padding:8px 10px;font-size:14px}
+.ev-title{margin:0;font-size:22px;line-height:1.25;font-weight:500;color:var(--link);text-wrap:balance}
+.badge{display:inline-block;vertical-align:3px;font-size:14px;font-weight:700;color:#fff;border-radius:8px;padding:1px 10px;margin-left:6px;letter-spacing:.4px}
+.b-live{background:var(--live)} .b-today{background:var(--soon)} .b-tomorrow{background:var(--tomorrow)}
+.meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin:12px 0}
+.meta>div{display:flex;gap:8px;min-width:0;flex:1 1 200px}
+.meta svg{width:18px;height:18px;fill:var(--muted);flex:none;margin-top:2px}
+.meta .going{flex:0 1 auto}
+.spots{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:12px;background:var(--live);color:#fff;font-weight:700;font-size:13px;padding:0 6px;margin-right:6px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{background:var(--tag);color:var(--on-tag);font-size:14px;font-weight:500;padding:3px 12px;border-radius:3px}
+.act{display:flex;flex-direction:column;align-items:flex-end;gap:10px;text-align:right}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;background:var(--green);color:var(--on-green);font-size:17px;font-weight:500;padding:10px 20px;border-radius:2px;white-space:nowrap}
+.btn:hover{background:var(--green-hover)}
+.btn svg{width:18px;height:18px;fill:currentColor}
+.btn.done{background:var(--panel-2);color:var(--ok);outline:1px solid var(--ok)}
+.btn.sm{font-size:14px;padding:6px 12px}
+.host{color:var(--muted);font-weight:500;font-size:14px}
+
+/* Fit strip */
+.fit{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{font-weight:700;font-size:13px;padding:4px 10px;border-radius:4px;display:inline-flex;gap:6px;align-items:center}
+.p-good{background:var(--ok);color:#fff}
+.p-warn{background:var(--warn-bg);color:var(--warn);outline:1px solid var(--warn)}
+.p-bad{background:var(--bad-bg);color:var(--bad);outline:1px solid var(--bad)}
+.p-info{background:var(--info-bg);color:var(--info)}
+.p-plan{background:var(--brand-2);color:#fff}
+.chip{font-size:13px;padding:3px 9px;border-radius:999px;background:var(--panel-2);color:var(--muted)}
+.chip.good{color:var(--ok);background:var(--ok-bg)}
+.chip.warn{color:var(--warn);background:var(--warn-bg)}
+.chip.bad{color:var(--bad);background:var(--bad-bg)}
+.chip.info{color:var(--info);background:var(--info-bg)}
+.src{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;opacity:.8;margin-right:4px}
+.hidden-note{margin-top:12px;padding:12px 16px;background:var(--panel-2);border:1px dashed var(--line);color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px}
+
+/* Home */
+.hello{margin:6px 0 18px}
+.hello h1{margin:0;font-size:28px;font-weight:500;text-wrap:balance}
+.hello p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.home{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}
+.propbox{background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--brand-2)}
+.propbox header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.propbox h2{margin:0;font-size:20px;font-weight:700}
+.propbox header p{margin:2px 0 0;font-size:13px;color:var(--muted);width:100%}
+.prow{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:14px;padding:14px 16px;border-top:1px solid var(--line);align-items:start}
+.prow:first-of-type{border-top:0}
+.datechip{border:1px solid var(--line);text-align:center;line-height:1.1;padding:6px 0;background:var(--panel-2)}
+.datechip b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.datechip span{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.prow h3{margin:0;font-size:16px;font-weight:500;line-height:1.3}
+.prow h3 button{border:0;background:none;padding:0;color:var(--link);text-align:left;font:inherit}
+.prow .when{font-size:13px;color:var(--muted);margin:3px 0 6px;font-variant-numeric:tabular-nums}
+.prow .why{display:flex;flex-wrap:wrap;gap:5px}
+.discover{background:var(--panel-2)}
+.discover-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--c-conference);padding:12px 16px 0;background:var(--panel-2)}
+:root[data-theme="dark"] .discover-label{color:var(--info)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .discover-label{color:var(--info)}}
+.propfoot{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.sources{display:flex;flex-wrap:wrap;gap:6px}
+.srcchip{font-size:12px;font-weight:500;padding:2px 8px;border-radius:3px;border:1px solid var(--line)}
+.srcchip.off{text-decoration:line-through;opacity:.6}
+.phone-wrap{display:grid;justify-items:center;gap:8px}
+.phone-cap{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:500}
+.phone{width:300px;max-width:100%;border:10px solid var(--phone);border-radius:38px;background:var(--bg);overflow:hidden;display:flex;flex-direction:column;height:600px}
+.ph-status{display:flex;justify-content:space-between;padding:8px 18px 4px;font-size:12px;font-weight:700;background:var(--panel)}
+.ph-head{background:var(--panel);padding:6px 16px 12px;font-size:22px;font-weight:700;border-bottom:1px solid var(--line)}
+.ph-body{flex:1;overflow:auto;padding:12px}
+.ph-card{background:var(--panel);border-radius:12px;border:1px solid var(--line);overflow:hidden}
+.ph-card h4{margin:0;padding:10px 12px;font-size:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.ph-card h4 span{font-size:11px;font-weight:500;color:var(--muted)}
+.ph-row{padding:10px 12px;border-top:1px solid var(--line);display:grid;gap:3px}
+.ph-row:first-of-type{border-top:0}
+.ph-row b{font-size:13px;font-weight:500;color:var(--link);line-height:1.25}
+.ph-row small{font-size:11px;color:var(--muted)}
+.ph-row em{font-style:normal;font-size:11px;color:var(--ok);font-weight:500}
+.ph-nav{display:grid;grid-template-columns:repeat(6,1fr);background:var(--panel);border-top:1px solid var(--line);padding:6px 2px 10px}
+.ph-nav span{display:grid;justify-items:center;font-size:9px;color:var(--muted);gap:2px}
+.ph-nav span svg{width:18px;height:18px;fill:currentColor}
+.ph-nav span.on{color:var(--brand-2)}
+
+/* Recommended */
+.rec-head{margin:22px 0 4px}
+.rec-head h2{margin:0;font-size:24px;font-weight:500}
+.rec-head p{margin:4px 0 0;color:var(--muted);max-width:68ch}
+.week{background:var(--panel);border:1px solid var(--line);padding:14px 16px 10px;margin-top:14px}
+.week-scroll{overflow-x:auto}
+.week-grid{min-width:640px}
+.week h3{margin:0 0 10px;font-size:15px;font-weight:700}
+.wrow{display:grid;grid-template-columns:76px minmax(0,1fr);align-items:center;gap:10px;padding:5px 0;border-top:1px solid var(--line)}
+.wrow.past{opacity:.45}
+.wrow .lbl{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}
+.wrow .lbl em{display:block;font-style:normal;font-size:11px;color:var(--green);font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.track{position:relative;background:repeating-linear-gradient(90deg,transparent 0 calc(100%/7.5 - 1px),var(--line) calc(100%/7.5 - 1px) calc(100%/7.5))}
+.blk{position:absolute;height:20px;border-radius:3px;font-size:11px;line-height:20px;padding:0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;text-align:left}
+.blk.class{background:var(--class-bg);color:var(--fg);background-image:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--class) 25%,transparent) 5px 7px);outline:1px solid var(--class)}
+.blk.plan{background:var(--brand-2);color:#fff}
+.blk.ok{background:var(--ok);color:#fff}
+.blk.warn{background:var(--warn-bg);color:var(--warn);outline:1px solid var(--warn)}
+.blk.bad{background:transparent;color:var(--bad);outline:1px dashed var(--bad)}
+.blk.due{background:transparent;color:var(--warn);outline:0;border-left:3px solid var(--warn);border-radius:0;font-weight:700}
+.hours{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;font-size:11px;color:var(--muted);font-family:var(--mono)}
+.hours .ticks{position:relative;height:16px}
+.hours .ticks span{position:absolute;transform:translateX(-50%)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.empty{background:var(--panel);border:1px solid var(--line);padding:28px;color:var(--muted);text-align:center}
+
+/* Calendar */
+.cal-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0 10px}
+.cal-head h2{margin:0;font-size:30px;font-weight:400}
+.cal-head .range{font-size:20px;font-variant-numeric:tabular-nums}
+.cal-head .tog{margin-left:auto}
+.cal-scroll{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));min-width:1050px}
+.cal-col{border-left:1px solid var(--line);min-width:0}
+.cal-col:first-child{border-left:0}
+.cal-col.today{background:color-mix(in srgb,var(--info-bg) 45%,transparent)}
+.cal-day{text-align:center;padding:10px 4px;font-size:14px;color:var(--muted);border-bottom:1px solid var(--line);font-weight:500;letter-spacing:.4px}
+.cal-col.today .cal-day{color:var(--link);font-weight:700}
+.citem{margin:6px;border:1px solid var(--line);background:var(--panel);font-size:13px}
+.citem .ch{color:#fff;font-weight:700;padding:4px 8px;font-size:13px;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.citem .cont{font-size:10px;letter-spacing:1.2px;text-align:right;padding:2px 8px;background:var(--panel-2);color:var(--muted)}
+.citem .cb{padding:6px 8px;display:grid;gap:4px}
+.citem .ct{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.citem .cn{color:var(--link);font-weight:500;line-height:1.3;text-decoration:none;text-align:left}
+.citem .cf{font-size:12px;font-weight:700}
+.citem.dim{opacity:.5}
+.citem.clash{opacity:.55}
+.citem.clash .cn{text-decoration:line-through}
+.citem.class{border-style:dashed;border-color:var(--class);background:var(--class-bg)}
+.citem.class .ch{background:var(--class)}
+.fit-ok{color:var(--ok)} .fit-warn{color:var(--warn)} .fit-bad{color:var(--bad)} .fit-info{color:var(--info)}
+
+/* Digest */
+.digest{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:20px;margin-top:18px;align-items:start}
+.box{background:var(--panel);border:1px solid var(--line);padding:16px;min-width:0}
+.box h2{margin:0 0 4px;font-size:20px;font-weight:500}
+.box .sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.bigrow{display:flex;align-items:baseline;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.bigrow b{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;min-width:2.2ch;text-align:right}
+.bigrow span{font-size:14px}
+.bigrow small{display:block;color:var(--muted);font-size:12px}
+.bar{display:flex;height:14px;border-radius:3px;overflow:hidden;margin:6px 0 4px}
+.bar i{display:block;height:100%}
+.mail{border:1px solid var(--line);background:var(--panel)}
+.mail .mh{padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;display:grid;gap:3px;background:var(--panel-2)}
+.mail .mh b{font-weight:500}
+.mail .subject{font-size:17px;font-weight:700;margin-top:4px}
+.mail .mb{padding:18px 16px}
+.mail .mb p{margin:0 0 12px;max-width:62ch}
+.mitem{display:grid;grid-template-columns:4px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.mitem i{background:var(--ok);border-radius:2px}
+.mitem b{color:var(--link);font-weight:500}
+.mitem div small{display:block;color:var(--muted);font-size:13px}
+.mfoot{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:6px}
+
+/* Timetable */
+.tt{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;margin-top:20px;align-items:start}
+.synced{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ok);background:var(--ok-bg);padding:3px 9px;border-radius:999px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.t{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+td .note{display:block;font-size:11px;color:var(--warn)}
+.del{border:0;background:none;color:var(--bad);font-size:13px;text-decoration:underline}
+.addform{display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) auto;gap:8px;margin-top:12px;align-items:end}
+.addform label{display:grid;gap:3px;font-size:12px;color:var(--muted)}
+.addform input,.addform select,.field select{background:var(--panel-2);border:1px solid var(--line);padding:7px 8px;border-radius:3px;min-width:0;width:100%}
+.addform .btn{font-size:15px;padding:8px 14px}
+.err{color:var(--bad);font-size:13px;margin-top:6px;min-height:1em}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field>span{font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.ghost{border:1px solid var(--line);background:none;border-radius:3px;padding:7px 12px;font-size:14px}
+.srcrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:10px 0;border-top:1px solid var(--line);align-items:center}
+.srcrow b{font-weight:700}
+.srcrow small{grid-column:1/-1;color:var(--muted);font-size:12px}
+.dl{font-size:13px;padding:6px 0;border-top:1px solid var(--line)}
+.dl b{font-weight:500}
+
+/* SDGs */
+.sdgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sdg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#fff;border-radius:3px;padding:2px 8px 2px 2px;line-height:1.3;border:0}
+.sdg b{display:inline-grid;place-items:center;min-width:20px;height:20px;background:rgba(0,0,0,.2);border-radius:2px;font-variant-numeric:tabular-nums}
+.sdg[aria-pressed="false"]{opacity:.45}
+.sdg-mini{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:2px;color:#fff;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;vertical-align:middle}
+.minis{display:inline-flex;gap:3px;margin-right:6px;vertical-align:middle}
+.sdg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px}
+.goal{border:0;color:#fff;text-align:left;padding:12px;min-height:122px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;border-radius:2px}
+.goal .n{font-size:28px;font-weight:700;line-height:1}
+.goal .t{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;line-height:1.2}
+.goal .c{font-size:12px;background:rgba(0,0,0,.25);padding:3px 6px;border-radius:2px;align-self:flex-start}
+.goal.none{opacity:.38}
+.goal[aria-pressed="true"]{outline:3px solid var(--fg);outline-offset:2px}
+.draft{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:var(--warn-bg);color:var(--warn);padding:2px 8px;border-radius:3px;margin-left:8px;vertical-align:4px}
+.insights{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px}
+.insight{background:var(--panel);border:1px solid var(--line);padding:14px 16px;display:grid;gap:6px}
+.insight h3{margin:0;font-size:16px;display:flex;gap:8px;align-items:center}
+.insight p{margin:0;font-size:14px;color:var(--muted)}
+.insight p b{color:var(--fg)}
+.cls-table td{white-space:normal;vertical-align:top}
+.cls-table td.why{color:var(--muted);font-size:13px;min-width:240px}
+.cls-table td.ttl{min-width:220px;font-weight:500}
+
+/* View switcher + phone mode (styled after the campus app) */
+.app{container-name:app;container-type:inline-size;background:var(--bg);min-width:0}
+[hidden]{display:none!important}
+.modebar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding-block:8px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.modebar .lbl b{color:var(--fg);font-weight:700}
+.modeseg{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--panel-2);gap:2px}
+.modeseg button{display:flex;align-items:center;gap:6px;border:0;background:none;border-radius:999px;padding:6px 14px;font-size:14px;font-weight:500;color:var(--muted)}
+.modeseg button svg{width:16px;height:16px;fill:currentColor}
+.modeseg button[aria-pressed="true"]{background:var(--brand-2);color:#fff}
+.mroot,.msheet{display:none}
+.mobile body::before{background:var(--m-app)}
+.mobile .stage{display:grid;justify-items:center;padding:24px 16px 40px;background:var(--filter)}
+.mobile .device{position:relative;width:390px;max-width:100%;height:min(844px,calc(100vh - 110px));min-height:560px;border:12px solid var(--phone);border-radius:48px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25);background:var(--m-bg)}
+.mobile .app{height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:var(--m-bg)}
+.mobile .app::-webkit-scrollbar{display:none}
+.mobile .appbar,.mobile .layout{display:none}
+.mobile .mroot{display:flex;flex-direction:column;min-height:100%;font-family:var(--m-font);color:var(--fg)}
+
+/* top */
+.mtop{position:sticky;top:0;z-index:12;background:var(--m-app);color:#fff}
+.mtop.light{background:var(--panel);color:var(--fg)}
+.mstatus{display:flex;justify-content:space-between;align-items:center;padding:12px 28px 6px;font-size:15px;font-weight:700}
+.mstatus .ic{display:flex;gap:6px;align-items:center;font-size:12px}
+.mstatus .bat{border:1.5px solid currentColor;border-radius:5px;padding:0 4px;font-size:10px;line-height:14px}
+.mbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 18px 14px;min-height:58px}
+.mbar h1{margin:0;font-size:25px;font-weight:800;letter-spacing:-.2px}
+.mbar .icons{display:flex;gap:18px;align-items:center}
+.mbar button{border:0;background:none;color:inherit;padding:2px;display:grid;place-items:center}
+.mbar svg{width:26px;height:26px;fill:currentColor}
+.mbar .back{margin-right:4px}
+.mbar .left{display:flex;align-items:center;gap:6px;min-width:0}
+.mbar .left h1{font-size:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mlogo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;letter-spacing:.2px}
+.mlogo span{width:30px;height:30px;border-radius:7px;background:#fff;color:var(--m-app-fixed);display:grid;place-items:center;font-size:13px}
+.mtabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:0 6px}
+.mtabs button{border:0;background:none;color:rgba(255,255,255,.72);font-size:14px;font-weight:600;padding:8px 0 12px;display:flex;align-items:center;justify-content:center;gap:4px;font-family:inherit;border-bottom:4px solid transparent;position:relative;white-space:nowrap}
+.mtabs button svg{width:18px;height:18px;fill:currentColor;flex:none}
+.mtabs button.on{color:#fff;border-bottom-color:#fff}
+.mtabs .dotnew{position:absolute;top:6px;left:calc(50% - 30px);width:8px;height:8px;border-radius:50%;background:var(--accent-yellow)}
+
+/* body */
+.mbody{flex:1;padding:14px 16px 20px;display:grid;gap:14px;align-content:start;min-width:0}
+.mchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+.mchips::-webkit-scrollbar{display:none}
+.mchip{flex:none;display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:9px 16px;font-size:15px;font-weight:600;font-family:inherit}
+.mchip svg{width:19px;height:19px;fill:currentColor}
+.mchip.on{background:var(--m-app);border-color:var(--m-app);color:#fff}
+.mchip .live{width:7px;height:7px;border-radius:50%;background:#e53935}
+.mchips .sep{flex:none;width:1px;background:var(--line);margin:4px 0}
+.mnote{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.mnote b{color:var(--fg)}
+.mlink{border:0;background:none;padding:0;color:var(--m-link);font-weight:700;font-size:inherit;font-family:inherit}
+.msearch{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 14px}
+.msearch svg{width:20px;height:20px;fill:var(--muted)}
+.msearch input{border:0;background:none;flex:1;min-width:0;font-size:15px;font-family:inherit}
+.mintro{background:var(--panel);border-radius:16px;padding:12px 14px;font-size:13.5px;color:var(--muted);border:1px solid var(--line)}
+.mintro b{color:var(--fg)}
+
+/* event card */
+.mcard{background:var(--panel);border-radius:18px;box-shadow:0 1px 3px rgba(20,10,60,.08);overflow:hidden;cursor:pointer;border:1px solid transparent}
+.mcard:focus-visible{outline:2px solid var(--m-link)}
+.mcard .row{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:12px;padding:14px 14px 12px}
+.mcard h3{margin:0 0 6px;font-size:17px;font-weight:800;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mrow{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--muted);line-height:1.5;min-width:0}
+.mrow svg{width:18px;height:18px;fill:currentColor;flex:none;opacity:.8}
+.mrow span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mimg{position:relative;border-radius:14px;overflow:hidden;color:#fff;aspect-ratio:1;display:flex;flex-direction:column;justify-content:flex-end;padding:8px;max-width:100%}
+.mimg .cat{position:absolute;left:8px;top:8px;right:40px;font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;line-height:1.15}
+.mimg .going{align-self:flex-start;background:rgba(0,0,0,.45);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700}
+.heart{position:absolute;right:6px;top:6px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(0,0,0,.35);display:grid;place-items:center;color:#fff;padding:0}
+.heart svg{width:19px;height:19px;fill:currentColor}
+.heart[aria-pressed="true"]{color:#ff6b81}
+.mfit{display:flex;align-items:flex-start;gap:10px;padding:9px 14px 11px;border-top:1px solid var(--line);font-size:13px;line-height:1.35}
+.mfit b{font-weight:800;white-space:nowrap;margin-right:4px}
+.mfit .tx{flex:1;min-width:0}
+.mfit span{color:var(--muted)}
+.mfit.ok b{color:var(--ok)} .mfit.warn b{color:var(--warn)} .mfit.bad b{color:var(--bad)} .mfit.info b{color:var(--info)} .mfit.plan b{color:var(--brand-2)}
+.mfit .minis{margin-left:auto;margin-right:0;flex:none}
+.mcard.dim{opacity:.6}
+.mempty{display:grid;justify-items:center;text-align:center;gap:10px;padding:60px 20px}
+.mempty svg{width:64px;height:64px;fill:var(--m-link);opacity:.7}
+.mempty h3{margin:0;font-size:19px;font-weight:800}
+.mempty p{margin:0;color:var(--muted)}
+.mbtn{border:0;background:var(--m-app);color:#fff;border-radius:999px;padding:13px 26px;font-size:16px;font-weight:700;font-family:inherit}
+.mbtn.ghost{background:var(--panel);color:var(--fg);border:1px solid var(--line)}
+.mbtn.done{background:var(--ok-bg);color:var(--ok)}
+
+/* home */
+.hub{display:flex;align-items:center;gap:12px}
+.hubic{width:52px;height:52px;border-radius:50%;background:var(--m-app);color:var(--accent-yellow);display:grid;place-items:center;font-weight:800;font-size:18px;flex:none}
+.hub .nm{font-weight:800;font-size:16px;line-height:1.2;min-width:0}
+.hub .nm small{display:block;font-weight:600;color:var(--muted);font-size:13px}
+.hubbtn{margin-left:auto;display:flex;align-items:center;gap:6px;border:1.5px solid var(--muted);background:none;border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px;font-family:inherit;white-space:nowrap}
+.hubbtn svg{width:18px;height:18px;fill:currentColor}
+.hello{margin:0;font-size:26px;font-weight:800}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sechead h2{margin:0;font-size:19px;font-weight:800;display:flex;align-items:center;gap:8px}
+.sechead h2 svg{width:24px;height:24px;fill:currentColor}
+.sechead p{margin:2px 0 0;font-size:12.5px;color:var(--muted);font-weight:600}
+.carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:2px 16px 6px;scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.ccard{flex:none;width:250px;background:var(--panel);border-radius:18px;overflow:hidden;scroll-snap-align:start;box-shadow:0 1px 3px rgba(20,10,60,.08);cursor:pointer;display:flex;flex-direction:column}
+.ccard .top{position:relative;height:122px;color:#fff;padding:12px 44px 12px 14px;display:flex;flex-direction:column;justify-content:flex-end;border-bottom:4px solid var(--m-app)}
+.ccard .top .big{font-size:22px;font-weight:800;line-height:1.05;letter-spacing:-.3px}
+.ccard .top .vlab{position:absolute;right:0;top:0;bottom:0;width:30px;background:var(--m-app-fixed);writing-mode:vertical-rl;display:grid;place-items:center;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
+.ccard .bd{padding:12px 14px 10px;display:grid;gap:2px}
+.ccard h3{margin:0 0 4px;font-size:15.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ccard .why{margin-top:auto;padding:8px 14px 11px;font-size:12.5px;font-weight:700;color:var(--ok);border-top:1px solid var(--line);display:flex;gap:6px;align-items:center}
+.ccard .why.disc{color:var(--info)}
+.mpanel{background:var(--panel);border-radius:18px;padding:16px;display:grid;gap:12px;box-shadow:0 1px 3px rgba(20,10,60,.06)}
+.tline{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;font-size:14px}
+.tline .t{font-variant-numeric:tabular-nums;font-weight:700;font-size:13px;color:var(--muted)}
+.tline .b{border-radius:10px;padding:8px 10px;min-width:0}
+.tline .b b{display:block;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tline .b small{color:inherit;opacity:.85}
+.tline .cls{background:var(--m-app);color:#fff}
+.tline .free{border:1.5px dashed var(--line);color:var(--muted)}
+.tline .sug{border:2px dashed var(--ok);color:var(--ok);background:var(--ok-bg);cursor:pointer}
+.tline .pl{background:var(--ok);color:#fff;cursor:pointer}
+.grp{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;align-items:center}
+.grp .lg{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#fff;font-size:15px}
+.grp b{display:block;font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grp small{color:var(--muted);font-size:14px}
+.gcard{background:var(--panel);border-radius:18px;padding:14px}
+
+/* menu */
+.mlist{background:var(--panel);border-radius:18px;overflow:hidden;box-shadow:0 1px 3px rgba(20,10,60,.06)}
+.mlist .hubrow{padding:14px 16px;border-bottom:1px solid var(--line)}
+.mlist button.it{display:flex;align-items:center;gap:16px;width:100%;border:0;border-top:1px solid var(--line);background:none;padding:15px 18px;text-align:left;font-size:17px;font-family:inherit}
+.mlist button.it:first-of-type{border-top:0}
+.mlist .hubrow + button.it{border-top:0}
+.mlist button.it > svg:first-child{width:25px;height:25px;fill:var(--m-link);flex:none}
+.mlist .chev{width:22px;height:22px;fill:var(--muted);margin-left:auto;flex:none}
+.mlist .newb{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.8px;background:var(--accent-yellow);color:#2a0f9e;border-radius:4px;padding:2px 6px}
+.mlist .newb + .chev{margin-left:6px}
+.mlist .it small{display:block;font-size:12.5px;color:var(--muted)}
+.mlist .cap{font-size:13px;letter-spacing:1px;color:var(--muted);padding:16px 18px 4px}
+.mlist .it.red{color:#d32f2f}
+.mlist .it.red > svg:first-child{fill:#d32f2f}
+.mlist.hl{outline:2px solid var(--accent-yellow)}
+
+/* calendar */
+.calbar{background:var(--panel-2);margin:-14px -16px 0;padding:12px 12px 10px;display:grid;gap:10px}
+.calctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.segc{display:flex;background:var(--m-app);border-radius:6px;overflow:hidden}
+.segc button{border:0;background:none;color:#fff;padding:9px 16px;font-size:16px;font-family:inherit}
+.segc button.on{background:rgba(0,0,0,.35);font-weight:800}
+.btoday{border:0;background:color-mix(in srgb,var(--m-app) 65%,#fff);color:#fff;border-radius:6px;padding:9px 16px;font-size:16px;font-family:inherit}
+.navc{display:flex;background:var(--m-app);border-radius:6px;margin-left:auto}
+.navc button{border:0;background:none;color:#fff;padding:7px 14px;display:grid;place-items:center}
+.navc svg{width:22px;height:22px;fill:currentColor}
+.caldate{font-size:21px;font-weight:800;color:var(--m-link);margin:0 4px}
+.calmeta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ical{display:flex;align-items:center;gap:6px;border:0;background:var(--m-app);color:#fff;border-radius:6px;padding:7px 12px;font-size:14px;font-family:inherit}
+.sid{font-weight:800;color:var(--m-link);display:flex;align-items:center;gap:6px}
+.sugtog{display:flex;align-items:center;gap:6px;border:1.5px solid var(--ok);color:var(--ok);background:var(--ok-bg);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:800;font-family:inherit}
+.sugtog[aria-pressed="false"]{border-color:var(--line);color:var(--muted);background:var(--panel)}
+.calwrap{margin:0 -16px}
+.grid{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr);border-top:1px solid var(--line);background:var(--panel-2)}
+.grid .hrs{position:relative;border-right:1px solid var(--line)}
+.grid .hrs span{position:absolute;left:0;right:4px;text-align:right;font-size:13px;font-weight:700;color:var(--m-link);transform:translateY(2px)}
+.grid .cols{display:grid;position:relative}
+.grid .colh{position:sticky;top:0}
+.grid .col{position:relative;border-left:1px solid var(--line);min-width:0}
+.grid .col:first-child{border-left:0}
+.grid .hl{position:absolute;left:0;right:0;border-top:1px solid var(--line)}
+.grid .hl.half{border-top-style:dashed;opacity:.7}
+.gb{position:absolute;border-radius:4px;padding:3px 5px;font-size:12px;line-height:1.25;overflow:hidden;border:0;text-align:left;font-family:inherit}
+.gb.cls{background:var(--m-app);color:#fff}
+.gb.sug{background:var(--panel);color:var(--ok);outline:2px dashed var(--ok);outline-offset:-2px;cursor:pointer;font-weight:700}
+.gb.pl{background:var(--ok);color:#fff;cursor:pointer;font-weight:700}
+.gb .k{display:block;font-size:10px;letter-spacing:.6px;text-transform:uppercase;opacity:.9}
+.gb.wk{font-size:10px;padding:2px 3px}
+.nowl{position:absolute;left:0;right:0;border-top:3px solid var(--accent-yellow);z-index:3}
+.dayhead{display:grid;margin-left:44px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+.dayhead div{text-align:center;color:var(--m-link);font-size:12.5px;padding:8px 2px;border-left:1px solid var(--line);line-height:1.25}
+.dayhead div.on{font-weight:800}
+.tzbar{background:var(--accent-yellow);color:#1d1f2a;text-align:center;font-size:13px;padding:8px}
+.daytabs{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.daytabs button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:5px 0;display:grid;justify-items:center;line-height:1.15;font-size:11px;color:var(--muted);font-family:inherit}
+.daytabs button b{font-size:16px;color:var(--fg)}
+.daytabs button[aria-pressed="true"]{background:var(--m-app);border-color:var(--m-app);color:#fff}
+.daytabs button[aria-pressed="true"] b{color:#fff}
+.daytabs i{width:5px;height:5px;border-radius:50%;background:var(--ok);display:block;margin-top:2px}
+.daytabs i.none{background:transparent}
+
+/* AI */
+.aihead{background:var(--panel-2);border-radius:12px;padding:10px 14px;text-align:center;color:var(--muted);font-size:15px}
+.aihello{background:var(--panel-2);border-radius:6px;padding:18px 20px;font-size:24px}
+.aitxt{font-size:15px;line-height:1.5;margin:0}
+.aiprompt{display:block;width:100%;border:0;background:color-mix(in srgb,var(--m-app) 12%,var(--panel));color:var(--fg);border-radius:12px;padding:13px;font-size:15.5px;font-family:inherit}
+.bub{max-width:88%;border-radius:16px;padding:10px 14px;font-size:14.5px;line-height:1.45}
+.bub.me{justify-self:end;background:var(--m-app);color:#fff;border-bottom-right-radius:4px}
+.bub.bot{justify-self:start;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:4px}
+.bub.bot p{margin:0 0 8px}
+.bub.bot p:last-child{margin:0}
+.bub .ans{display:grid;gap:6px;margin:8px 0}
+.bub .ans button{text-align:left;border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:8px 10px;font-family:inherit;font-size:13.5px;color:var(--fg)}
+.bub .ans button b{display:block;color:var(--m-link)}
+.bub .ans button small{color:var(--ok);font-weight:700}
+.aiform{display:flex;gap:8px;align-items:center;border:2px solid var(--m-link);border-radius:12px;padding:6px 6px 6px 14px;background:var(--panel)}
+.aiform input{flex:1;min-width:0;border:0;background:none;font-size:15px;font-family:inherit}
+.aiform button{width:36px;height:36px;border-radius:10px;border:0;background:var(--m-app);color:#fff;display:grid;place-items:center}
+.aiform svg{width:20px;height:20px;fill:currentColor}
+.aidisc{font-size:12.5px;color:var(--muted)}
+
+/* tab bar */
+.mnav{position:sticky;bottom:0;z-index:12;display:grid;grid-template-columns:repeat(6,1fr);background:var(--panel);border-top:1px solid var(--line);padding:8px 2px 16px}
+.mnav button{display:grid;justify-items:center;gap:3px;border:0;background:none;color:var(--muted);font-size:11px;padding:2px 0;position:relative;font-family:inherit}
+.mnav button svg{width:26px;height:26px;fill:currentColor}
+.mnav button.on{color:var(--m-link)}
+.mnav .cnt{position:absolute;top:-4px;left:calc(50% + 6px);background:var(--green);color:#fff;font-size:10px;font-weight:800;border-radius:8px;padding:0 5px}
+
+/* sheet */
+.mobile .msheet{display:block;position:absolute;inset:0;z-index:30;pointer-events:none}
+.msheet .back{position:absolute;inset:0;background:rgba(10,8,30,.45);pointer-events:auto;border:0;width:100%}
+.msheet .sh{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow:auto;background:var(--panel);border-radius:22px 22px 0 0;padding:10px 18px 24px;pointer-events:auto;display:grid;gap:12px;font-family:var(--m-font);animation:up .22s ease}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+.msheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line);justify-self:center}
+.msheet h2{margin:0;font-size:21px;font-weight:800;line-height:1.25}
+.msheet .simg{height:120px;border-radius:14px;color:#fff;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between}
+.msheet .simg b{font-size:13px;letter-spacing:.8px;text-transform:uppercase}
+.msheet .simg span{font-size:12px;opacity:.9}
+.msheet .verdict{display:grid;gap:6px;background:var(--panel-2);border-radius:12px;padding:12px}
+.msheet .verdict .chip{justify-self:start}
+.msheet .acts{display:flex;gap:10px;flex-wrap:wrap}
+.msheet .acts .mbtn{flex:1}
+.msheet .hublist button{display:flex;align-items:center;gap:14px;width:100%;border:0;border-top:1px solid var(--line);background:none;padding:12px 2px;text-align:left;font-size:17px;font-weight:700;font-family:inherit}
+.msheet .hublist button:first-child{border-top:0}
+.msheet .hublist .hubic{width:46px;height:46px;font-size:16px}
+.msheet .hublist .chev{width:22px;height:22px;fill:var(--muted);margin-left:auto}
+.msheet .hublist button[aria-pressed="true"]{color:var(--m-link)}
+.msheet .cap{font-size:14px;color:var(--muted)}
+.msheet .ffield{display:grid;gap:6px}
+.msheet .ffield>span{font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.msheet select{background:var(--panel-2);border:1px solid var(--line);padding:9px;border-radius:8px;font-family:inherit;font-size:15px}
+.msub{display:grid;gap:12px;min-width:0}
+.msub .rec-head{margin-top:0}
+.msub .group-h{font-size:18px}
+
+/* on a real phone: no frame, page scrolls normally */
+@media (max-width:520px){
+  .mobile .stage{padding:0;background:var(--m-bg)}
+  .mobile .device{width:100%;height:auto;min-height:0;border:0;border-radius:0;box-shadow:none;overflow:visible;position:static}
+  .mobile .app{height:auto;overflow:visible;min-height:100vh}
+  .mobile .mstatus{display:none}
+  .mobile .mtop{top:env(safe-area-inset-top,0px)}
+  .mobile .mnav{position:fixed;left:0;right:0;bottom:0;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+  .mobile .mroot{padding-bottom:80px}
+  .mobile .msheet{position:fixed}
+}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--panel);padding:10px 16px;border-radius:6px;font-size:14px;max-width:calc(100% - 32px);z-index:40;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+
+@container app (max-width:1100px){
+  .home{grid-template-columns:1fr}
+  .digest{grid-template-columns:1fr}
+}
+@container app (max-width:1000px){
+  .ev{grid-template-columns:180px minmax(0,1fr)}
+  .act{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center;text-align:left}
+  .tt{grid-template-columns:1fr}
+  .addform{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@container app (max-width:820px){
+  .layout{grid-template-columns:1fr}
+  .side{min-height:0;border-right:0;border-bottom:1px solid var(--line);padding-block:0;display:flex;overflow-x:auto;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+  .side h4,.side hr{display:none}
+  .side button{width:auto;white-space:nowrap;padding:12px 16px;font-size:14px}
+  .main{padding:14px 0 0}
+  .brand small,.me .name{display:none}
+  .nav button{padding:6px 12px}
+}
+@container app (max-width:560px){
+  .ev{grid-template-columns:1fr;gap:12px}
+  .thumbcol{max-width:260px}
+  .ev-title{font-size:19px}
+  .seg{margin-left:0}
+  .search{max-width:none}
+  .addform{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nav span.t{display:none}
+  .prow{grid-template-columns:52px minmax(0,1fr)}
+  .prow .btn{grid-column:2;justify-self:start}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="modebar gutter"><span class="lbl"><b>CampusLife concept</b> · personalised events prototype</span>
+  <div class="modeseg" role="group" aria-label="View as"><button id="modeDesk" data-mode="desktop"><svg viewBox="0 0 24 24"><path d="M20 18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2H0v2h24v-2zM4 6h16v10H4z"/></svg>Computer</button><button id="modePhone" data-mode="mobile"><svg viewBox="0 0 24 24"><path d="M16 1H8a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3zm-4 21a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5-4H7V4h10z"/></svg>Phone</button></div></div>
+<div class="stage"><div class="device"><div class="app" id="app">
+<div class="mroot" id="mroot"></div>
+<header class="appbar">
+  <div class="inner gutter">
+    <div class="brand"><div class="brand-mark">CL</div><div>CampusLife<small>Concept prototype</small></div></div>
+    <nav class="nav" aria-label="Main">
+      <button data-view="home" id="navHome"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="t">Home</span></button>
+      <button disabled><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span class="t">Groups</span></button>
+      <button data-view="upcoming" id="navEvents"><span class="count" id="navCount">0</span><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zm-7-7h5v5h-5z"/></svg><span class="t">Events</span></button>
+      <button disabled><svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 9h12v2H6zm8 5H6v-2h8zm4-6H6V6h12z"/></svg><span class="t">Chats</span></button>
+    </nav>
+    <div class="me"><div class="name"><span id="meName">Student Name</span><small id="meId">e123456</small></div><div class="avatar" id="meAvatar">S</div></div>
+  </div>
+</header>
+
+<div class="layout gutter">
+  <aside class="side" aria-label="Event views">
+    <h4>ALL EVENTS</h4>
+    <button data-view="upcoming"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zm-7-7h5v5h-5z"/></svg>Upcoming Events</button>
+    <button data-view="recommended"><svg viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Proposed for Me<span class="new">NEW</span></button>
+    <button data-view="calendar"><svg viewBox="0 0 24 24"><path d="M7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zM19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14z"/></svg>Calendar</button>
+    <button data-view="sdg"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 3a7 7 0 0 1 6.93 6H13V5.07zm-1 0v6H5.07A7 7 0 0 1 11 5.07zM5.07 13H11v5.93A7 7 0 0 1 5.07 13zM13 18.93V13h5.93A7 7 0 0 1 13 18.93z"/></svg>SDG Map<span class="new">NEW</span></button>
+    <button data-view="past"><svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 2.05 4.95l-1.42 1.42A9 9 0 1 0 13 3zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8z"/></svg>Past Events</button>
+    <hr>
+    <h4>MY PROFILE</h4>
+    <button data-view="timetable"><svg viewBox="0 0 24 24"><path d="M3 5v14h18V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm12 8H9v-2h10v2zm0-4H9v-2h10v2zm0-4H9V7h10v2z"/></svg>Timetable &amp; Data</button>
+    <button data-view="digest"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5z"/></svg>Weekly Email<span class="new">NEW</span></button>
+  </aside>
+
+  <main class="main">
+    <div class="filters" id="filters">
+      <label class="search"><input id="q" type="search" placeholder="Search Events" aria-label="Search events"><span aria-hidden="true">⌕</span></label>
+      <select id="cat" aria-label="Category">
+        <option value="">- Category -</option>
+        <option>Career</option><option>Academic</option><option>Conference</option><option>Sports</option><option>Student Life</option><option>Social</option>
+      </select>
+      <select id="loc" aria-label="Location type">
+        <option value="">- Location Type -</option><option value="in">In person</option><option value="online">Online</option>
+      </select>
+      <select id="sdgSel" aria-label="Sustainable Development Goal"><option value="">- SDG -</option></select>
+      <div class="seg" role="group" aria-label="Layout">
+        <button id="segList">List</button><button id="segCal">Calendar</button>
+      </div>
+    </div>
+    <section class="smart" id="smart" aria-label="Timetable-aware suggestions"></section>
+    <div id="content"></div>
+  </main>
+</div>
+</div><div class="msheet" id="msheet" hidden></div></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- Event data: CampusLife, week of Oct 18–24, 2026 (from screenshots; a few times/places not visible were filled in) ---------- */
+const EVENTS=[
+ {id:'lib',title:'[Library - Monthly Book Selection] Spotlight on Media (MSc Médias)',start:'2026-10-01T13:00',end:'2026-10-20T13:00',campus:'Paris',site:'Montparnasse',place:'Montparnasse Library – Level 0',host:'Paris Campus',group:'SXPARIS',cat:'Academic',tags:['Academic','Paris','Student Life'],action:'View'},
+ {id:'oreilly',title:"O'Reilly + ProQuest One Business available for Berlin Campus students during October",start:'2026-10-19T01:00',end:'2026-10-25T23:00',online:true,restricted:'Berlin',campus:'Berlin',host:'Berlin Campus',group:'SXBERLIN',cat:'Academic',tags:['Academic','Berlin'],action:'View'},
+ {id:'pickle',title:'Pickleball Open Play',start:'2026-10-18T12:00',end:'2026-10-18T14:30',campus:'Berlin',place:'Berlin Campus',host:'Sports Team – Berlin Campus',group:'SXBERLIN',cat:'Sports',tags:['Athletic/Sports','Berlin'],going:1,free:true,action:'Register'},
+ {id:'padelT',title:'Padel Tournament',start:'2026-10-18T13:00',end:'2026-10-18T18:00',campus:'Madrid',place:'Madrid',host:'Bachelor Society (EBS) – Madrid Campus',group:'EBSMADRID',cat:'Sports',tags:['Athletic/Sports','Madrid'],action:'Register'},
+ {id:'bnp',title:'Paris | BNP Paribas CIB Consulting & Transformation: Rallye',start:'2026-10-19T17:00',end:'2026-10-19T19:00',campus:'Paris',site:'Montparnasse',place:'Paris Campus',host:'Paris Campus',group:'SXPARIS',cat:'Career',tags:['Company event','Paris','Career'],action:'View'},
+ {id:'erasmus',title:'Erasmus+ Internship Support Info Session – Take 2!',start:'2026-10-19T17:30',end:'2026-10-19T18:15',campus:'Berlin',place:'Berlin Campus',host:'Berlin Campus',group:'SXBERLIN',cat:'Career',tags:['Career','Berlin'],action:'View'},
+ {id:'mck',title:'Online | McKinsey & Company Italy – Tips & Insights on the Selection Process | IT',start:'2026-10-20T11:30',end:'2026-10-20T12:30',online:true,campus:'Turin',host:'Turin Campus',group:'SXTURIN',cat:'Career',tags:['Career workshop','Turin','Career'],lang:'IT',action:'View'},
+ {id:'ebs1',title:'Study Sessions by EBS – Financial Accounting and Macroeconomics',start:'2026-10-20T15:00',end:'2026-10-20T17:00',campus:'Madrid',place:'—',host:'Bachelor Society (EBS) – Madrid Campus',group:'EBSMADRID',cat:'Academic',tags:['Academic','Madrid','Student Societies'],going:18,spots:12,free:true,action:'Register'},
+ {id:'sk',title:'Paris | Rallye Conseil : Simon-Kucher | FR',start:'2026-10-20T17:00',end:'2026-10-20T19:00',campus:'Paris',site:'Champerret',place:'Champerret Campus – Amphithéâtre Monnet',host:'Paris Campus',group:'SXPARIS',cat:'Career',tags:['Company event','Paris','Career'],lang:'FR',action:'View'},
+ {id:'aikpmg',title:'ESCP AI Society x KPMG',start:'2026-10-20T18:30',end:'2026-10-20T20:00',campus:'Paris',site:'Montparnasse',place:'Montparnasse Campus',host:'AI Society – Paris Campus',group:'AISOCIETY',cat:'Career',tags:['Company event','Paris','Student Societies'],lang:'EN',going:42,spots:8,free:true,action:'Register'},
+ {id:'pitch',title:'ELEVATOR PITCH 4 FUNDRASING',start:'2026-10-21T18:00',end:'2026-10-21T20:00',campus:'Madrid',place:'ESCP María de Molina, 4 – AGORA',host:'Madrid Campus',group:'SXMADRID',cat:'Conference',tags:['Conference','Madrid','Blue Factory'],going:10,free:true,action:'Register'},
+ {id:'tribunes',title:'Tribunes reçoit Pierre Lévy et Pierre Buhler',start:'2026-10-21T18:30',end:'2026-10-21T20:00',campus:'Paris',site:'Champerret',place:'Amphithéâtre Jacques Coeur, Campus de Champerret',host:'Tribunes – Paris Campus',group:'TRIBUNES',cat:'Conference',tags:['Conference','Paris','Student Societies'],lang:'FR',action:'View'},
+ {id:'padelmini',title:'Padel Mini Tournament',start:'2026-10-21T20:00',end:'2026-10-21T21:30',campus:'Berlin',place:'Padel Bros',host:'Berlin Campus',group:'SXBERLIN',cat:'Sports',tags:['Athletic/Sports','Berlin','Student Life'],going:13,spots:3,free:true,action:'Register'},
+ {id:'tennis',title:'Madrid Tennis Training – Intermediate Level',start:'2026-10-22T09:30',end:'2026-10-22T10:30',campus:'Madrid',place:'SCP Puerta de Hierro Guisando Club',host:'Padel & Tennis Team – Madrid Campus',group:'MADRIDRACKET',cat:'Sports',tags:['Athletic/Sports','Madrid'],going:3,spots:1,free:true,action:'Register'},
+ {id:'pharma',title:'Paris | Pharma Company Connect | EN',start:'2026-10-22T12:00',end:'2026-10-22T14:30',campus:'Paris',site:'Montparnasse',place:'Montparnasse Campus – Espace Bamboo',host:'Paris Campus',group:'SXPARIS',cat:'Career',tags:['Company event','Paris','Career'],lang:'EN',action:'View'},
+ {id:'studapart',title:'[English] Prepare your accommodation in Paris – Webinar with Studapart',start:'2026-10-22T13:00',end:'2026-10-22T14:00',online:true,campus:'Paris',host:'Paris Campus',group:'SXPARIS',cat:'Student Life',tags:['Online Webinar','Paris','Student Life'],lang:'EN',action:'View'},
+ {id:'ebs2',title:'Study Sessions by EBS – Fundamentals of Mathematics and Marketing',start:'2026-10-22T13:30',end:'2026-10-22T15:30',campus:'Madrid',place:'—',host:'Bachelor Society (EBS) – Madrid Campus',group:'EBSMADRID',cat:'Academic',tags:['Academic','Madrid','Student Societies'],going:17,spots:13,free:true,action:'Register'},
+ {id:'padeltr',title:'Madrid Padel Training – Basic Level',start:'2026-10-23T09:30',end:'2026-10-23T10:30',campus:'Madrid',place:'Madrid',host:'Padel & Tennis Team – Madrid Campus',group:'MADRIDRACKET',cat:'Sports',tags:['Athletic/Sports','Madrid'],going:4,free:true,action:'Register'},
+ {id:'bake',title:'SPF Halloween Bake Sale',start:'2026-10-23T10:00',end:'2026-10-23T14:00',campus:'Berlin',place:'Berlin Campus',host:'SPF – Berlin Campus',group:'SPFBERLIN',cat:'Student Life',tags:['Student Life','Berlin'],action:'View'},
+ {id:'muslim',title:'Muslim Community Society – Evening Talk',start:'2026-10-23T19:00',end:'2026-10-23T20:00',campus:'Paris',site:'Montparnasse',place:'Montparnasse Campus',host:'Muslim Community Society – Paris',group:'COMMUNAUTÉ',cat:'Student Life',tags:['Student Societies','Paris'],lang:'FR',action:'View'},
+ {id:'impact',title:'Impact Consulting Day – ESCP x ESADE',start:'2026-10-24T09:30',end:'2026-10-24T17:00',campus:'Madrid',place:'Madrid Campus',host:'180 Degrees Consulting',group:'180DC',cat:'Career',tags:['Career','Madrid'],going:26,action:'Register'},
+ {id:'volley',title:'Mixed Volleyball Training',start:'2026-10-24T11:00',end:'2026-10-24T13:00',campus:'Madrid',place:'Madrid',host:'Volleyball Team – Madrid Campus',group:'MADRIDVOLLEY',cat:'Sports',tags:['Athletic/Sports','Madrid'],action:'Register'},
+ {id:'studio54',title:'Studio 54 : DISCO CHIC',start:'2026-10-24T22:00',end:'2026-10-25T04:00',campus:'Berlin',place:'Berlin',host:'EBS Berlin',group:'EBSBERLIN',cat:'Social',tags:['Social','Berlin'],action:'Register'}
+];
+/* UN Sustainable Development Goals (sdgs.un.org/goals) */
+const SDGS=[null,
+ {t:'No Poverty',c:'#E5243B'},{t:'Zero Hunger',c:'#C08A2A'},{t:'Good Health and Well-being',c:'#4C9F38'},{t:'Quality Education',c:'#C5192D'},
+ {t:'Gender Equality',c:'#FF3A21'},{t:'Clean Water and Sanitation',c:'#1FA4C7'},{t:'Affordable and Clean Energy',c:'#D9A600'},{t:'Decent Work and Economic Growth',c:'#A21942'},
+ {t:'Industry, Innovation and Infrastructure',c:'#E85D0C'},{t:'Reduced Inequalities',c:'#DD1367'},{t:'Sustainable Cities and Communities',c:'#E0850F'},{t:'Responsible Consumption and Production',c:'#BF8B2E'},
+ {t:'Climate Action',c:'#3F7E44'},{t:'Life Below Water',c:'#0A97D9'},{t:'Life on Land',c:'#3E9A1D'},{t:'Peace, Justice and Strong Institutions',c:'#00689D'},{t:'Partnerships for the Goals',c:'#19486A'}];
+/* Draft classification – the team has not agreed definitions yet. [goals, reason] */
+const SDG_TAGS={
+ lib:[[4,16],'Curated reading on media and journalism: learning, and public access to information (target 16.10).'],
+ oreilly:[[4,9],'Free access to business research databases supports learning and innovation.'],
+ pickle:[[3],'Sport and physical activity for student well-being.'],
+ padelT:[[3],'Sport and physical activity for student well-being.'],
+ bnp:[[8],'Recruitment and career insight in consulting: decent work and employment.'],
+ erasmus:[[8,4],'Support for finding internships abroad: employability and learning.'],
+ mck:[[8],'Recruitment tips for a consulting career.'],
+ ebs1:[[4],'Peer-to-peer study sessions: quality education.'],
+ sk:[[8],'Company presentation and recruitment.'],
+ aikpmg:[[9,8],'AI in professional services: innovation and the future of work.'],
+ pitch:[[8,9],'Entrepreneurship and fundraising skills: economic growth and innovation.'],
+ tribunes:[[16,17],'Former ambassadors on negotiating peace and the new balance of power: peace, strong institutions and international cooperation.'],
+ padelmini:[[3],'Sport and physical activity for student well-being.'],
+ tennis:[[3],'Sport and physical activity for student well-being.'],
+ pharma:[[3,8],'Careers in the pharmaceutical industry: health and employment.'],
+ studapart:[[11],'Finding safe, affordable student housing.'],
+ ebs2:[[4],'Peer-to-peer study sessions: quality education.'],
+ padeltr:[[3],'Sport and physical activity for student well-being.'],
+ bake:[[1,17],'Charity bake sale (assumed to raise money for a cause).'],
+ muslim:[[10,16],'Faith community society talk: inclusion and peaceful, inclusive societies.'],
+ impact:[[17,8],'Students consulting for non-profits: partnerships and social impact.'],
+ volley:[[3],'Sport and physical activity for student well-being.'],
+ studio54:[[],'Party – no clear SDG link.']
+};
+EVENTS.forEach(ev=>{const x=SDG_TAGS[ev.id]||[[],''];ev.sdg=x[0];ev.sdgWhy=x[1]});
+/* Aurion: sample student timetable for Oct 18–24 (from a real student calendar, anonymised) */
+const SAMPLE_CLASSES=[
+ {id:'c1',day:1,start:'17:00',end:'19:00',course:'Français',room:'',site:'Champerret',note:'End time assumed – cut off in screenshot'},
+ {id:'c2',day:2,start:'09:00',end:'12:00',course:'Design Thinking',room:'Salle …',site:'Champerret'},
+ {id:'c3',day:2,start:'13:30',end:'16:30',course:'Rounding Up the CE…',room:'',site:'Champerret'},
+ {id:'c4',day:3,start:'13:30',end:'16:30',course:'Information Ethics',room:'',site:'Champerret'}
+];
+/* Blackboard (illustrative) and CampusLife history (illustrative) */
+const DEADLINES=[
+ {course:'Information Ethics',what:'Individual essay',due:'2026-10-22T23:59'},
+ {course:'Design Thinking',what:'Prototype presentation',due:'2026-10-23T12:00'}
+];
+const HISTORY={Career:3,Conference:2};
+const SAMPLE_PROFILE={name:'Student Name',sid:'e123456',campus:'Paris',site:'Champerret',interests:['Career','Conference','Student Life'],langs:['EN'],sdgs:[16],buffer:45,src:{aurion:true,blackboard:true,campuslife:true}};
+/* ESCP's 7 campuses: 6 cities, Paris has two sites */
+const CAMPUSES=[{city:'Paris',site:'Champerret'},{city:'Paris',site:'Montparnasse'},{city:'Berlin'},{city:'London'},{city:'Madrid'},{city:'Turin'},{city:'Warsaw'}];
+const campusLabel=c=>c.site?`${c.city} – ${c.site}`:c.city;
+const myCampus=()=>campusLabel({city:state.profile.campus,site:state.profile.campus==='Paris'?state.profile.site:''});
+const CATS=['Career','Academic','Conference','Sports','Student Life','Social'];
+const CAT_VAR={Career:'--c-career',Academic:'--c-academic',Conference:'--c-conference',Sports:'--c-sports','Student Life':'--c-life',Social:'--c-social'};
+const LANG={EN:'English',FR:'French',DE:'German',ES:'Spanish',IT:'Italian'};
+const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const WEEK0=new Date(2026,9,18), WEEK1=new Date(2026,9,25);
+const REAL=new Date();
+const NOW=(REAL>=WEEK0&&REAL<WEEK1)?REAL:new Date(2026,9,20,11,55);
+
+/* ---------- State ---------- */
+const KEY='smart-campus-events-v5';
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
+const freshProfile=()=>({...SAMPLE_PROFILE,interests:[...SAMPLE_PROFILE.interests],langs:[...SAMPLE_PROFILE.langs],sdgs:[...SAMPLE_PROFILE.sdgs],src:{...SAMPLE_PROFILE.src}});
+const state={
+  view:saved.view||'home', smart:saved.smart!==false, hideClash:saved.hideClash!==false, myCampus:saved.myCampus!==false, hideLang:saved.hideLang!==false,
+  showClasses:saved.showClasses!==false, showHidden:false, calDay:Math.max(0,Math.min(6,Math.floor((new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate())-WEEK0)/864e5))),
+  mv:saved.mv||'home', evTab:saved.evTab||'foryou', evWhen:'upcoming', calMode:saved.calMode||'day', calSug:true, saved:new Set(saved.saved||[]), sheet:null, chat:[], mSearch:false,
+  mode:(location.hash==='#mobile'||location.hash==='#phone')?'mobile':location.hash==='#desktop'?'desktop':(saved.mode||((window.innerWidth||1200)<600?'mobile':'desktop')), q:'',cat:'',loc:'',sdg:'',sdgFocus:0,
+  classes:Array.isArray(saved.classes)?saved.classes:SAMPLE_CLASSES.map(c=>({...c})),
+  profile:saved.profile?{...freshProfile(),...saved.profile,src:{...SAMPLE_PROFILE.src,...(saved.profile.src||{})}}:freshProfile(),
+  plan:new Set(saved.plan||[])
+};
+function persist(){try{localStorage.setItem(KEY,JSON.stringify({mode:state.mode,mv:state.mv,evTab:state.evTab,calMode:state.calMode,saved:[...state.saved],view:state.view,smart:state.smart,hideClash:state.hideClash,myCampus:state.myCampus,hideLang:state.hideLang,showClasses:state.showClasses,classes:state.classes,profile:state.profile,plan:[...state.plan]}))}catch(e){}}
+
+/* ---------- Helpers ---------- */
+const $=s=>document.querySelector(s);
+const isMobile=()=>state.mode==='mobile';
+function toTop(){try{window.scrollTo({top:0})}catch(e){}const a=document.getElementById('app');if(a)a.scrollTop=0}
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+function P(s){const[d,t]=s.split('T');const[y,m,dd]=d.split('-').map(Number);const[h,mi]=t.split(':').map(Number);return new Date(y,m-1,dd,h,mi)}
+const hm=s=>{const[h,m]=s.split(':').map(Number);return h*60+m};
+function at(d,s){const x=new Date(d);const m=hm(s);x.setHours(Math.floor(m/60),m%60,0,0);return x}
+const sameDay=(a,b)=>a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+function fmtT(d){let h=d.getHours(),m=d.getMinutes(),ap=h<12?'AM':'PM';h=h%12||12;return m?`${h}:${pad(m)} ${ap}`:`${h} ${ap}`}
+const fmtR=(s,e)=>`${fmtT(s)} – ${fmtT(e)}`;
+const fmtD=d=>`${DAYN[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+const clock=s=>fmtT(at(new Date(2026,0,1),s));
+const tomorrowOf=d=>{const x=new Date(d);x.setDate(x.getDate()+1);return x};
+const shortTitle=t=>t.replace(/^\[[^\]]+\]\s*/,'').replace(/^(Online\s*\|\s*|Paris\s*\|\s*)/i,'');
+const src=()=>state.profile.src;
+
+function classesOn(d){if(!src().aurion)return[];return state.classes.filter(c=>Number(c.day)===d.getDay()).map(c=>({kind:'class',id:c.id,label:c.course,start:at(d,c.start),end:at(d,c.end),site:c.site,room:c.room}))}
+function busyFor(d,exceptId){
+  const out=classesOn(d);
+  for(const id of state.plan){if(id===exceptId)continue;const ev=EVENTS.find(e=>e.id===id);if(!ev)continue;
+    const s=P(ev.start),e=P(ev.end);if((e-s)>864e5||!sameDay(s,d))continue;
+    out.push({kind:'plan',id,label:shortTitle(ev.title),start:s,end:e,site:ev.online?'Online':ev.site})}
+  return out;
+}
+
+/* ---------- Recommendation engine ---------- */
+function evaluate(ev,opt={}){
+  const p=state.profile,s=P(ev.start),e=P(ev.end),dur=(e-s)/6e4,multi=dur>1440;
+  const r={status:'ok',score:null,chips:[],multi,conflict:null,inPlan:state.plan.has(ev.id)};
+  r.away=ev.online?!!(ev.restricted&&ev.restricted!==p.campus):ev.campus!==p.campus;
+  r.foreign=!!(ev.lang&&!p.langs.includes(ev.lang));
+  if(!opt.ignorePast&&e<=NOW){r.status='past';return r}
+  if(r.away){r.status='other';r.chips.push({k:'bad',t:ev.online?`Only for ${ev.restricted} Campus students`:`Held at ${ev.campus} Campus, not ${p.campus}`});return r}
+  if(r.foreign){r.status='lang';r.chips.push({k:'bad',t:`Held in ${LANG[ev.lang]} – not one of your languages`});return r}
+  let score=45;
+  if(multi){r.status='anytime';r.chips.push({k:'good',t:'Runs for several days – drop by when you are free'})}
+  else{
+    const busy=busyFor(s,ev.id),rank={tight:1,partial:2,clash:3};let worst=null;
+    for(const b of busy){
+      const ov=Math.round(Math.max(0,(Math.min(e,b.end)-Math.max(s,b.start))/6e4));let c=null;
+      if(ov>0)c={kind:ov/dur<=0.25?'partial':'clash',b,ov};
+      else if(!ev.online&&ev.site&&b.site&&b.site!=='Online'&&b.site!==ev.site){const gap=b.end<=s?(s-b.end)/6e4:(b.start-e)/6e4;if(gap<p.buffer)c={kind:'tight',b,gap:Math.round(gap)}}
+      if(c&&(!worst||rank[c.kind]>rank[worst.kind]))worst=c;
+    }
+    if(worst){
+      r.status=worst.kind;r.conflict=worst;const b=worst.b;const what=b.kind==='class'?b.label:`your plan (${b.label})`;
+      if(worst.kind==='clash')r.chips.push({k:'bad',t:`Clashes with ${what} · ${fmtR(b.start,b.end)}`,src:'Aurion'});
+      if(worst.kind==='partial')r.chips.push({k:'warn',t:`Overlaps ${what} by ${worst.ov} min – arrive late or leave early`,src:'Aurion'});
+      if(worst.kind==='tight')r.chips.push({k:'warn',t:`${worst.gap} min to get from ${b.site} to ${ev.site}`,src:'Aurion'});
+    }else if(src().aurion){
+      const cls=busy.filter(b=>b.kind==='class');
+      if(!cls.length){r.chips.push({k:'good',t:'No classes that day',src:'Aurion'});score+=8}
+      else{const before=cls.filter(b=>b.end<=s).sort((a,b)=>b.end-a.end)[0];
+        if(before){const gap=(s-before.end)/6e4;if(gap<=120){r.chips.push({k:'good',t:`Right after ${before.label} (ends ${fmtT(before.end)})`,src:'Aurion'});score+=6}else{r.chips.push({k:'good',t:'In a free slot of your timetable',src:'Aurion'});score+=4}}
+        else r.chips.push({k:'good',t:'Before your first class',src:'Aurion'})}
+    }
+  }
+  if(r.status==='clash')return r;
+  if(p.interests.includes(ev.cat)){score+=25;r.chips.push({k:'good',t:`Matches your interest: ${ev.cat}`})}
+  const sg=(ev.sdg||[]).filter(n=>p.sdgs.includes(n));
+  if(sg.length){score+=10;r.chips.push({k:'good',t:`Linked to your goal: SDG ${sg[0]} ${SDGS[sg[0]].t}`,src:'SDG'})}
+  if(src().campuslife&&HISTORY[ev.cat]){score+=5;r.chips.push({k:'good',t:`You went to ${HISTORY[ev.cat]} ${ev.cat} events this semester`,src:'CampusLife'})}
+  if(ev.online){score+=10;r.chips.push({k:'info',t:'Online – join from anywhere'})}
+  else if(!ev.site||!p.site||ev.site===p.site){score+=15;r.chips.push({k:'info',t:`At your campus${ev.site?' · '+ev.site:''}`})}
+  else{score+=10;r.chips.push({k:'info',t:`At ${ev.site}, your other ${ev.campus} campus (about ${p.buffer} min from ${p.site})`})}
+  if(ev.lang&&p.langs.includes(ev.lang)&&p.langs.length>0)r.chips.push({k:'info',t:`In ${LANG[ev.lang]}`});
+  if(src().blackboard&&!multi){let pen=0;for(const d of DEADLINES){const due=P(d.due),h=(due-s)/36e5;
+    if(h>0&&h<=30){pen+=8;r.chips.push({k:'warn',t:`${d.what} for ${d.course} due ${DAYN[due.getDay()]} ${fmtT(due)}`,src:'Blackboard'})}}score-=Math.min(pen,12)}
+  if(ev.spots!=null&&ev.spots<=8){score+=3;r.chips.push({k:'warn',t:`Only ${ev.spots} spot${ev.spots>1?'s':''} left`})}
+  if((ev.going||0)>=15)score+=2;
+  if(r.status==='tight')score-=15;if(r.status==='partial')score-=12;if(multi)score-=10;
+  r.score=Math.max(5,Math.min(98,score));
+  return r;
+}
+function verdict(r){
+  if(r.inPlan&&r.status!=='past')return{c:'p-plan',t:'✓ In your plan'};
+  switch(r.status){
+    case 'clash':return{c:'p-bad',t:r.conflict.b.kind==='class'?'✕ Clashes with a class':'✕ Clashes with your plan'};
+    case 'partial':return{c:'p-warn',t:`◐ Partly overlaps · ${r.score}% match`};
+    case 'tight':return{c:'p-warn',t:`⚠ Tight timing · ${r.score}% match`};
+    case 'other':return{c:'p-info',t:'Other campus'};
+    case 'lang':return{c:'p-bad',t:'✕ Not in your language'};
+    case 'past':return{c:'p-info',t:'Ended'};
+  }
+  if(r.score>=75)return{c:'p-good',t:`★ Top pick · ${r.score}% match`};
+  if(r.score>=55)return{c:'p-good',t:`✓ Good fit · ${r.score}% match`};
+  return{c:'p-good',t:`✓ Fits your timetable · ${r.score}% match`};
+}
+const fitKind=r=>r.status==='clash'||r.status==='lang'?'bad':(r.status==='tight'||r.status==='partial')?'warn':r.status==='other'?'info':'ok';
+const FITS=['ok','anytime'];
+function filtered(opt){
+  const q=state.q.trim().toLowerCase();
+  return EVENTS.map(ev=>({ev,r:evaluate(ev,opt)})).filter(({ev})=>{
+    if(q&&!(ev.title+' '+ev.host+' '+ev.tags.join(' ')).toLowerCase().includes(q))return false;
+    if(state.cat&&ev.cat!==state.cat)return false;
+    if(state.sdg&&!(ev.sdg||[]).includes(Number(state.sdg)))return false;
+    if(state.loc==='online'&&!ev.online)return false;
+    if(state.loc==='in'&&ev.online)return false;
+    return true;
+  }).sort((a,b)=>P(a.ev.start)-P(b.ev.start));
+}
+function hiddenBySmart(r){if(!state.smart||state.showHidden)return false;if(state.myCampus&&r.away)return true;if(state.hideLang&&r.status==='lang')return true;if(state.hideClash&&r.status==='clash')return true;return false}
+function proposals(){
+  const up=EVENTS.map(ev=>({ev,r:evaluate(ev)})).filter(x=>FITS.includes(x.r.status)&&!x.r.inPlan);
+  const mySdg=x=>(x.ev.sdg||[]).some(n=>state.profile.sdgs.includes(n));
+  const disc=up.filter(x=>!state.profile.interests.includes(x.ev.cat)&&(mySdg(x)||['Conference','Academic'].includes(x.ev.cat))).sort((a,b)=>(mySdg(b)-mySdg(a))||(b.r.score-a.r.score))[0]||null;
+  const picks=up.filter(x=>x!==disc).sort((a,b)=>b.r.score-a.r.score).slice(0,4);
+  return{picks,disc};
+}
+
+/* ---------- Pieces ---------- */
+const ICON={clock:'<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7z"/></svg>',
+ pin:'<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>',
+ person:'<svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>',
+ ext:'<svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>'};
+const sdgRow=ev=>ev.sdg&&ev.sdg.length?`<div class="sdgs" aria-label="Sustainable Development Goals">${ev.sdg.map(n=>`<span class="sdg" style="background:${SDGS[n].c}" title="SDG ${n}: ${esc(SDGS[n].t)}"><b>${n}</b>${esc(SDGS[n].t)}</span>`).join('')}</div>`:'';
+const sdgMini=ev=>ev.sdg&&ev.sdg.length?`<span class="minis">${ev.sdg.map(n=>`<span class="sdg-mini" style="background:${SDGS[n].c}" title="SDG ${n}: ${esc(SDGS[n].t)}">${n}</span>`).join('')}</span>`:'';
+const chipHTML=c=>`<span class="chip ${c.k}">${c.src?`<span class="src">${esc(c.src)}</span>`:''}${esc(c.t)}</span>`;
+function thumb(ev){
+  const s=P(ev.start),kind=ev.cat==='Career'?'Career event':ev.cat,stripe=ev.cat==='Career';
+  return `<div class="thumbcol"><div class="thumb ${stripe?'':'noStripe'}" style="background:var(${CAT_VAR[ev.cat]})">
+    <div><div class="k">${esc(kind)}</div><div class="h">${esc(ev.host)}</div></div>
+    ${stripe?'<div class="stripe"></div>':''}<div class="d">${s.getDate()} ${MON[s.getMonth()]} ${s.getFullYear()}</div></div>
+    ${ev.free?'<div class="free">FREE</div>':''}</div>`;
+}
+function planBtn(ev,cls=''){const inPlan=state.plan.has(ev.id);return `<button class="btn ${cls} ${inPlan?'done':''}" data-plan="${ev.id}" aria-pressed="${inPlan}">${inPlan?'✓ In my plan':(cls?'':ICON.ext)+esc(ev.action)}</button>`}
+function card({ev,r},opts={}){
+  const s=P(ev.start),e=P(ev.end);
+  let badge='';
+  if(s<=NOW&&NOW<e)badge='<span class="badge b-live">LIVE</span>';
+  else if(sameDay(s,NOW))badge='<span class="badge b-today">TODAY</span>';
+  else if(sameDay(s,tomorrowOf(NOW)))badge='<span class="badge b-tomorrow">TOMORROW</span>';
+  const time=r.multi?`${fmtD(s)} ${fmtT(s)} –<br>${fmtD(e)} ${fmtT(e)}<br>(GMT+2)`:`${fmtD(s)}<br>${fmtR(s,e)}<br>(GMT+2)`;
+  const going=ev.going?`<div class="going">${ICON.person}<div><b>${ev.going}</b> going${ev.spots!=null?`<br><span class="spots">${ev.spots}</span>Spots Left`:''}</div></div>`:'';
+  const v=verdict(r);
+  const fit=state.smart&&r.status!=='past'?`<div class="fit"><span class="pill ${v.c}">${esc(v.t)}</span>${r.chips.map(chipHTML).join('')}</div>`:'';
+  return `<article class="ev ${opts.dim?'dim':''}" id="ev-${ev.id}">
+    ${thumb(ev)}
+    <div style="min-width:0">
+      <h3 class="ev-title">${esc(ev.title)}${badge}</h3>
+      <div class="meta"><div>${ICON.clock}<div>${time}</div></div><div>${ICON.pin}<div>${ev.online?'Online Event':esc(ev.place||'—')}</div></div>${going}</div>
+      <div class="tags">${ev.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+      ${sdgRow(ev)}
+      ${fit}
+    </div>
+    <div class="act">${r.status==='past'?'':planBtn(ev)}<div class="host">${esc(ev.host)}</div></div>
+  </article>`;
+}
+function hiddenNote(list){
+  if(!state.smart)return '';
+  const clash=list.filter(x=>x.r.status==='clash').length,away=list.filter(x=>x.r.away&&x.r.status!=='past').length,lang=list.filter(x=>x.r.status==='lang').length;
+  if(state.showHidden)return (clash||away||lang)?`<div class="hidden-note">Showing everything, including events that clash, are at other campuses or in other languages. <button class="linkbtn" data-act="hideagain">Hide them again</button></div>`:'';
+  const parts=[];
+  if(state.hideClash&&clash)parts.push(`<b>${clash}</b> clash with your classes or plan`);
+  if(state.hideLang&&lang)parts.push(`<b>${lang}</b> are in a language you didn't select`);
+  if(state.myCampus&&away)parts.push(`<b>${away}</b> are at other campuses`);
+  return parts.length?`<div class="hidden-note">Hidden for you: ${parts.join(' · ')}. <button class="linkbtn" data-act="showhidden">Show them</button></div>`:'';
+}
+
+/* ---------- Smart bar ---------- */
+function renderSmart(){
+  const box=$('#smart');
+  if(['timetable','past','home','digest','sdg','menu'].includes(state.view)){box.hidden=true;return}
+  box.hidden=false;
+  const p=state.profile,up=filtered().filter(x=>x.r.status!=='past');
+  const n=k=>up.filter(x=>k.includes(x.r.status)).length;
+  box.innerHTML=`<div class="smart-top">
+      <button class="switch" role="switch" aria-checked="${state.smart}" data-act="smart"><span class="trk"></span>Plan around my timetable</button>
+      <span class="sub">${state.smart?`Using <b>${src().aurion?state.classes.length+' classes from Aurion':'no timetable (Aurion off)'}</b> · <b>${esc(myCampus())}</b> · <b>${p.langs.map(l=>LANG[l]).join(', ')||'no language'}</b>`:'Showing every event, like the original list.'}</span>
+      <button class="linkbtn" data-view="timetable">Edit</button>
+    </div>
+    ${state.smart?`<div class="toggles">
+      <button class="tog" aria-pressed="${state.hideClash}" data-act="hideClash">Hide clashes with class</button>
+      <button class="tog" aria-pressed="${state.hideLang}" data-act="hideLang">Only my languages</button>
+      <button class="tog" aria-pressed="${state.myCampus}" data-act="myCampus">Only ${esc(p.campus)} campuses + online</button>
+    </div>
+    <div class="stats">
+      <span><i class="dot" style="background:var(--ok)"></i><b>${n(FITS)}</b> fit your free time</span>
+      <span><i class="dot" style="background:var(--warn)"></i><b>${n(['tight','partial'])}</b> tight or partly overlapping</span>
+      <span><i class="dot" style="background:var(--bad)"></i><b>${n(['clash'])}</b> clash with class</span>
+      <span><i class="dot" style="background:var(--bad)"></i><b>${n(['lang'])}</b> in another language</span>
+      <span><i class="dot" style="background:var(--class)"></i><b>${n(['other'])}</b> at other campuses</span>
+    </div>`:''}`;
+}
+
+/* ---------- Views ---------- */
+function viewHome(){
+  const{picks,disc}=proposals(),p=state.profile;
+  const row=x=>{const s=P(x.ev.start),e=P(x.ev.end),why=x.r.chips.filter(c=>c.k==='good'||c.k==='warn').slice(0,3);
+    return `<div class="prow"><div class="datechip"><span>${DAYN[s.getDay()]}</span><b>${s.getDate()}</b><span>${MON[s.getMonth()]}</span></div>
+      <div style="min-width:0"><h3><button data-goto="${x.ev.id}">${esc(x.ev.title)}</button></h3>
+      <div class="when">${x.r.multi?`Until ${fmtD(e)} ${fmtT(e)}`:fmtR(s,e)} · ${x.ev.online?'Online':esc(x.ev.place)}</div>
+      <div class="why">${sdgMini(x.ev)}${why.map(chipHTML).join('')}</div></div>
+      ${planBtn(x.ev,'sm')}</div>`};
+  const srcs=[['aurion','Aurion · timetable'],['blackboard','Blackboard · deadlines'],['campuslife','CampusLife · past events']].map(([k,l])=>`<span class="srcchip ${src()[k]?'':'off'}">${l}</span>`).join('');
+  const hidden=EVENTS.map(ev=>evaluate(ev)).filter(r=>r.status!=='past');
+  const nClash=hidden.filter(r=>r.status==='clash').length,nLang=hidden.filter(r=>r.status==='lang').length,nAway=hidden.filter(r=>r.status==='other').length;
+  const phoneRows=[...picks,...(disc?[disc]:[])].slice(0,4).map(x=>{const s=P(x.ev.start);const g=x.r.chips.find(c=>c.k==='good');
+    return `<div class="ph-row"><b>${esc(shortTitle(x.ev.title))}</b><small>${sdgMini(x.ev)}${DAYN[s.getDay()]} ${s.getDate()} ${MON[s.getMonth()]} · ${x.r.multi?'all week':fmtT(s)}</small>${g?`<em>${esc(g.t)}</em>`:''}</div>`}).join('');
+  return `<div class="hello"><h1>Good ${NOW.getHours()<12?'morning':NOW.getHours()<18?'afternoon':'evening'}, ${esc(p.name)}</h1>
+    <p>Events this week that fit your timetable, campus and languages. Out of ${hidden.length} upcoming events, ${nClash} clash with your classes, ${nLang} are in a language you didn't select and ${nAway} are at other campuses, so they are left out.</p></div>
+  <div class="home">
+    <section class="propbox" aria-label="Proposed events">
+      <header><h2>Proposed events for you</h2><button class="linkbtn" data-view="recommended">See all</button>
+        <p>Personalised from your timetable · updated ${fmtT(NOW)}</p></header>
+      ${picks.length?picks.map(row).join(''):'<div class="prow"><div></div><div style="color:var(--muted)">No events fit your free time right now.</div><div></div></div>'}
+      ${disc?`<div class="discover-label">Something different · ${(disc.ev.sdg||[]).some(n=>p.sdgs.includes(n))?'linked to the SDGs you follow':'learn outside your usual interests'}</div><div class="discover">${row(disc)}</div>`:''}
+      <div class="propfoot"><div class="sources"><span>Based on:</span>${srcs}<span class="srcchip">SDG focus: ${p.sdgs.length?p.sdgs.map(n=>'SDG '+n).join(', '):'none'}</span></div><button class="linkbtn" data-view="timetable">Why these? Manage my data</button></div>
+    </section>
+    <div class="phone-wrap"><span class="phone-cap">Same box in the app</span>
+      <div class="phone" aria-label="App preview">
+        <div class="ph-status"><span>${fmtT(NOW).replace(/ (AM|PM)/,'')}</span><span>5G ▮</span></div>
+        <div class="ph-head">Home</div>
+        <div class="ph-body"><div class="ph-card"><h4>Proposed for you <span>${picks.length+(disc?1:0)} this week</span></h4>${phoneRows||'<div class="ph-row"><small>Nothing fits right now</small></div>'}</div>
+          <div class="ph-card" style="margin-top:10px"><h4>Today's classes <span>Aurion</span></h4>${classesOn(NOW).map(c=>`<div class="ph-row"><b style="color:var(--fg)">${esc(c.label)}</b><small>${fmtR(c.start,c.end)}</small></div>`).join('')||'<div class="ph-row"><small>No classes today</small></div>'}</div></div>
+        <div class="ph-nav">
+          <span class="on"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</span>
+          <span><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3zm0-5h18v-2H3zm0-7v2h18V6z"/></svg>Menu</span>
+          <span><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14z"/></svg>Calendar</span>
+          <span><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13z"/></svg>Groups</span>
+          <span><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10z"/></svg>Events</span>
+          <span><svg viewBox="0 0 24 24"><path d="M12 2 9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/></svg>AI</span>
+        </div>
+      </div></div>
+  </div>
+  ${weekStrip()}`;
+}
+
+function viewUpcoming(){
+  const all=filtered().filter(x=>x.r.status!=='past');
+  const shown=all.filter(x=>!hiddenBySmart(x.r));
+  if(!shown.length)return `<div class="empty" style="margin-top:20px">No upcoming events match these filters.</div>${hiddenNote(all)}`;
+  const groups=new Map();
+  for(const x of shown){const s=P(x.ev.start);let k;
+    if(x.r.multi&&s<=NOW)k='Ongoing';else if(sameDay(s,NOW))k='Today';else if(sameDay(s,tomorrowOf(NOW)))k='Tomorrow';else k=fmtD(s);
+    if(!groups.has(k))groups.set(k,[]);groups.get(k).push(x)}
+  let h='';for(const[k,v]of groups)h+=`<h2 class="group-h">${esc(k)}</h2><div class="list">${v.map(x=>card(x,{dim:['clash','lang'].includes(x.r.status)})).join('')}</div>`;
+  return h+hiddenNote(all);
+}
+
+function weekStrip(opts={}){
+  const H0=8,H1=23,span=H1-H0;
+  const pct=d=>Math.max(0,Math.min(100,((d.getHours()+d.getMinutes()/60)-H0)/span*100));
+  const evs=opts.classesOnly?[]:filtered();
+  const days=[...Array(7)].map((_,i)=>new Date(2026,9,18+i));
+  let rows='';
+  for(const d of days){
+    const base=classesOn(d).map(c=>({...c,cls:'class'}));
+    for(const id of state.plan){const ev=EVENTS.find(e=>e.id===id);if(!ev)continue;const s=P(ev.start),e=P(ev.end);if((e-s)<=864e5&&sameDay(s,d))base.push({label:shortTitle(ev.title),start:s,end:e,cls:'plan',id})}
+    if(src().blackboard)for(const dl of DEADLINES){const due=P(dl.due);if(sameDay(due,d))base.push({label:`Due: ${dl.what}`,start:due,end:new Date(due.getTime()+90*6e4),cls:'due'})}
+    const sug=[];
+    for(const x of evs){const s=P(x.ev.start),e=P(x.ev.end);if(x.r.multi||!sameDay(s,d)||x.r.away||x.r.inPlan||['past','lang'].includes(x.r.status))continue;
+      sug.push({label:shortTitle(x.ev.title),start:s,end:e,cls:fitKind(x.r),id:x.ev.id})}
+    const lanes=[];for(const b of sug){let i=0;while(lanes[i]&&lanes[i]>b.start)i++;lanes[i]=b.end;b.lane=i+1}
+    const H=(1+lanes.length)*24+4;
+    const blk=(b,lane)=>{let l=pct(b.start),w=Math.max(1.5,pct(b.end)-l);if(b.cls==='due'){w=Math.min(w,100-l);if(l>=97){l=86;w=14}}
+      const btn=b.id&&b.cls!=='plan';const tip=`${b.label} · ${fmtR(b.start,b.end)}`;
+      return `<${btn?'button':'div'} class="blk ${b.cls}" ${btn?`data-jump="${b.id}"`:''} title="${esc(tip)}" style="left:${l}%;width:${w}%;top:${2+lane*24}px">${esc(b.label)}</${btn?'button':'div'}>`};
+    const isToday=sameDay(d,NOW),past=d<new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate());
+    rows+=`<div class="wrow ${past?'past':''}"><div class="lbl">${DAYN[d.getDay()]} ${d.getDate()}${isToday?'<em>Today</em>':''}</div>
+      <div class="track" style="height:${H}px">${base.map(b=>blk(b,0)).join('')}${sug.map(b=>blk(b,b.lane)).join('')}</div></div>`;
+  }
+  let ticks='';for(let h=H0;h<=H1;h+=2)ticks+=`<span style="left:${(h-H0)/span*100}%">${pad(h)}:00</span>`;
+  return `<div class="week"><h3>${opts.title||'Your week at a glance'}</h3><div class="week-scroll"><div class="week-grid">
+    <div class="hours"><span></span><div class="ticks">${ticks}</div></div>${rows}</div></div>
+    <div class="legend"><span><i style="background:var(--class-bg);outline:1px solid var(--class)"></i>Class (Aurion)</span><span><i style="border-left:3px solid var(--warn)"></i>Deadline (Blackboard)</span>${opts.classesOnly?'':`<span><i style="background:var(--brand-2)"></i>In your plan</span><span><i style="background:var(--ok)"></i>Fits your free time</span><span><i style="background:var(--warn-bg);outline:1px solid var(--warn)"></i>Tight / partly overlaps</span><span><i style="outline:1px dashed var(--bad)"></i>Clashes with class</span>`}</div></div>`;
+}
+
+function viewRecommended(){
+  if(!state.smart)return `<div class="rec-head"><h2>Timetable suggestions are off</h2><p>Turn on “Plan around my timetable” above to rank events by your free time, campus, languages and interests.</p></div>`;
+  const up=filtered().filter(x=>x.r.status!=='past'&&!x.r.away);
+  const plan=up.filter(x=>x.r.inPlan),rest=up.filter(x=>!x.r.inPlan);
+  const top=rest.filter(x=>FITS.includes(x.r.status)&&x.r.score>=75).sort((a,b)=>b.r.score-a.r.score);
+  const fits=rest.filter(x=>FITS.includes(x.r.status)&&x.r.score<75).sort((a,b)=>b.r.score-a.r.score);
+  const tight=rest.filter(x=>['tight','partial'].includes(x.r.status)).sort((a,b)=>b.r.score-a.r.score);
+  const no=rest.filter(x=>['clash','lang'].includes(x.r.status));
+  const sec=(t,sub,arr)=>arr.length?`<h2 class="group-h">${t}</h2>${sub?`<p style="margin:-4px 0 10px 4px;color:var(--muted)">${sub}</p>`:''}<div class="list">${arr.map(x=>card(x)).join('')}</div>`:'';
+  return `<div class="rec-head"><h2>Proposed for ${esc(state.profile.name)}</h2>
+    <p>Events this week that fit around your classes and deadlines, ranked by free time, campus, interests and past attendance. Click a block in the week view to jump to it.</p></div>
+    ${weekStrip()}
+    ${sec('In your plan','Events you registered for also count as busy time.',plan)}
+    ${sec('Top picks','',top)}
+    ${sec('Also fits your timetable','',fits)}
+    ${sec('Possible, with tight timing','You would need to arrive late, leave early or rush between campuses.',tight)}
+    ${!top.length&&!fits.length&&!tight.length&&!plan.length?'<div class="empty" style="margin-top:16px">Nothing fits your free time this week with these filters.</div>':''}
+    ${no.length?`<div class="hidden-note"><span>Not proposed at your campus: ${no.map(x=>`<b>${esc(shortTitle(x.ev.title))}</b> (${x.r.status==='lang'?'in '+LANG[x.ev.lang]:'clashes with class'})`).join(', ')}.</span></div>`:''}`;
+}
+
+function viewCalendar(){
+  const all=filtered();
+  const allDays=[...Array(7)].map((_,i)=>new Date(2026,9,18+i));
+  const days=isMobile()?[allDays[state.calDay]]:allDays;
+  const pick=isMobile()?`<div class="daypick" role="group" aria-label="Day">${allDays.map((d,i)=>{const n=all.filter(x=>!x.r.multi&&sameDay(P(x.ev.start),d)&&FITS.includes(x.r.status)).length;
+    return `<button data-calday="${i}" class="${sameDay(d,NOW)?'today':''}" aria-pressed="${i===state.calDay}">${DAYN[d.getDay()]}<b>${d.getDate()}</b><i class="${n?'':'none'}"></i></button>`}).join('')}</div>`:'';
+  const cols=days.map(d=>{
+    const items=[];
+    for(const x of all){const s=P(x.ev.start),e=P(x.ev.end);
+      const ds=new Date(d.getFullYear(),d.getMonth(),d.getDate()),de=tomorrowOf(ds);
+      if(!(s<de&&e>ds))continue;if(!x.r.multi&&!sameDay(s,d))continue;if(hiddenBySmart(x.r))continue;
+      const cont=s<ds;items.push({sort:cont?-1:s.getHours()*60+s.getMinutes(),html:calItem(x,cont)})}
+    if(state.smart&&state.showClasses)for(const c of classesOn(d))items.push({sort:c.start.getHours()*60+c.start.getMinutes()-.5,html:`<div class="citem class"><div class="ch">CLASS${c.room?' · '+esc(c.room):''}</div><div class="cb"><div class="ct">${fmtR(c.start,c.end)}</div><div style="font-weight:500">${esc(c.label)}</div></div></div>`});
+    items.sort((a,b)=>a.sort-b.sort);
+    return `<div class="cal-col ${sameDay(d,NOW)?'today':''}"><div class="cal-day">${DAYN[d.getDay()].toUpperCase()}, ${MON[d.getMonth()].toUpperCase()} ${d.getDate()}</div>${items.map(i=>i.html).join('')||'<div style="padding:12px;color:var(--muted);font-size:13px">No events</div>'}</div>`;
+  }).join('');
+  return `<div class="cal-head"><h2>Calendar</h2><span class="range">Oct 18 – Oct 24, 2026</span>
+    ${state.smart?`<button class="tog" aria-pressed="${state.showClasses}" data-act="showClasses">Show my classes</button>`:''}</div>
+    ${pick}<div class="cal-scroll"><div class="cal">${cols}</div></div>${hiddenNote(all.filter(x=>x.r.status!=='past'))}`;
+}
+function calItem({ev,r},cont){
+  const s=P(ev.start),e=P(ev.end);let fit='';
+  if(state.smart&&r.status!=='past'){const k=fitKind(r);
+    const t=r.inPlan?'✓ In your plan':r.status==='clash'?'✕ Clashes with class':r.status==='lang'?`✕ In ${LANG[ev.lang]}`:r.status==='tight'?'⚠ Tight timing':r.status==='partial'?'◐ Partly overlaps':r.status==='other'?'Other campus':(r.score>=75?'★ Top pick':'✓ Fits');
+    fit=`<div class="cf fit-${r.inPlan?'info':k}">${t}</div>`}
+  const cls=r.status==='past'?'dim':(state.smart&&['clash','lang'].includes(r.status))?'clash':'';
+  return `<div class="citem ${cls}"><div class="ch" style="background:var(${CAT_VAR[ev.cat]})">${esc(ev.group)}</div>${cont?'<div class="cont">CONTINUED</div>':''}
+    <div class="cb"><div class="ct">${r.multi?`${MON[s.getMonth()]} ${s.getDate()} – ${MON[e.getMonth()]} ${e.getDate()}`:fmtR(s,e)} (GMT+2)</div><button class="linkbtn cn" data-goto="${ev.id}">${esc(ev.title)}</button>${ev.sdg.length?`<div>${sdgMini(ev)}</div>`:''}${ev.going?`<div style="color:var(--muted)">${ev.going} going</div>`:''}${fit}</div></div>`;
+}
+
+function viewPast(){
+  const past=filtered().filter(x=>x.r.status==='past').reverse();
+  return `<h2 class="group-h">Past events this week</h2>${past.length?`<div class="list">${past.map(x=>card(x)).join('')}</div>`:'<div class="empty">No past events.</div>'}`;
+}
+
+function viewDigest(){
+  const wk=EVENTS.map(ev=>({ev,r:evaluate(ev,{ignorePast:true})})).filter(x=>P(x.ev.end)>WEEK0&&P(x.ev.start)<WEEK1);
+  const c=k=>wk.filter(x=>k.includes(x.r.status)).length;
+  const total=wk.length,away=c(['other']),lang=c(['lang']),clash=c(['clash']),tight=c(['tight','partial']),fit=c(FITS);
+  const seg=(n,v)=>n?`<i style="width:${n/total*100}%;background:var(${v})"></i>`:'';
+  const picks=wk.filter(x=>FITS.includes(x.r.status)).sort((a,b)=>b.r.score-a.r.score);
+  const p=state.profile;
+  return `<div class="rec-head"><h2>From mass emails to one weekly digest</h2>
+    <p>Instead of announcing every event to every student, CampusLife sends one email on Sunday with only the events that fit your week. Below: this week (Oct 18–24) for ${esc(p.name)}.</p></div>
+  <div class="digest">
+    <div class="box"><h2>Today: every event to everyone</h2><p class="sub">${total} event announcements this week. How many are useful to ${esc(p.name)}?</p>
+      <div class="bar" role="img" aria-label="Share of useful announcements">${seg(fit,'--ok')}${seg(tight,'--warn')}${seg(clash,'--bad')}${seg(lang,'--c-social')}${seg(away,'--class')}</div>
+      <div class="bigrow"><b style="color:var(--class)">${away}</b><span>at another campus<small>Berlin, Madrid or Turin, or only for their students</small></span></div>
+      <div class="bigrow"><b style="color:var(--c-social)">${lang}</b><span>in a language ${esc(p.name)} didn't select<small>${wk.filter(x=>x.r.status==='lang').map(x=>LANG[x.ev.lang]).filter((v,i,a)=>a.indexOf(v)===i).join(', ')||'—'}</small></span></div>
+      <div class="bigrow"><b style="color:var(--bad)">${clash}</b><span>during a class<small>${wk.filter(x=>x.r.status==='clash').map(x=>esc(shortTitle(x.ev.title))).join(' · ')||'—'}</small></span></div>
+      <div class="bigrow"><b style="color:var(--warn)">${tight}</b><span>tight timing</span></div>
+      <div class="bigrow"><b style="color:var(--ok)">${fit}</b><span>actually fit this student's week<small>${Math.round(fit/total*100)}% of what they would receive</small></span></div>
+      ${p.sdgs.map(n=>{const ev=wk.filter(x=>x.ev.sdg.includes(n)),loc=ev.filter(x=>!x.r.away),fr=loc.filter(x=>x.r.status==='lang'),ok=loc.filter(x=>FITS.includes(x.r.status));
+        return `<div class="bigrow" style="align-items:center"><span class="sdg-mini" style="background:${SDGS[n].c};width:28px;height:28px;font-size:13px">${n}</span><span>SDG ${n} events at their campus this week: <b>${loc.length}</b><small>${fr.length} in a language they didn't select · ${ok.length} reach them in the digest</small></span></div>`}).join('')}
+    </div>
+    <div class="mail" aria-label="Email preview">
+      <div class="mh"><span><b>From:</b> CampusLife &lt;events@campuslife&gt;</span><span><b>To:</b> ${esc(p.sid)} · ${esc(p.name)}</span><span><b>Sent:</b> Sun, Oct 18, 6:00 PM</span>
+        <div class="subject">Your week: ${picks.length} event${picks.length===1?'':'s'} that fit your timetable</div></div>
+      <div class="mb"><p>Hi ${esc(p.name)},</p><p>Here are the events that fit around your classes this week. We left out ${total-picks.length} that clash with your timetable, are at other campuses or are in languages you didn't select.</p>
+        ${picks.map(x=>{const s=P(x.ev.start),e=P(x.ev.end),g=x.r.chips.filter(c=>c.k==='good')[0];return `<div class="mitem"><i></i><div><b>${sdgMini(x.ev)}${esc(x.ev.title)}</b><small>${x.r.multi?`Until ${fmtD(e)}`:`${fmtD(s)} · ${fmtR(s,e)}`} · ${x.ev.online?'Online':esc(x.ev.place)}</small>${g?`<small style="color:var(--ok)">${esc(g.t)}</small>`:''}</div></div>`}).join('')||'<p>No events fit your week. Enjoy the free time.</p>'}
+        <div class="mfoot">Why these? Based on your Aurion timetable, Blackboard deadlines and CampusLife activity. Change what we use in Timetable &amp; Data, or switch to all announcements.</div></div>
+    </div>
+  </div>`;
+}
+
+function viewSdg(){
+  const p=state.profile;
+  const wk=EVENTS.map(ev=>({ev,r:evaluate(ev,{ignorePast:true}),now:evaluate(ev)})).filter(x=>P(x.ev.end)>WEEK0&&P(x.ev.start)<WEEK1);
+  const tiles=SDGS.map((g,n)=>{if(!g)return '';const all=wk.filter(x=>x.ev.sdg.includes(n)),mine=all.filter(x=>FITS.includes(x.r.status));
+    return `<button class="goal ${all.length?'':'none'}" style="background:${g.c}" data-goal="${n}" aria-pressed="${state.sdgFocus===n}"><span class="n">${n}</span><span class="t">${esc(g.t)}</span><span class="c">${all.length?`${all.length} event${all.length>1?'s':''} · ${mine.length} fit you`:'No events this week'}</span></button>`}).join('');
+  const insights=p.sdgs.map(n=>{const all=wk.filter(x=>x.ev.sdg.includes(n)),loc=all.filter(x=>!x.r.away),lang=loc.filter(x=>x.r.status==='lang'),clash=loc.filter(x=>x.r.status==='clash'),ok=loc.filter(x=>FITS.includes(x.r.status));
+    return `<div class="insight"><h3><span class="sdg-mini" style="background:${SDGS[n].c}">${n}</span>${esc(SDGS[n].t)}</h3>
+      <p><b>${all.length}</b> events this week across all campuses, <b>${loc.length}</b> at ${esc(p.campus)} (${p.campus==='Paris'?'Champerret or Montparnasse':'your campus'}) or online.</p>
+      ${loc.length?`<p>${lang.length?`<b>${lang.length}</b> ${lang.length>1?'are':'is'} in ${[...new Set(lang.map(x=>LANG[x.ev.lang]))].join(' or ')} (${lang.map(x=>esc(shortTitle(x.ev.title))).join(', ')}). `:''}${clash.length?`<b>${clash.length}</b> clash${clash.length>1?'':'es'} with class. `:''}<b>${ok.length}</b> fit${ok.length===1?'s':''} ${esc(p.name)}'s week.</p>`:''}</div>`}).join('');
+  const rows=wk.filter(x=>!state.sdgFocus||x.ev.sdg.includes(state.sdgFocus)).map(x=>{const s=P(x.ev.start),v=verdict(x.now);
+    return `<tr><td class="ttl"><button class="linkbtn cn" style="text-decoration:none;text-align:left" data-goto="${x.ev.id}">${esc(x.ev.title)}</button><div style="color:var(--muted);font-size:12px;font-weight:400">${x.r.multi?'Several days':`${DAYN[s.getDay()]} ${s.getDate()} ${MON[s.getMonth()]}`} · ${esc(x.ev.campus)}${x.ev.online?' · Online':''}</div></td>
+      <td>${x.ev.sdg.length?x.ev.sdg.map(n=>`<div style="margin-bottom:4px">${sdgMini({sdg:[n]})}<span style="font-size:13px">${esc(SDGS[n].t)}</span></div>`).join(''):'<span style="color:var(--muted)">—</span>'}</td>
+      <td class="why">${esc(x.ev.sdgWhy)}</td><td><span class="pill ${v.c}" style="white-space:nowrap">${esc(v.t.replace(/ · \d+% match/,''))}</span></td></tr>`}).join('');
+  return `<div class="rec-head"><h2>Events by Sustainable Development Goal<span class="draft">Draft</span></h2>
+    <p>Each event is tagged with one or two of the UN's 17 goals (<a href="https://sdgs.un.org/goals" target="_blank" rel="noopener" style="color:var(--link)">sdgs.un.org/goals</a>). The tags are a first proposal: our group has not agreed the definitions yet, so the reason for each tag is listed below.</p></div>
+    <div class="field" style="margin-top:16px"><span>SDGs I follow · events linked to these rank higher</span><div class="chips">${SDGS.map((g,n)=>g?`<button class="sdg" style="background:${g.c}" aria-pressed="${p.sdgs.includes(n)}" data-sdgp="${n}" title="${esc(g.t)}"><b>${n}</b></button>`:'').join('')}</div></div>
+    ${insights?`<div class="insights">${insights}</div>`:''}
+    <div class="sdg-grid">${tiles}</div>
+    <h2 class="group-h" style="display:flex;flex-wrap:wrap;gap:10px;align-items:baseline">How each event was classified${state.sdgFocus?` · SDG ${state.sdgFocus}<button class="linkbtn" style="font-size:14px" data-act="sdgAll">Show all goals</button><button class="linkbtn" style="font-size:14px" data-act="sdgList">Open in event list</button>`:''}</h2>
+    <div class="box" style="padding:0"><div class="tbl-wrap"><table class="cls-table"><thead><tr><th>Event</th><th>SDG</th><th>Why this goal</th><th>For ${esc(p.name)}</th></tr></thead><tbody>${rows||'<tr><td colspan="4" style="color:var(--muted)">No events for this goal this week.</td></tr>'}</tbody></table></div></div>`;
+}
+
+function viewMenu(){
+  const it=(v,icon,t,sub,isNew)=>`<button data-view="${v}">${icon}<span>${t}<small>${sub}</small></span>${isNew?'<span class="new">NEW</span>':''}</button>`;
+  const I={star:'<svg viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>',
+    globe:'<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 3a7 7 0 0 1 6.93 6H13V5.07zm-1 0v6H5.07A7 7 0 0 1 11 5.07zM5.07 13H11v5.93A7 7 0 0 1 5.07 13zM13 18.93V13h5.93A7 7 0 0 1 13 18.93z"/></svg>',
+    mail:'<svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5z"/></svg>',
+    tt:'<svg viewBox="0 0 24 24"><path d="M3 5v14h18V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm12 8H9v-2h10v2zm0-4H9v-2h10v2zm0-4H9V7h10v2z"/></svg>',
+    list:'<svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10z"/></svg>',
+    past:'<svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 2.05 4.95l-1.42 1.42A9 9 0 1 0 13 3zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8z"/></svg>'};
+  return `<div class="menu-h">EVENTS</div><div class="menu-list">
+    ${it('recommended',I.star,'Proposed for me','Events that fit your timetable',true)}
+    ${it('upcoming',I.list,'Upcoming events','Every event on CampusLife')}
+    ${it('sdg',I.globe,'SDG map','Events by UN Sustainable Development Goal',true)}
+    ${it('past',I.past,'Past events','This week')}</div>
+    <div class="menu-h">MY PROFILE</div><div class="menu-list">
+    ${it('timetable',I.tt,'Timetable &amp; data','Aurion, Blackboard, CampusLife, languages')}
+    ${it('digest',I.mail,'Weekly email','Your personalised digest',true)}</div>`;
+}
+
+function viewTimetable(){
+  const p=state.profile;
+  const rows=[...state.classes].sort((a,b)=>a.day-b.day||hm(a.start)-hm(b.start)).map(c=>`<tr><td>${DAYN[c.day]}</td><td class="t">${clock(c.start)} – ${clock(c.end)}${c.note?`<span class="note">${esc(c.note)}</span>`:''}</td><td>${esc(c.course)}</td><td>${esc(c.room||'—')}</td><td>${esc(c.site||'—')}</td><td><button class="del" data-del="${c.id}">Remove</button></td></tr>`).join('');
+  const chip=(v,on,act)=>`<button class="tog" aria-pressed="${on}" data-${act}="${esc(v)}">${esc(act==='lang'?LANG[v]:v)}</button>`;
+  const srow=(k,name,what)=>`<div class="srcrow"><b>${name}</b><button class="switch" role="switch" aria-checked="${src()[k]}" data-src="${k}"><span class="trk"></span></button><small>${what}</small></div>`;
+  return `<div class="tt">
+   <div class="box">
+     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center">
+       <h2>My timetable</h2><span class="synced">● ${src().aurion?`Synced from Aurion · ${esc(p.sid)}`:'Aurion sync off'}</span></div>
+     <p class="sub">Week of Oct 18–24, from your calendar. Course names cut off in the app are shown with “…”.</p>
+     <div class="tbl-wrap"><table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th><th>Campus</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="6" style="color:var(--muted)">No classes yet. Add one below.</td></tr>'}</tbody></table></div>
+     <form class="addform" id="addForm">
+       <label>Day<select id="fDay">${[1,2,3,4,5,6].map(d=>`<option value="${d}">${DAYN[d]}</option>`).join('')}</select></label>
+       <label>Start<input id="fStart" type="time" value="09:00" required></label>
+       <label>End<input id="fEnd" type="time" value="12:00" required></label>
+       <label>Course<input id="fCourse" type="text" placeholder="e.g. Negotiation"></label>
+       <label>Room<input id="fRoom" type="text" placeholder="Salle 101"></label>
+       <label>Campus<select id="fSite"><option>Champerret</option><option>Montparnasse</option><option>Online</option><option value="">Not set</option></select></label>
+       <button class="btn" type="submit">Add class</button>
+     </form>
+     <div class="err" id="fErr" role="alert"></div>
+     ${weekStrip({classesOnly:true,title:'Classes and deadlines this week'})}
+   </div>
+   <div class="box">
+     <h2>Data used for suggestions</h2><p class="sub">You choose what CampusLife may use. Turn a source off and suggestions update right away.</p>
+     ${srow('aurion','Aurion','Timetable, campus and programme. Used to skip events during your classes.')}
+     ${srow('blackboard','Blackboard','Assignment and exam deadlines. Events right before a deadline rank lower. (Sample deadlines in this prototype.)')}
+     ${srow('campuslife','CampusLife','Events you went to before. Similar events rank higher. (Sample history.)')}
+     ${src().blackboard?`<div style="margin:6px 0 16px">${DEADLINES.map(d=>`<div class="dl"><b>${esc(d.what)}</b> · ${esc(d.course)}<br><span style="color:var(--muted)">Due ${fmtD(P(d.due))}, ${fmtT(P(d.due))}</span></div>`).join('')}</div>`:''}
+     <div class="field" style="margin-top:14px"><span>Home campus · 7 ESCP campuses</span><select id="pCampus">${CAMPUSES.map(c=>`<option value="${c.city}|${c.site||''}" ${c.city===p.campus&&(c.site||'')===(p.campus==='Paris'?p.site:'')?'selected':''}>${campusLabel(c)}</option>`).join('')}</select></div>
+     <div class="field"><span>Languages I follow</span><div class="chips">${Object.keys(LANG).map(l=>chip(l,p.langs.includes(l),'lang')).join('')}</div></div>
+     <div class="field"><span>Interests</span><div class="chips">${CATS.map(c=>chip(c,p.interests.includes(c),'int')).join('')}</div></div>
+     <div class="field"><span>SDGs I follow</span><div class="chips">${SDGS.map((g,n)=>g?`<button class="sdg" style="background:${g.c}" aria-pressed="${p.sdgs.includes(n)}" data-sdgp="${n}" title="${esc(g.t)}"><b>${n}</b></button>`:'').join('')}</div></div>
+     <label class="field"><span>Travel time between Paris campuses</span><select id="pBuffer">${[15,30,45,60].map(b=>`<option value="${b}" ${b===p.buffer?'selected':''}>${b} min</option>`).join('')}</select></label>
+     <div class="field"><span>My plan</span><div style="font-size:14px;color:var(--muted)">${state.plan.size?[...state.plan].map(id=>esc(shortTitle(EVENTS.find(e=>e.id===id)?.title||''))).join('<br>'):'Nothing yet. Register for an event to add it.'}</div></div>
+     <button class="ghost" data-act="reset">Reset to my original data</button>
+   </div></div>`;
+}
+
+/* ---------- Render ---------- */
+const VIEWS={menu:viewMenu,home:viewHome,upcoming:viewUpcoming,recommended:viewRecommended,calendar:viewCalendar,past:viewPast,timetable:viewTimetable,digest:viewDigest,sdg:viewSdg};
+const NOFILTER=['timetable','home','digest','sdg','menu'];
+$('#sdgSel').insertAdjacentHTML('beforeend',SDGS.map((g,n)=>g?`<option value="${n}">SDG ${n} · ${esc(g.t)}</option>`:'').join(''));
+function render(){
+  document.querySelectorAll('.side button').forEach(b=>b.classList.toggle('on',b.dataset.view===state.view));
+  $('#navHome').classList.toggle('on',state.view==='home');
+  $('#navEvents').classList.toggle('on',state.view!=='home');
+  $('#filters').hidden=NOFILTER.includes(state.view);
+  $('#sdgSel').value=state.sdg;
+  $('#segList').classList.toggle('on',state.view!=='calendar');
+  $('#segCal').classList.toggle('on',state.view==='calendar');
+  const up=EVENTS.map(ev=>evaluate(ev)).filter(r=>r.status!=='past');
+  document.documentElement.classList.toggle('mobile',isMobile());
+  $('#modeDesk').setAttribute('aria-pressed',!isMobile());$('#modePhone').setAttribute('aria-pressed',isMobile());
+  $('#navCount').textContent=state.smart?up.filter(r=>[...FITS,'tight','partial'].includes(r.status)).length:up.length;
+  $('#meName').textContent=state.profile.name;$('#meId').textContent=state.profile.sid;$('#meAvatar').textContent=state.profile.name[0]||'?';
+  if(isMobile()){$('#content').innerHTML='';$('#smart').innerHTML='';renderMobile();persist();return}
+  $('#mroot').innerHTML='';$('#msheet').innerHTML='';$('#msheet').hidden=true;
+  renderSmart();
+  $('#content').innerHTML=(VIEWS[state.view]||viewHome)();
+  persist();
+}
+let toastT;function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2600)}
+
+/* ---------- Phone app (styled after the campus mobile app) ---------- */
+const MI={
+ cal:'M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z',
+ clock:'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z',
+ pin:'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z',
+ screen:'M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z',
+ people:'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+ heart:'M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z',
+ heartF:'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z',
+ search:'M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
+ bell:'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z',
+ star:'M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z',
+ ticket:'M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 1 0 4v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 1 0-4zm-5.4 5.6L12 13.4l-4.6 2.2.9-4.9L4.8 7.4l4.9-.7L12 2.4l2.3 4.3 4.9.7-3.5 3.3z',
+ calstar:'M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H5V8h14zm-7-9.5 1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.5-2.5 1.5.6-2.8L8 12.4l2.8-.3z',
+ tune:'M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z',
+ live:'M12 11a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.22 1.21 4.15 3 5.19l1-1.74c-1.19-.7-2-1.97-2-3.45 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.48-.81 2.75-2 3.45l1 1.74c1.79-1.04 3-2.97 3-5.19zM12 3C6.48 3 2 7.48 2 13c0 3.7 2.01 6.92 4.99 8.65l1-1.73C5.61 18.53 4 15.96 4 13c0-4.42 3.58-8 8-8s8 3.58 8 8c0 2.96-1.61 5.53-4 6.92l1 1.73c2.99-1.73 5-4.95 5-8.65 0-5.52-4.48-10-10-10z',
+ hist:'M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 2.05 4.95l-1.42 1.42A9 9 0 1 0 13 3zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8z',
+ back:'M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z',
+ refresh:'M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z',
+ chevR:'M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z',
+ chevL:'M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z',
+ swap:'M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z',
+ home:'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z',
+ menu:'M3 18h18v-2H3zm0-5h18v-2H3zm0-7v2h18V6z',
+ calnav:'M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2z',
+ events:'M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zm-7-7h5v5h-5z',
+ ai:'M19 2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h4l3 3 3-3h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-7 14-1.6-3.4L7 11l3.4-1.6L12 6l1.6 3.4L17 11l-3.4 1.6z',
+ card:'M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM8 7a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm4 10H4v-1c0-1.33 2.67-2 4-2s4 .67 4 2zm8-3h-6v-2h6zm0-4h-6V8h6z',
+ school:'M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3 1 9l11 6 9-4.91V17h2V9L12 3z',
+ explore:'M12 10.9c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1c.61 0 1.1-.49 1.1-1.1s-.49-1.1-1.1-1.1zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z',
+ house:'M12 3 2 12h3v8h14v-8h3zm1 14h-2v-1H9v-2h3v-1h-1a2 2 0 0 1 0-4V8h2v1h2v2h-3v1h1a2 2 0 0 1 0 4v1z',
+ work:'M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z',
+ sos:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z',
+ chat:'M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 9h12v2H6zm8 5H6v-2h8zm4-6H6V6h12z',
+ info:'M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z',
+ gear:'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z',
+ logout:'M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z',
+ globe:'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 3a7 7 0 0 1 6.93 6H13V5.07zm-1 0v6H5.07A7 7 0 0 1 11 5.07zM5.07 13H11v5.93A7 7 0 0 1 5.07 13zM13 18.93V13h5.93A7 7 0 0 1 13 18.93z',
+ tt:'M3 5v14h18V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm12 8H9v-2h10v2zm0-4H9v-2h10v2zm0-4H9V7h10v2z',
+ mail:'M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5z',
+ shield:'M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z',
+ qr:'M3 11h8V3H3zm2-6h4v4H5zm8-2v8h8V3zm6 6h-4V5h4zM3 21h8v-8H3zm2-6h4v4H5zm13-2h-2v4h2zm2 4h-2v4h2v-4zm-4 2h-2v2h2zm-2-6h-2v2h2zm4 4h-2v2h2v-2zm2-4v2h2v-2z',
+ send:'M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z',
+ user:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z',
+ copy:'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'
+};
+const svg=k=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${MI[k]}"/></svg>`;
+const t24=d=>`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const dLbl=d=>sameDay(d,NOW)?`Today, ${MON[d.getMonth()]} ${d.getDate()}`:sameDay(d,tomorrowOf(NOW))?`Tomorrow, ${MON[d.getMonth()]} ${d.getDate()}`:`${DAYN[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`;
+const HUB_IC={Paris:'P',Berlin:'B',London:'L',Madrid:'M',Turin:'T',Warsaw:'W'};
+const GROUPS=[{n:'AGORA ESCP Student Union',t:'Student Society',m:15959,c:'#3b2a9a'},{n:'ESCaPe (LGBTQIA+ Society) - Paris Campus',t:'Student Society',m:34,c:'#b9502c'},{n:'AI Society - Paris Campus',t:'Student Society',m:412,c:'#1d4f91'},{n:'Tribunes - Paris Campus',t:'Student Society',m:288,c:'#00689D'},{n:'Paris Campus',t:'Campus',m:4045,c:'#24007c'}];
+
+function mapViewToMobile(v){
+  if(v==='recommended'){state.mv='events';state.evTab='foryou';state.evWhen='upcoming'}
+  else if(v==='upcoming'){state.mv='events';state.evTab='all';state.evWhen='upcoming'}
+  else if(v==='past'){state.mv='events';state.evTab='all';state.evWhen='past'}
+  else if(['home','calendar','sdg','timetable','digest','menu'].includes(v))state.mv=v;
+  else state.mv='home';
+}
+function mapMobileToView(){
+  const m=state.mv;
+  if(m==='events')state.view=state.evWhen==='past'?'past':state.evTab==='foryou'?'recommended':'upcoming';
+  else if(['home','calendar','sdg','timetable','digest'].includes(m))state.view=m;
+  else state.view='home';
+}
+
+function mStatus(){return `<div class="mstatus" aria-hidden="true"><span>${t24(NOW)}</span><span class="ic">5G <span class="bat">81</span></span></div>`}
+function mTop(kind,title,opts={}){
+  if(kind==='brand')return `<div class="mtop">${mStatus()}<div class="mbar"><div class="mlogo"><span>CL</span>CampusLife</div><div class="icons">${opts.icons||`<button data-mtoast="Notifications" aria-label="Notifications">${svg('bell')}</button>`}</div></div></div>`;
+  if(kind==='light')return `<div class="mtop light">${mStatus()}<div class="mbar"><h1>${title}</h1><div class="icons"><button data-mtoast="Refreshed" aria-label="Refresh">${svg('refresh')}</button></div></div></div>`;
+  if(kind==='sub')return `<div class="mtop">${mStatus()}<div class="mbar"><div class="left"><button class="back" data-mv="${opts.back||'menu'}" aria-label="Back">${svg('back')}</button><h1>${title}</h1></div></div></div>`;
+  return `<div class="mtop">${mStatus()}<div class="mbar"><h1>${title}</h1><div class="icons">${opts.search?`<button data-msearch="1" aria-label="Search">${svg('search')}</button>`:''}</div></div>${opts.tabs||''}</div>`;
+}
+function mNav(){
+  const forYou=EVENTS.map(ev=>evaluate(ev)).filter(r=>FITS.includes(r.status)&&!r.inPlan).length;
+  const it=(k,ic,l,extra='')=>`<button data-mv="${k}" class="${state.mv===k||(k==='menu'&&['sdg','timetable','digest'].includes(state.mv))?'on':''}">${extra}${svg(ic)}${l}</button>`;
+  return `<nav class="mnav" aria-label="App">${it('home','home','Home')}${it('menu','menu','Menu')}${it('calendar','calnav','Calendar')}${it('groups','people','Groups')}${it('events','events','Events',state.smart&&forYou?`<span class="cnt">${forYou}</span>`:'')}${it('ai','ai','AI Assistant')}</nav>`;
+}
+
+/* event card like the app's list */
+function mFit(ev,r){
+  if(!state.smart)return '';
+  if(r.status==='past')return '';
+  if(r.inPlan)return `<div class="mfit plan"><div class="tx"><b>✓ Going</b> <span>In your plan</span></div>${sdgMini(ev)}</div>`;
+  const first=r.chips[0]?.t||'';
+  const map={ok:['ok','✓ Fits your timetable'],anytime:['ok','✓ Fits · runs all week'],tight:['warn','⚠ Tight timing'],partial:['warn','◐ Partly overlaps'],clash:['bad','✕ Clashes with class'],lang:['bad','✕ Not your language'],other:['info','Other campus']};
+  const [k,l]=map[r.status]||['ok','✓ Fits'];
+  const why=r.status==='ok'?(r.chips.find(c=>c.src==='Aurion')||r.chips[0]||{}).t||'':first;
+  return `<div class="mfit ${k}"><div class="tx"><b>${l}</b> <span>${esc(why)}</span></div>${sdgMini(ev)}</div>`;
+}
+function mImg(ev,big){
+  const saved=state.saved.has(ev.id);
+  return `<div class="mimg" style="background:var(${CAT_VAR[ev.cat]})"><div class="cat">${esc(ev.cat==='Career'?'Career event':ev.cat)}</div>
+    <button class="heart" data-save="${ev.id}" aria-pressed="${saved}" aria-label="${saved?'Remove from saved':'Save'}">${svg(saved?'heartF':'heart')}</button>
+    ${ev.going?`<span class="going">${ev.going} Going</span>`:''}</div>`;
+}
+function mCard({ev,r}){
+  const s=P(ev.start),e=P(ev.end);
+  const when=r.multi?`${MON[s.getMonth()]} ${s.getDate()} – ${MON[e.getMonth()]} ${e.getDate()}`:dLbl(s);
+  return `<article class="mcard ${state.smart&&['clash','lang','other'].includes(r.status)?'dim':''}" data-open="${ev.id}" tabindex="0">
+    <div class="row"><div style="min-width:0"><h3>${esc(ev.title)}</h3>
+      <div class="mrow">${svg('cal')}<span>${when}</span></div>
+      ${r.multi?'':`<div class="mrow">${svg('clock')}<span>${t24(s)} - ${t24(e)}</span></div>`}
+      <div class="mrow">${svg(ev.online?'screen':'pin')}<span>${ev.online?'Online':esc(ev.place&&ev.place!=='—'?ev.place:ev.campus)}</span></div>
+      <div class="mrow">${svg('people')}<span>${esc(ev.host)}</span></div></div>
+      ${mImg(ev)}</div>${mFit(ev,r)}</article>`;
+}
+
+/* Home */
+function mHome(){
+  const p=state.profile,{picks,disc}=proposals();
+  const cards=[...picks.map(x=>({x,d:false})),...(disc?[{x:disc,d:true}]:[])];
+  const cc=({x,d})=>{const s=P(x.ev.start),e=P(x.ev.end);const why=d?'Something different · '+(x.ev.sdg.some(n=>p.sdgs.includes(n))?`SDG ${x.ev.sdg.find(n=>p.sdgs.includes(n))}`:'new topic'):(x.r.chips.find(c=>c.src==='Aurion')||x.r.chips[0]||{}).t;
+    return `<article class="ccard" data-open="${x.ev.id}" tabindex="0"><div class="top" style="background:var(${CAT_VAR[x.ev.cat]})"><div class="big">${esc(shortTitle(x.ev.title).split(/[|:–-]/)[0].trim().slice(0,34))}</div><div class="vlab">${esc(x.ev.cat)}</div></div>
+      <div class="bd"><h3>${esc(x.ev.title)}</h3><div class="mrow">${svg('cal')}<span>${x.r.multi?`Until ${MON[e.getMonth()]} ${e.getDate()}`:dLbl(s)}</span></div>${x.r.multi?'':`<div class="mrow">${svg('clock')}<span>${t24(s)} - ${t24(e)}</span></div>`}<div class="mrow">${svg(x.ev.online?'screen':'pin')}<span>${x.ev.online?'Online Event':esc(x.ev.place)}</span></div></div>
+      <div class="why ${d?'disc':''}">${sdgMini(x.ev)}<span>${d?'':'✓ '}${esc(why||'')}</span></div></article>`};
+  const today=classesOn(NOW).sort((a,b)=>a.start-b.start);
+  const todayEv=EVENTS.map(ev=>({ev,r:evaluate(ev)})).filter(x=>!x.r.multi&&sameDay(P(x.ev.start),NOW)&&(FITS.includes(x.r.status)||x.r.inPlan));
+  const lines=[...today.map(c=>({s:c.start,html:`<div class="b cls"><b>${esc(c.label)}</b><small>${t24(c.start)} - ${t24(c.end)}${c.site?' · '+esc(c.site):''}</small></div>`})),
+    ...todayEv.map(x=>{const s=P(x.ev.start),e=P(x.ev.end);return {s,html:`<div class="b ${x.r.inPlan?'pl':'sug'}" data-open="${x.ev.id}"><b>${x.r.inPlan?'Going · ':'Proposed · '}${esc(shortTitle(x.ev.title))}</b><small>${t24(s)} - ${t24(e)} · ${x.ev.online?'Online':esc(x.ev.site||x.ev.place)}</small></div>`}})].sort((a,b)=>a.s-b.s);
+  return mTop('brand')+`<div class="mbody">
+    <div class="hub"><div class="hubic">${HUB_IC[p.campus]||'?'}</div><div class="nm">${esc(p.campus)} Campus${p.campus==='Paris'&&p.site?`<small>${esc(p.site)}</small>`:''}</div><button class="hubbtn" data-msheet="hubs">${svg('swap')}Switch Hubs</button></div>
+    <h2 class="hello">Hello ${esc(p.name.split(' ')[0]==='Student'?p.name:p.name.split(' ')[0])},</h2>
+    <div class="sechead"><div><h2>${svg('ticket')}Proposed for you</h2><p>Fits your timetable, campus and languages</p></div><button class="mlink" data-mv="events" data-evtab="foryou">View All</button></div>
+    ${state.smart&&cards.length?`<div class="carousel">${cards.map(cc).join('')}</div>`:`<div class="mintro">${state.smart?'No events fit your free time this week.':'Turn on “Plan around my timetable” in Events › Filters to get proposals.'}</div>`}
+    <div class="mpanel"><div class="sechead"><h2>${svg('calnav')}Today</h2><button class="mlink" data-mv="calendar">Calendar</button></div>
+      ${lines.length?lines.map(l=>`<div class="tline"><span class="t">${t24(l.s)}</span>${l.html}</div>`).join(''):'<div class="mnote">No classes or events today.</div>'}</div>
+    <div class="mpanel"><div class="sechead"><h2>${svg('people')}My Groups</h2><button class="mlink" data-mv="groups">View All</button></div>
+      ${GROUPS.slice(0,3).map(g=>`<div class="grp"><div class="lg" style="background:${g.c}">${esc(g.n.replace(/[^A-Z]/g,'').slice(0,2)||g.n[0])}</div><div style="min-width:0"><b>${esc(g.n)}</b><small>${esc(g.t)}</small></div></div>`).join('')}</div>
+  </div>`;
+}
+
+/* Events */
+function mEventsList(){
+  const all=filtered({ignorePast:false});
+  let list;
+  if(state.evWhen==='past')list=all.filter(x=>x.r.status==='past').reverse();
+  else if(state.evWhen==='live')list=all.filter(x=>{const s=P(x.ev.start),e=P(x.ev.end);return s<=NOW&&NOW<e});
+  else list=all.filter(x=>x.r.status!=='past');
+  let note='';
+  if(state.evTab==='foryou'){
+    if(!state.smart)return `<div class="mempty">${svg('star')}<h3>Proposals are off</h3><p>Turn on “Plan around my timetable” in Filters.</p><button class="mbtn" data-msheet="filters">Open filters</button></div>`;
+    list=list.filter(x=>[...FITS,'tight','partial'].includes(x.r.status)||x.r.inPlan).sort((a,b)=>(b.r.inPlan-a.r.inPlan)||((b.r.score||0)-(a.r.score||0)));
+    const left=all.filter(x=>x.r.status!=='past'&&['clash','lang','other'].includes(x.r.status)).length;
+    note=state.evWhen==='upcoming'?`<div class="mintro">Ranked for you from your <b>Aurion timetable</b>, <b>Blackboard deadlines</b>, campus and languages. <b>${left}</b> events were left out because they clash with class, are at other campuses or are in another language. <button class="mlink" data-mv="timetable">Why these?</button></div>`:'';
+  }else if(state.evTab==='mine')list=list.filter(x=>state.plan.has(x.ev.id));
+  else if(state.evTab==='saved')list=list.filter(x=>state.saved.has(x.ev.id));
+  else{const shown=list.filter(x=>!hiddenBySmart(x.r));const hid=list.length-shown.length;
+    if(hid)note=`<div class="mnote">${state.showHidden?'Showing everything.':`<b>${hid}</b> hidden by your filters (class clashes, other campuses, other languages).`}<button class="mlink" data-act="${state.showHidden?'hideagain':'showhidden'}">${state.showHidden?'Hide them':'Show them'}</button></div>`;
+    list=shown}
+  if(!list.length){
+    const E={mine:["You're not attending any events yet",'Explore upcoming events and find something that interests you','Discover All'],saved:['No saved events yet','Tap the heart on an event to save it','Discover All'],foryou:['Nothing fits right now','No events fit your free time with these filters','See all events'],all:['No events','Try another filter','Reset filters']}[state.evTab];
+    return note+`<div class="mempty">${svg(state.evTab==='saved'?'heart':'ticket')}<h3>${E[0]}</h3><p>${E[1]}</p><button class="mbtn" data-evtab="all">${E[2]}</button></div>`;
+  }
+  return note+list.map(mCard).join('');
+}
+function mEvents(){
+  const tabs=[['foryou','star','For You'],['all','calstar','All'],['mine','ticket','My Events'],['saved','heart','Saved']];
+  const tabHtml=`<div class="mtabs" role="tablist">${tabs.map(([k,ic,l])=>`<button role="tab" data-evtab="${k}" class="${state.evTab===k?'on':''}" aria-selected="${state.evTab===k}">${k==='foryou'?'<span class="dotnew" title="New"></span>':''}${svg(ic)}${l}</button>`).join('')}</div>`;
+  return mTop('title','Events',{search:true,tabs:tabHtml})+`<div class="mbody">
+    ${state.mSearch?`<label class="msearch">${svg('search')}<input id="mq" type="search" placeholder="Search events" value="${esc(state.q)}" aria-label="Search events"></label>`:''}
+    <div class="mchips"><button class="mchip" data-msheet="filters">${svg('tune')}Filters</button><span class="sep"></span>
+      <button class="mchip ${state.evWhen==='upcoming'?'on':''}" data-when="upcoming">${svg('cal')}Upcoming</button>
+      <button class="mchip ${state.evWhen==='live'?'on':''}" data-when="live">${svg('live')}Live<span class="live"></span></button>
+      <button class="mchip ${state.evWhen==='past'?'on':''}" data-when="past">${svg('hist')}Past</button></div>
+    <div id="mlist" style="display:grid;gap:14px">${mEventsList()}</div></div>`;
+}
+
+/* Calendar */
+function mCalendar(){
+  const allDays=[...Array(7)].map((_,i)=>new Date(2026,9,18+i));
+  const week=state.calMode==='week';
+  const days=week?allDays:[allDays[state.calDay]];
+  const H0=8,H1=22,PX=week?40:52,H=(H1-H0)*PX;
+  const evs=EVENTS.map(ev=>({ev,r:evaluate(ev)}));
+  const col=d=>{
+    const bl=[];
+    for(const c of classesOn(d))bl.push({k:'cls',s:c.start,e:c.end,t:c.label,sub:c.room||c.site||''});
+    for(const x of evs){if(x.r.multi||!sameDay(P(x.ev.start),d))continue;
+      if(x.r.inPlan)bl.push({k:'pl',s:P(x.ev.start),e:P(x.ev.end),t:shortTitle(x.ev.title),id:x.ev.id,lbl:'Going'});
+      else if(state.calSug&&state.smart&&FITS.includes(x.r.status))bl.push({k:'sug',s:P(x.ev.start),e:P(x.ev.end),t:shortTitle(x.ev.title),id:x.ev.id,lbl:'Proposed'})}
+    bl.sort((a,b)=>a.s-b.s);const lanes=[];for(const b of bl){let i=0;while(lanes[i]&&lanes[i]>b.s)i++;lanes[i]=b.e;b.l=i}
+    for(const b of bl){let n=1;for(const o of bl)if(o!==b&&o.s<b.e&&o.e>b.s)n=Math.max(n,Math.max(o.l,b.l)+1);b.n=n}
+    const y=t=>((t.getHours()+t.getMinutes()/60)-H0)*PX;
+    let h='';for(let i=0;i<(H1-H0);i++)h+=`<div class="hl" style="top:${i*PX}px"></div><div class="hl half" style="top:${i*PX+PX/2}px"></div>`;
+    const blocks=bl.map(b=>{const top=Math.max(0,y(b.s)),ht=Math.max(18,y(b.e)-top-2),w=100/b.n;
+      const txt=week?`${esc(b.t)}`:`<span class="k">${b.k==='cls'?`${t24(b.s)} - ${t24(b.e)}`:`${b.lbl} · ${t24(b.s)} - ${t24(b.e)}`}</span>${esc(b.t)}${b.sub?` - ${esc(b.sub)}`:''}`;
+      return `<${b.id?'button':'div'} class="gb ${b.k} ${week?'wk':''}" ${b.id?`data-open="${b.id}"`:''} style="top:${top+1}px;height:${ht}px;left:calc(${b.l*w}% + 3px);width:calc(${w}% - 6px)">${txt}</${b.id?'button':'div'}>`}).join('');
+    const now=sameDay(d,NOW)&&NOW.getHours()>=H0&&NOW.getHours()<H1?`<div class="nowl" style="top:${y(NOW)}px"></div>`:'';
+    return `<div class="col" style="height:${H}px">${h}${blocks}${now}</div>`;
+  };
+  let hrs='';for(let i=1;i<(H1-H0);i++){const hh=H0+i;hrs+=`<span style="top:${i*PX-8}px">${hh%12||12}${hh<12?'am':'pm'}</span>`}
+  const d0=days[0];
+  const dateTxt=week?'Oct 18 – 24, 2026':`${['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d0.getDay()]}, ${['January','February','March','April','May','June','July','August','September','October','November','December'][d0.getMonth()]} ${d0.getDate()}`;
+  const nFit=d=>evs.filter(x=>!x.r.multi&&sameDay(P(x.ev.start),d)&&FITS.includes(x.r.status)).length;
+  return mTop('light','Calendar')+`<div class="mbody">
+    <div class="calbar">
+      <div class="calctl"><div class="segc"><button data-calmode="day" class="${!week?'on':''}">Day</button><button data-calmode="week" class="${week?'on':''}">Week</button></div>
+        <button class="btoday" data-calnav="today">Today</button>
+        <div class="navc"><button data-calnav="-1" aria-label="Previous">${svg('chevL')}</button><button data-calnav="1" aria-label="Next">${svg('chevR')}</button></div></div>
+      <div class="caldate">${dateTxt}</div>
+      <div class="calmeta"><button class="ical" data-mtoast="iCal feed link copied (prototype)">${svg('copy')}Copy iCal Feed</button><span class="sid">${svg('user')}${esc(state.profile.sid)}</span>
+        <button class="sugtog" data-act="calSug" aria-pressed="${state.calSug&&state.smart}">${state.calSug&&state.smart?'✓ ':''}Proposed events</button></div>
+      ${week?'':`<div class="daytabs">${allDays.map((d,i)=>`<button data-calday="${i}" aria-pressed="${i===state.calDay}">${DAYN[d.getDay()]}<b>${d.getDate()}</b><i class="${nFit(d)?'':'none'}"></i></button>`).join('')}</div>`}
+    </div>
+    <div class="calwrap">
+      ${week?`<div class="dayhead" style="grid-template-columns:repeat(7,1fr)">${allDays.map(d=>`<div class="${sameDay(d,NOW)?'on':''}">${DAYN[d.getDay()]}, Oct<br>${d.getDate()}</div>`).join('')}</div>`:`<div class="dayhead" style="grid-template-columns:1fr"><div class="on">${dateTxt}</div></div>`}
+      <div class="grid"><div class="hrs" style="height:${H}px">${hrs}</div><div class="cols" style="grid-template-columns:repeat(${days.length},minmax(0,1fr))">${days.map(col).join('')}</div></div>
+      <div class="tzbar">(GMT+02:00) Central European Summer Time - <b>Paris</b></div>
+    </div>
+    <div class="mnote"><span style="display:inline-block;width:14px;height:10px;background:var(--m-app);border-radius:2px"></span>Class (Aurion) <span style="display:inline-block;width:14px;height:10px;outline:2px dashed var(--ok);outline-offset:-2px;border-radius:2px"></span>Proposed event that fits <span style="display:inline-block;width:14px;height:10px;background:var(--ok);border-radius:2px"></span>Going</div>
+  </div>`;
+}
+
+/* Menu */
+function mMenu(){
+  const p=state.profile;
+  const it=(ic,l,opt={})=>`<button class="it ${opt.cls||''}" ${opt.mv?`data-mv="${opt.mv}"`:`data-mtoast="${esc(l)} is not part of this prototype"`} ${opt.tab?`data-evtab="${opt.tab}"`:''}>${svg(ic)}<span>${l}${opt.sub?`<small>${opt.sub}</small>`:''}</span>${opt.isNew?'<span class="newb">NEW</span>':''}${opt.chev||opt.mv?`<svg class="chev" viewBox="0 0 24 24"><path d="${MI.chevR}"/></svg>`:''}</button>`;
+  return mTop('brand','',{icons:`<button data-mtoast="Privacy centre (prototype)" aria-label="Privacy">${svg('shield')}</button><button data-mtoast="Student QR code (prototype)" aria-label="QR code">${svg('qr')}</button>`})+`<div class="mbody">
+    <div class="mlist"><div class="hubrow"><div class="hub"><div class="hubic">${HUB_IC[p.campus]||'?'}</div><div class="nm">${esc(p.campus)} Campus</div><button class="hubbtn" data-msheet="hubs">${svg('swap')}Switch Hubs</button></div></div>
+      ${it('card','Student Card')}${it('school','My Studies',{chev:1})}${it('explore','Life On Campus',{chev:1})}${it('house','Housing Marketplace')}${it('work','Careers &amp; Alumni',{chev:1})}${it('sos','Call International SOS')}${it('chat','Chat')}${it('info','Info desk',{chev:1})}${it('ai','AI Assistant',{mv:'ai'})}</div>
+    <div class="mlist hl"><div class="cap">PERSONALISED EVENTS</div>
+      ${it('star','Proposed for me',{mv:'events',tab:'foryou',isNew:1,sub:'Events that fit your timetable'})}
+      ${it('tt','Timetable &amp; data',{mv:'timetable',isNew:1,sub:'Aurion, Blackboard, CampusLife'})}
+      ${it('globe','SDG map',{mv:'sdg',isNew:1,sub:'Events by UN goal'})}
+      ${it('mail','Weekly email',{mv:'digest',isNew:1,sub:'Your personalised digest'})}</div>
+    <div class="mlist"><div class="cap">ACCOUNT</div>${it('gear','Settings &amp; Privacy',{mv:'timetable'})}${it('logout','Log Out',{cls:'red'})}</div>
+  </div>`;
+}
+
+/* Groups */
+function mGroups(){
+  const tabHtml=`<div class="mtabs"><button class="on">${svg('people')}My Groups</button><button data-mtoast="Discover groups is not part of this prototype">${svg('explore')}Discover</button></div>`;
+  return mTop('title','Groups',{search:false,tabs:tabHtml})+`<div class="mbody">
+    ${GROUPS.map(g=>`<div class="gcard grp"><div class="lg" style="background:${g.c}">${esc(g.n.replace(/[^A-Z]/g,'').slice(0,2)||g.n[0])}</div><div style="min-width:0"><b style="white-space:normal">${esc(g.n)}</b><small>${esc(g.t)} · ${g.m.toLocaleString('en')} Members</small></div></div>`).join('')}</div>`;
+}
+
+/* AI assistant: answers from the same recommendation engine */
+function aiAnswer(q){
+  const s=q.toLowerCase();
+  const evs=EVENTS.map(ev=>({ev,r:evaluate(ev)}));
+  const item=x=>{const st=P(x.ev.start),e=P(x.ev.end);const why=(x.r.chips.find(c=>c.src==='Aurion')||x.r.chips[0]||{}).t||'';
+    return `<button data-open="${x.ev.id}"><b>${esc(shortTitle(x.ev.title))}</b>${x.r.multi?'All week':`${dLbl(st)} · ${t24(st)}-${t24(e)}`} · ${x.ev.online?'Online':esc(x.ev.site||x.ev.campus)}<br><small>✓ ${esc(why)}</small></button>`};
+  if(/sdg|peace|justice|16|institution/.test(s)){
+    const all=evs.filter(x=>x.ev.sdg.includes(16)&&!x.r.away&&x.r.status!=='past');
+    const ok=all.filter(x=>FITS.includes(x.r.status));const fr=all.filter(x=>x.r.status==='lang');
+    return `<p>This week there ${all.length===1?'is':'are'} <b>${all.length}</b> SDG 16 event${all.length===1?'':'s'} at the Paris campuses. ${ok.length} fit${ok.length===1?'s':''} your timetable:</p><div class="ans">${ok.map(item).join('')||'<p>None right now.</p>'}</div>${fr.length?`<p>${fr.length} more ${fr.length===1?'is':'are'} only in French: ${fr.map(x=>esc(shortTitle(x.ev.title))).join(', ')}. Add French in Timetable &amp; data if you'd like to see them.</p>`:''}`;
+  }
+  if(/today|tonight|after class|now/.test(s)){
+    const cls=classesOn(NOW).sort((a,b)=>a.end-b.end);const last=cls[cls.length-1];
+    const ok=evs.filter(x=>!x.r.multi&&sameDay(P(x.ev.start),NOW)&&P(x.ev.end)>NOW&&FITS.includes(x.r.status));
+    return `<p>${last?`Your last class today, <b>${esc(last.label)}</b>, ends at <b>${t24(last.end)}</b>.`:'You have no more classes today.'} ${ok.length?`Here's what fits after that:`:'Nothing else fits today.'}</p>${ok.length?`<div class="ans">${ok.map(item).join('')}</div>`:''}`;
+  }
+  const {picks}=proposals();
+  return `<p>I checked your timetable (Aurion), deadlines (Blackboard) and languages. These events this week don't clash with any class:</p><div class="ans">${picks.map(item).join('')||'<p>None right now.</p>'}</div><p>I left out events in languages you didn't select and events at other campuses.</p>`;
+}
+function mAI(){
+  const prompts=['Which events fit my schedule this week?','What can I do after class today?','Any SDG 16 events I can join?'];
+  return mTop('light','Intelligent Assistant')+`<div class="mbody">
+    <div class="aihead">Intelligent Assistant</div>
+    <div class="aihello">Hello, I'm your AI assistant.</div>
+    <p class="aitxt">With your permission, I can now read your <b>timetable</b> to suggest events that fit. Today's assistant says it has no access to personal records; this is the change we propose.</p>
+    ${state.chat.map(m=>`<div class="bub ${m.me?'me':'bot'}">${m.me?esc(m.t):m.t}</div>`).join('')}
+    ${prompts.map(t=>`<button class="aiprompt" data-ask="${esc(t)}">${t}</button>`).join('')}
+    <form class="aiform" id="aiForm"><input id="aiIn" placeholder="Ask the Intelligent Assistant…" aria-label="Ask the assistant"><button type="submit" aria-label="Send">${svg('send')}</button></form>
+    <div class="aidisc">AI answers are not perfect, double check any information. Prototype: answers come from the sample data on this page.</div></div>`;
+}
+
+/* Sub pages reuse the desktop content */
+function mSub(title,html,back='menu'){return mTop('sub',title,{back})+`<div class="mbody"><div class="msub">${html}</div></div>`}
+
+/* Sheets */
+function mSheet(){
+  const s=state.sheet;if(!s)return '';
+  let body='';
+  if(s.type==='event'){
+    const ev=EVENTS.find(e=>e.id===s.id);if(!ev)return '';
+    const r=evaluate(ev),st=P(ev.start),e=P(ev.end),v=verdict(r),going=state.plan.has(ev.id),saved=state.saved.has(ev.id);
+    body=`<div class="simg" style="background:var(${CAT_VAR[ev.cat]})"><b>${esc(ev.cat==='Career'?'Career event':ev.cat)}</b><span>${esc(ev.host)}</span></div>
+      <h2>${esc(ev.title)}</h2>
+      <div><div class="mrow">${svg('cal')}<span>${r.multi?`${dLbl(st)} – ${dLbl(e)}`:dLbl(st)}</span></div>${r.multi?'':`<div class="mrow">${svg('clock')}<span>${t24(st)} - ${t24(e)} (GMT+2)</span></div>`}
+      <div class="mrow">${svg(ev.online?'screen':'pin')}<span>${ev.online?'Online Event':esc(ev.place)}</span></div><div class="mrow">${svg('people')}<span>${esc(ev.host)}${ev.going?` · ${ev.going} going`:''}</span></div></div>
+      ${sdgRow(ev)}
+      ${state.smart&&r.status!=='past'?`<div class="verdict"><span class="pill ${v.c}" style="justify-self:start">${esc(v.t)}</span>${r.chips.map(chipHTML).join('')}</div>`:''}
+      ${ev.sdgWhy?`<div class="cap">Why SDG: ${esc(ev.sdgWhy)}</div>`:''}
+      <div class="acts">${r.status==='past'?'':`<button class="mbtn ${going?'done':''}" data-plan="${ev.id}">${going?'✓ Going':esc(ev.action==='Register'?'Register':'Attend')}</button>`}<button class="mbtn ghost" data-save="${ev.id}">${saved?'♥ Saved':'♡ Save'}</button></div>`;
+  }else if(s.type==='hubs'){
+    body=`<h2>Community Hubs</h2><div class="cap">Your home campus decides which events you see first. Paris has two sites.</div><div class="hublist">${CAMPUSES.map(c=>{const on=c.city===state.profile.campus&&(c.site||'')===(state.profile.campus==='Paris'?state.profile.site:'');
+      return `<button data-hub="${c.city}|${c.site||''}" aria-pressed="${on}"><span class="hubic">${HUB_IC[c.city]}</span>${esc(campusLabel(c))} Campus${on?' ✓':''}<svg class="chev" viewBox="0 0 24 24"><path d="${MI.chevR}"/></svg></button>`}).join('')}</div>`;
+  }else if(s.type==='filters'){
+    body=`<h2>Filters</h2>
+      <button class="switch" role="switch" aria-checked="${state.smart}" data-act="smart"><span class="trk"></span>Plan around my timetable</button>
+      <div class="toggles"><button class="tog" aria-pressed="${state.hideClash}" data-act="hideClash">Hide clashes with class</button><button class="tog" aria-pressed="${state.hideLang}" data-act="hideLang">Only my languages</button><button class="tog" aria-pressed="${state.myCampus}" data-act="myCampus">Only ${esc(state.profile.campus)} + online</button></div>
+      <label class="ffield"><span>Category</span><select id="mcat"><option value="">All categories</option>${CATS.map(c=>`<option ${state.cat===c?'selected':''}>${c}</option>`).join('')}</select></label>
+      <label class="ffield"><span>Sustainable Development Goal</span><select id="msdg"><option value="">All goals</option>${SDGS.map((g,n)=>g?`<option value="${n}" ${String(n)===String(state.sdg)?'selected':''}>SDG ${n} · ${esc(g.t)}</option>`:'').join('')}</select></label>
+      <label class="ffield"><span>Location type</span><select id="mloc"><option value="">Any</option><option value="in" ${state.loc==='in'?'selected':''}>In person</option><option value="online" ${state.loc==='online'?'selected':''}>Online</option></select></label>
+      <button class="mbtn" data-close="1">Show results</button>`;
+  }
+  return `<button class="back" data-close="1" aria-label="Close"></button><div class="sh" role="dialog" aria-modal="true"><div class="grab"></div>${body}</div>`;
+}
+
+function renderMobile(){
+  const m=state.mv;
+  let html;
+  if(m==='home')html=mHome();
+  else if(m==='events')html=mEvents();
+  else if(m==='calendar')html=mCalendar();
+  else if(m==='menu')html=mMenu();
+  else if(m==='groups')html=mGroups();
+  else if(m==='ai')html=mAI();
+  else if(m==='sdg')html=mSub('SDG map',viewSdg());
+  else if(m==='timetable')html=mSub('Timetable &amp; data',viewTimetable());
+  else if(m==='digest')html=mSub('Weekly email',viewDigest());
+  else html=mHome();
+  $('#mroot').innerHTML=html+mNav();
+  const sh=$('#msheet');sh.innerHTML=mSheet();sh.hidden=!state.sheet;
+}
+
+/* Phone interactions (run before the desktop handler) */
+document.addEventListener('click',e=>{
+  if(!isMobile())return;
+  const t=e.target.closest('[data-open],[data-mv],[data-evtab],[data-when],[data-save],[data-close],[data-msheet],[data-hub],[data-calmode],[data-calnav],[data-mtoast],[data-ask],[data-msearch],[data-goto],[data-jump],[data-view],[data-act="calSug"],[data-calday]');
+  if(!t)return;
+  const d=t.dataset;const stop=()=>{e.preventDefault();e.stopImmediatePropagation()};
+  if(d.save){stop();state.saved.has(d.save)?state.saved.delete(d.save):state.saved.add(d.save);toast(state.saved.has(d.save)?'Saved.':'Removed from saved.');render();return}
+  if(d.close){stop();state.sheet=null;render();return}
+  if(d.open||d.goto||d.jump){stop();state.sheet={type:'event',id:d.open||d.goto||d.jump};render();return}
+  if(d.msheet){stop();state.sheet={type:d.msheet};render();return}
+  if(d.hub){stop();const[c,s]=d.hub.split('|');state.profile.campus=c;state.profile.site=s||'';state.sheet=null;toast(`Switched to ${campusLabel({city:c,site:s})} Campus.`);render();return}
+  if(d.mv){stop();state.mv=d.mv;if(d.evtab)state.evTab=d.evtab;state.sheet=null;state.showHidden=false;mapMobileToView();render();toTop();return}
+  if(d.evtab){stop();state.evTab=d.evtab;state.mv='events';state.showHidden=false;mapMobileToView();render();toTop();return}
+  if(d.when){stop();state.evWhen=d.when;mapMobileToView();render();return}
+  if(d.view){stop();mapViewToMobile(d.view);state.sheet=null;render();toTop();return}
+  if(d.calmode){stop();state.calMode=d.calmode;render();return}
+  if(d.calday){stop();state.calDay=Number(d.calday);render();return}
+  if(d.calnav){stop();if(d.calnav==='today')state.calDay=Math.max(0,Math.min(6,Math.floor((new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate())-WEEK0)/864e5)));else if(state.calMode==='day')state.calDay=Math.max(0,Math.min(6,state.calDay+Number(d.calnav)));else toast('This prototype only has the week of Oct 18–24.');render();return}
+  if(d.act==='calSug'){stop();if(!state.smart)state.smart=true;else state.calSug=!state.calSug;render();return}
+  if(d.mtoast){stop();toast(d.mtoast);return}
+  if(d.msearch){stop();state.mSearch=!state.mSearch;render();if(state.mSearch){const i=$('#mq');if(i)i.focus()}return}
+  if(d.ask){stop();state.chat.push({me:true,t:d.ask},{me:false,t:aiAnswer(d.ask)});render();const a=$('#app');if(a)a.scrollTop=a.scrollHeight;return}
+});
+document.addEventListener('input',e=>{if(e.target.id==='mq'){state.q=e.target.value;const l=$('#mlist');if(l)l.innerHTML=mEventsList()}});
+document.addEventListener('change',e=>{
+  if(e.target.id==='mcat'){state.cat=e.target.value;render()}
+  if(e.target.id==='msdg'){state.sdg=e.target.value;render()}
+  if(e.target.id==='mloc'){state.loc=e.target.value;render()}
+});
+document.addEventListener('submit',e=>{if(e.target.id!=='aiForm')return;e.preventDefault();const v=$('#aiIn').value.trim();if(!v)return;state.chat.push({me:true,t:v},{me:false,t:aiAnswer(v)});render();const a=$('#app');if(a)a.scrollTop=a.scrollHeight;const i=$('#aiIn');if(i)i.focus()});
+document.addEventListener('keydown',e=>{if(!isMobile())return;if(e.key==='Escape'&&state.sheet){state.sheet=null;render()}if(e.key==='Enter'&&e.target.matches&&e.target.matches('[data-open]')){state.sheet={type:'event',id:e.target.dataset.open};render()}});
+
+/* ---------- Interaction ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  const d=t.dataset;
+  if(d.view){state.view=d.view;state.showHidden=false;render();toTop();return}
+  if(d.mode){if(d.mode!==state.mode){if(d.mode==='mobile')mapViewToMobile(state.view);else mapMobileToView();state.sheet=null}state.mode=d.mode;render();toTop();return}
+  if(d.calday){state.calDay=Number(d.calday);render();return}
+  if(t.id==='segList'){if(state.view==='calendar'){state.view='upcoming';render()}return}
+  if(t.id==='segCal'){state.view='calendar';render();return}
+  if(d.plan){const id=d.plan,ev=EVENTS.find(x=>x.id===id);
+    if(state.plan.has(id)){state.plan.delete(id);toast('Removed from your plan.')}
+    else{state.plan.add(id);toast(`Added “${shortTitle(ev.title)}” to your plan. Events that overlap it are now flagged.`)}
+    render();return}
+  if(d.jump||d.goto){const id=d.jump||d.goto;
+    if(!['upcoming','recommended'].includes(state.view)||!document.getElementById('ev-'+id)){state.view='upcoming';state.showHidden=!document.getElementById('ev-'+id);render();if(!document.getElementById('ev-'+id)){state.showHidden=true;render()}if(!document.getElementById('ev-'+id)){state.view='past';render()}}
+    const el=document.getElementById('ev-'+id);if(el){el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}return}
+  if(d.del){state.classes=state.classes.filter(c=>c.id!==d.del);render();return}
+  if(d.src){state.profile.src[d.src]=!state.profile.src[d.src];render();return}
+  if(d.sdgp){const n=Number(d.sdgp),a=state.profile.sdgs;state.profile.sdgs=a.includes(n)?a.filter(x=>x!==n):[...a,n].sort((x,y)=>x-y);render();return}
+  if(d.goal){const n=Number(d.goal);state.sdgFocus=state.sdgFocus===n?0:n;render();return}
+  if(d.int){const a=state.profile.interests;state.profile.interests=a.includes(d.int)?a.filter(x=>x!==d.int):[...a,d.int];render();return}
+  if(d.lang){const a=state.profile.langs;state.profile.langs=a.includes(d.lang)?a.filter(x=>x!==d.lang):[...a,d.lang];render();return}
+  switch(d.act){
+    case 'smart':state.smart=!state.smart;state.showHidden=false;break;
+    case 'hideClash':state.hideClash=!state.hideClash;break;
+    case 'hideLang':state.hideLang=!state.hideLang;break;
+    case 'myCampus':state.myCampus=!state.myCampus;break;
+    case 'showClasses':state.showClasses=!state.showClasses;break;
+    case 'showhidden':state.showHidden=true;break;
+    case 'hideagain':state.showHidden=false;break;
+    case 'sdgAll':state.sdgFocus=0;break;
+    case 'sdgList':state.sdg=String(state.sdgFocus);state.view='upcoming';state.showHidden=true;toTop();break;
+    case 'reset':state.classes=SAMPLE_CLASSES.map(c=>({...c}));state.profile=freshProfile();state.plan=new Set();toast('Back to your original timetable and settings.');break;
+    default:return;
+  }
+  render();
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='cat'){state.cat=e.target.value;render()}
+  if(e.target.id==='loc'){state.loc=e.target.value;render()}
+  if(e.target.id==='sdgSel'){state.sdg=e.target.value;render()}
+  if(e.target.id==='pCampus'){const[c,st]=e.target.value.split('|');state.profile.campus=c;state.profile.site=st||'';render()}
+  if(e.target.id==='pBuffer'){state.profile.buffer=Number(e.target.value);render()}
+});
+$('#q').addEventListener('input',e=>{state.q=e.target.value;renderSmart();const v=VIEWS[state.view];if(v&&!NOFILTER.includes(state.view))$('#content').innerHTML=v()});
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='addForm')return;e.preventDefault();
+  const st=$('#fStart').value,en=$('#fEnd').value,course=$('#fCourse').value.trim();
+  if(!course){$('#fErr').textContent='Add a course name.';return}
+  if(!st||!en||hm(en)<=hm(st)){$('#fErr').textContent='The end time must be after the start time.';return}
+  state.classes.push({id:'c'+Date.now(),day:Number($('#fDay').value),start:st,end:en,course,room:$('#fRoom').value.trim(),site:$('#fSite').value});
+  render();toast(`Added ${course}. Suggestions updated.`);
+});
+if(isMobile()&&!saved.mv)mapViewToMobile(state.view);
+render();
+</script>
+</body>
+</html>
