@@ -342,6 +342,16 @@ td .note{display:block;font-size:11px;color:var(--warn)}
 [hidden]{display:none!important}
 .modebar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding-block:8px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
 .modebar .lbl b{color:var(--fg);font-weight:700}
+.trktog{margin-left:auto;border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:4px}
+.consent{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding-block:12px;background:var(--warn-bg);border-bottom:1px solid var(--line);font-size:14px}
+.consent p{margin:0;flex:1 1 420px;max-width:80ch}
+.cbtns{display:flex;gap:8px}
+.cbtns button{border:0;border-radius:999px;padding:8px 18px;font-weight:700}
+.cyes{background:var(--brand-2);color:#fff}
+.cno{background:var(--panel);color:var(--fg);outline:1px solid var(--line)}
+.visits{display:inline-flex;align-items:center;gap:5px;margin-left:10px;padding:2px 10px;border-radius:999px;background:var(--info-bg);color:var(--info);font-variant-numeric:tabular-nums}
+.visits svg{width:15px;height:15px;fill:currentColor}
+.modebar .lbl .visits b{color:var(--info)}
 .modeseg{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--panel-2);gap:2px}
 .modeseg button{display:flex;align-items:center;gap:6px;border:0;background:none;border-radius:999px;padding:6px 14px;font-size:14px;font-weight:500;color:var(--muted)}
 .modeseg button svg{width:16px;height:16px;fill:currentColor}
@@ -625,8 +635,9 @@ td .note{display:block;font-size:11px;color:var(--warn)}
 </style>
 </head>
 <body>
-<div class="modebar gutter"><span class="lbl"><b>CampusLife concept</b> · personalised events prototype</span>
-  <div class="modeseg" role="group" aria-label="View as"><button id="modeDesk" data-mode="desktop"><svg viewBox="0 0 24 24"><path d="M20 18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2H0v2h24v-2zM4 6h16v10H4z"/></svg>Computer</button><button id="modePhone" data-mode="mobile"><svg viewBox="0 0 24 24"><path d="M16 1H8a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3zm-4 21a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5-4H7V4h10z"/></svg>Phone</button></div></div>
+<div class="modebar gutter"><span class="lbl"><b>CampusLife concept</b> · personalised events prototype<span class="visits" id="visits" hidden title="Visits counted by GoatCounter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg><b>0</b> visits</span></span>
+  <button class="trktog" id="trackTog" hidden></button><div class="modeseg" role="group" aria-label="View as"><button id="modeDesk" data-mode="desktop"><svg viewBox="0 0 24 24"><path d="M20 18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2H0v2h24v-2zM4 6h16v10H4z"/></svg>Computer</button><button id="modePhone" data-mode="mobile"><svg viewBox="0 0 24 24"><path d="M16 1H8a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3zm-4 21a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5-4H7V4h10z"/></svg>Phone</button></div></div>
+<div class="consent gutter" id="consent" role="region" aria-label="Usage tracking" hidden><p><b>Student research prototype.</b> May we record your clicks anonymously, with a random ID and no name, email or typed text, to study how people use this page? The data is used only for our course project and deleted afterwards.</p><div class="cbtns"><button class="cyes" data-consent="yes">Allow</button><button class="cno" data-consent="no">No thanks</button></div></div>
 <div class="stage"><div class="device"><div class="app" id="app">
 <div class="mroot" id="mroot"></div>
 <header class="appbar">
@@ -1643,8 +1654,98 @@ document.addEventListener('submit',e=>{
   state.classes.push({id:'c'+Date.now(),day:Number($('#fDay').value),start:st,end:en,course,room:$('#fRoom').value.trim(),site:$('#fSite').value});
   render();toast(`Added ${course}. Suggestions updated.`);
 });
+/* ---------- Visit counter (GoatCounter) ----------
+   1. Sign up free at https://www.goatcounter.com and pick a code, e.g. "campuslife-demo"
+   2. In GoatCounter: Settings → turn on "Allow adding visitor counts on your website"
+   3. Put your code below. Leave it empty to turn the counter off. */
+const GOATCOUNTER_CODE='';
+function track(name){try{if(GOATCOUNTER_CODE&&window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:'event-'+name,title:name,event:true})}catch(e){}}
+(function(){
+  if(!GOATCOUNTER_CODE)return;
+  const base=`https://${GOATCOUNTER_CODE}.goatcounter.com`;
+  try{const sc=document.createElement('script');sc.async=true;sc.src='https://gc.zgo.at/count.js';sc.setAttribute('data-goatcounter',base+'/count');document.head.appendChild(sc)}catch(e){}
+  fetch(base+'/counter/TOTAL.json').then(r=>r.ok?r.json():null).then(j=>{if(!j||!j.count)return;const el=document.getElementById('visits');el.querySelector('b').textContent=j.count;el.hidden=false}).catch(()=>{});
+})();
+/* Which features people try (shown as events in GoatCounter) */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-mode],[data-plan],[data-ask],[data-view],[data-mv],[data-evtab],[data-save]');if(!t)return;const d=t.dataset;
+  if(d.mode)track('switch-to-'+(d.mode==='mobile'?'phone':'computer'));
+  else if(d.plan)track('register-click');
+  else if(d.save)track('save-event');
+  else if(d.ask)track('ask-assistant');
+  else if(d.evtab==='foryou'||d.view==='recommended')track('open-proposed-for-me');
+  else if(d.view==='sdg'||d.mv==='sdg')track('open-sdg-map');
+  else if(d.view==='digest'||d.mv==='digest')track('open-weekly-email');
+  else if(d.view==='timetable'||d.mv==='timetable')track('open-timetable-data');
+},true);
+
+/* ---------- Usage paths (anonymous, opt-in) ----------
+   Sends every click and screen change to a Google Sheet you own, so you can rebuild each visitor's path.
+   1. Create a Google Sheet → Extensions → Apps Script → paste tracking-apps-script.gs
+   2. Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone → copy the URL ending in /exec
+   3. Paste it below. Leave empty to turn tracking off (no banner, nothing sent). */
+const TRACK_URL='https://script.google.com/macros/s/AKfycbxB0Pu9kOo2WiahJnT6HCF5RFR-jc1S4wrND1kglz73UAf4OiZBe84Y4jtVL23O0jn8/exec';
+const TRACK={q:[],seq:0,last:'',on:false,start:Date.now(),searchT:0};
+function tid(get,key){try{const st=get();let v=st.getItem(key);if(!v){v=(window.crypto&&crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now().toString(36)).replace(/-/g,'').slice(0,12);st.setItem(key,v)}return v}catch(e){return 'x'+Math.random().toString(36).slice(2,10)}}
+function screenKey(){return isMobile()?'phone:'+state.mv+(state.mv==='events'?'/'+state.evTab+'/'+state.evWhen:'')+(state.sheet?'+sheet:'+(state.sheet.type==='event'?state.sheet.id:state.sheet.type):''):'computer:'+state.view}
+function tlog(action,value='',label=''){
+  if(!TRACK.on)return;
+  TRACK.q.push({visitor:TRACK.visitor,session:TRACK.session,seq:++TRACK.seq,time:new Date().toISOString(),mode:isMobile()?'phone':'computer',screen:screenKey(),action,value:String(value??'').slice(0,80),label:String(label??'').replace(/\s+/g,' ').trim().slice(0,80)});
+  if(TRACK.q.length>=20)tflush();
+}
+function tflush(beacon){
+  if(!TRACK.q.length||!TRACK_URL)return;
+  const body=JSON.stringify(TRACK.q.splice(0));
+  try{if(beacon&&navigator.sendBeacon&&navigator.sendBeacon(TRACK_URL,body))return;fetch(TRACK_URL,{method:'POST',mode:'no-cors',keepalive:true,body}).catch(()=>{})}catch(e){}
+}
+function tstart(){
+  if(TRACK.on||!TRACK_URL)return;
+  TRACK.on=true;TRACK.visitor=tid(()=>localStorage,'cl-visitor');TRACK.session=tid(()=>sessionStorage,'cl-session');
+  let ref='direct';try{if(document.referrer)ref=new URL(document.referrer).hostname}catch(e){}
+  tlog('session_start',ref,`${window.innerWidth}x${window.innerHeight} · ${navigator.language||''}`);
+  TRACK.last=screenKey();tlog('screen',TRACK.last);
+}
+function tconsentUI(){
+  const c=getConsent(),bar=document.getElementById('consent'),tg=document.getElementById('trackTog');
+  if(!TRACK_URL){bar.hidden=true;tg.hidden=true;return}
+  bar.hidden=c!=='';tg.hidden=c==='';
+  tg.textContent=c==='yes'?'Anonymous usage tracking on · Stop':'Usage tracking off · Allow';
+  tg.dataset.consent=c==='yes'?'no':'yes';
+}
+function getConsent(){try{return localStorage.getItem('cl-track-consent')||''}catch(e){return ''}}
+function setConsent(v){try{localStorage.setItem('cl-track-consent',v)}catch(e){}
+  if(v==='yes')tstart();else{tlog('tracking_stopped');tflush();TRACK.on=false}
+  tconsentUI();
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-consent]');if(!b)return;e.stopImmediatePropagation();setConsent(b.dataset.consent);toast(b.dataset.consent==='yes'?'Thank you. Clicks are recorded anonymously.':'Tracking is off. Nothing is recorded.')},true);
+/* every click, before the page handles it */
+const TKEYS=['mode','view','mv','evtab','when','open','goto','jump','plan','save','ask','act','calmode','calday','calnav','msheet','hub','goal','sdgp','src','int','lang','del','close','mtoast','msearch'];
+document.addEventListener('click',e=>{
+  if(!TRACK.on)return;
+  const t=e.target.closest('button,[data-open],a');if(!t||t.dataset.consent!==undefined)return;
+  const d=t.dataset,k=TKEYS.find(x=>d[x]!==undefined);
+  let label=t.getAttribute('aria-label')||t.textContent;
+  const evId=d.open||d.goto||d.jump||d.plan||d.save;
+  if(evId){const ev=EVENTS.find(x=>x.id===evId);if(ev)label=ev.title}
+  let action=k||(t.id?'click:'+t.id:t.tagName==='A'?'link':'click');
+  if(k==='open'||k==='goto'||k==='jump')action='open_event';
+  if(k==='plan')action=state.plan.has(d.plan)?'unregister':'register';
+  if(k==='save')action=state.saved.has(d.save)?'unsave':'save';
+  tlog(action,k?d[k]:(t.href||''),label);
+},true);
+document.addEventListener('change',e=>{if(TRACK.on&&e.target.matches('select'))tlog('filter',e.target.id+'='+e.target.value)},true);
+document.addEventListener('submit',e=>{if(!TRACK.on)return;if(e.target.id==='aiForm')tlog('ask_custom','','(text not recorded)');if(e.target.id==='addForm')tlog('add_class')},true);
+document.addEventListener('input',e=>{if(!TRACK.on||!['q','mq'].includes(e.target.id))return;clearTimeout(TRACK.searchT);TRACK.searchT=setTimeout(()=>tlog('search','','(text not recorded)'),1500)},true);
+setInterval(()=>tflush(),5000);
+window.addEventListener('pagehide',()=>{tlog('session_end',Math.round((Date.now()-TRACK.start)/1000)+'s');tflush(true)});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')tflush(true)});
+/* log a "screen" step whenever the visible screen changes */
+const _render=render;
+render=function(){_render();if(TRACK.on){const k=screenKey();if(k!==TRACK.last){TRACK.last=k;tlog('screen',k)}}};
+
 if(isMobile()&&!saved.mv)mapViewToMobile(state.view);
 render();
+tconsentUI();if(getConsent()==='yes')tstart();
 </script>
 </body>
 </html>
