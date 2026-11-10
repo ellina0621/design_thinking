@@ -1718,6 +1718,9 @@ document.addEventListener('click',e=>{
    2. Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone → copy the URL ending in /exec
    3. Paste it below. Leave empty to turn tracking off (no banner, nothing sent). */
 const TRACK_URL='https://script.google.com/macros/s/AKfycbxB0Pu9kOo2WiahJnT6HCF5RFR-jc1S4wrND1kglz73UAf4OiZBe84Y4jtVL23O0jn8/exec';
+/* Test round: each round writes to its own sheet in the Google Sheet (round 1 = "events"). */
+const TRACK_SHEET='events2';
+const TRACK_POST=()=>TRACK_URL+(TRACK_URL.includes('?')?'&':'?')+'sheet='+encodeURIComponent(TRACK_SHEET);
 const TRACK={q:[],seq:0,last:'',on:false,start:Date.now(),searchT:0};
 function tid(get,key){try{const st=get();let v=st.getItem(key);if(!v){v=(window.crypto&&crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now().toString(36)).replace(/-/g,'').slice(0,12);st.setItem(key,v)}return v}catch(e){return 'x'+Math.random().toString(36).slice(2,10)}}
 function screenKey(){return isMobile()?'phone:'+state.mv+(state.mv==='events'?'/'+state.evTab+'/'+state.evWhen:'')+(state.sheet?'+sheet:'+(state.sheet.type==='event'?state.sheet.id:state.sheet.type):''):'computer:'+state.view}
@@ -1729,7 +1732,7 @@ function tlog(action,value='',label=''){
 function tflush(beacon){
   if(!TRACK.q.length||!TRACK_URL)return;
   const body=JSON.stringify(TRACK.q.splice(0));
-  try{if(beacon&&navigator.sendBeacon&&navigator.sendBeacon(TRACK_URL,body))return;fetch(TRACK_URL,{method:'POST',mode:'no-cors',keepalive:true,body}).catch(()=>{})}catch(e){}
+  try{if(beacon&&navigator.sendBeacon&&navigator.sendBeacon(TRACK_POST(),body))return;fetch(TRACK_POST(),{method:'POST',mode:'no-cors',keepalive:true,body}).catch(()=>{})}catch(e){}
 }
 function tstart(){
   if(TRACK.on||!TRACK_URL)return;
