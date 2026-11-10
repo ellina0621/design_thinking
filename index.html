@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Concept prototype: timetable-aware event recommendations for a campus life platform, with SDG tags and a phone view.">
+<meta name="description" content="Concept prototype: timetable-aware event recommendations for a campus life platform, with SDG tags, a phone view and five languages.">
 <style>
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0;font-size:14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -342,7 +342,12 @@ td .note{display:block;font-size:11px;color:var(--warn)}
 [hidden]{display:none!important}
 .modebar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding-block:8px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
 .modebar .lbl b{color:var(--fg);font-weight:700}
-.trktog{margin-left:auto;border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:4px}
+.mbright{display:flex;align-items:center;gap:10px 14px;margin-left:auto;flex-wrap:wrap}
+.langsel{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 6px 3px 10px;background:var(--panel-2);color:var(--fg)}
+.langsel svg{width:16px;height:16px;fill:currentColor;flex:none}
+.langsel select{border:0;background:none;font-size:14px;font-weight:600;padding:4px 2px;cursor:pointer}
+.ctop{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.trktog{margin-left:0;border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:4px}
 .consent{position:fixed;inset:0;z-index:60;display:grid;place-items:center;overflow:auto;padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#24007c;background-image:radial-gradient(circle at 20% 15%,rgba(255,255,255,.12),transparent 45%),radial-gradient(circle at 85% 90%,rgba(242,194,48,.18),transparent 40%)}
 .cbox{width:min(560px,100%);background:var(--panel);color:var(--fg);border-radius:24px;padding:32px 28px;display:grid;gap:14px;box-shadow:0 30px 80px rgba(0,0,0,.35);font-family:var(--m-font)}
 .cmark{width:52px;height:52px;border-radius:14px;background:#24007c;color:#fff;display:grid;place-items:center;font-weight:800;font-size:20px}
@@ -392,7 +397,7 @@ html.locked,html.locked body{overflow:hidden}
 .mlogo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;letter-spacing:.2px}
 .mlogo span{width:30px;height:30px;border-radius:7px;background:#fff;color:var(--m-app-fixed);display:grid;place-items:center;font-size:13px}
 .mtabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:0 6px}
-.mtabs button{border:0;background:none;color:rgba(255,255,255,.72);font-size:14px;font-weight:600;padding:8px 0 12px;display:flex;align-items:center;justify-content:center;gap:4px;font-family:inherit;border-bottom:4px solid transparent;position:relative;white-space:nowrap}
+.mtabs button{min-width:0;overflow:hidden;text-overflow:ellipsis;border:0;background:none;color:rgba(255,255,255,.72);font-size:13.5px;font-weight:600;padding:8px 0 12px;display:flex;align-items:center;justify-content:center;gap:4px;font-family:inherit;border-bottom:4px solid transparent;position:relative;white-space:nowrap}
 .mtabs button svg{width:18px;height:18px;fill:currentColor;flex:none}
 .mtabs button.on{color:#fff;border-bottom-color:#fff}
 .mtabs .dotnew{position:absolute;top:6px;left:calc(50% - 30px);width:8px;height:8px;border-radius:50%;background:var(--accent-yellow)}
@@ -451,7 +456,7 @@ html.locked,html.locked body{overflow:hidden}
 .hub .nm small{display:block;font-weight:600;color:var(--muted);font-size:13px}
 .hubbtn{margin-left:auto;display:flex;align-items:center;gap:6px;border:1.5px solid var(--muted);background:none;border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px;font-family:inherit;white-space:nowrap}
 .hubbtn svg{width:18px;height:18px;fill:currentColor}
-.hello{margin:0;font-size:26px;font-weight:800}
+.mroot .hello{margin:0;font-size:26px;font-weight:800}
 .sechead{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .sechead h2{margin:0;font-size:19px;font-weight:800;display:flex;align-items:center;gap:8px}
 .sechead h2 svg{width:24px;height:24px;fill:currentColor}
@@ -646,9 +651,9 @@ html.locked,html.locked body{overflow:hidden}
 </head>
 <body>
 <div class="modebar gutter"><span class="lbl"><b>CampusLife concept</b> · personalised events prototype<span class="visits" id="visits" hidden title="Visits counted by GoatCounter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg><b>0</b> visits</span></span>
-  <button class="trktog" id="trackTog" hidden></button><div class="modeseg" role="group" aria-label="View as"><button id="modeDesk" data-mode="desktop"><svg viewBox="0 0 24 24"><path d="M20 18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2H0v2h24v-2zM4 6h16v10H4z"/></svg>Computer</button><button id="modePhone" data-mode="mobile"><svg viewBox="0 0 24 24"><path d="M16 1H8a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3zm-4 21a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5-4H7V4h10z"/></svg>Phone</button></div></div>
+  <div class="mbright"><button class="trktog" id="trackTog" hidden></button><label class="langsel" data-notr><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.93 6h-2.95a15.6 15.6 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.960zM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4zm.81 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.07 16zm2.950-8H5.07a7.99 7.99 0 0 1 4.33-3.56A15.6 15.6 0 0 0 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4z"/></svg><select id="langSel" class="langpick" aria-label="Language"><option value="en">English</option><option value="fr">Français</option><option value="it">Italiano</option><option value="es">Español</option><option value="de">Deutsch</option></select></label><div class="modeseg" role="group" aria-label="View as"><button id="modeDesk" data-mode="desktop"><svg viewBox="0 0 24 24"><path d="M20 18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2H0v2h24v-2zM4 6h16v10H4z"/></svg>Computer</button><button id="modePhone" data-mode="mobile"><svg viewBox="0 0 24 24"><path d="M16 1H8a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3zm-4 21a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5-4H7V4h10z"/></svg>Phone</button></div></div></div>
 <div class="consent" id="consent" role="dialog" aria-modal="true" aria-labelledby="consentTitle" hidden><div class="cbox">
-  <div class="cmark">CL</div>
+  <div class="ctop"><div class="cmark">CL</div><label class="langsel" data-notr><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.93 6h-2.95a15.6 15.6 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.960zM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4zm.81 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.07 16zm2.950-8H5.07a7.99 7.99 0 0 1 4.33-3.56A15.6 15.6 0 0 0 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4z"/></svg><select id="langSel2" class="langpick" aria-label="Language"><option value="en">English</option><option value="fr">Français</option><option value="it">Italiano</option><option value="es">Español</option><option value="de">Deutsch</option></select></label></div>
   <p class="ceyebrow">Student research prototype · Design Thinking</p>
   <h2 id="consentTitle">Help us study how people use this page</h2>
   <p>We'd like to record which screens you open and what you click, so we can see how students move through the prototype.</p>
@@ -707,31 +712,33 @@ html.locked,html.locked body{overflow:hidden}
 <div class="toast" id="toast" hidden></div>
 
 <script>
-/* ---------- Event data: CampusLife, week of Oct 18–24, 2026 (from screenshots; a few times/places not visible were filled in) ---------- */
+/* ---------- Event data: CampusLife, Nov 10–19, 2026 (from app screenshots; tags, categories and a few hosts were filled in) ---------- */
 const EVENTS=[
- {id:'lib',title:'[Library - Monthly Book Selection] Spotlight on Media (MSc Médias)',start:'2026-10-01T13:00',end:'2026-10-20T13:00',campus:'Paris',site:'Montparnasse',place:'Montparnasse Library – Level 0',host:'Paris Campus',group:'SXPARIS',cat:'Academic',tags:['Academic','Paris','Student Life'],action:'View'},
- {id:'oreilly',title:"O'Reilly + ProQuest One Business available for Berlin Campus students during October",start:'2026-10-19T01:00',end:'2026-10-25T23:00',online:true,restricted:'Berlin',campus:'Berlin',host:'Berlin Campus',group:'SXBERLIN',cat:'Academic',tags:['Academic','Berlin'],action:'View'},
- {id:'pickle',title:'Pickleball Open Play',start:'2026-10-18T12:00',end:'2026-10-18T14:30',campus:'Berlin',place:'Berlin Campus',host:'Sports Team – Berlin Campus',group:'SXBERLIN',cat:'Sports',tags:['Athletic/Sports','Berlin'],going:1,free:true,action:'Register'},
- {id:'padelT',title:'Padel Tournament',start:'2026-10-18T13:00',end:'2026-10-18T18:00',campus:'Madrid',place:'Madrid',host:'Bachelor Society (EBS) – Madrid Campus',group:'EBSMADRID',cat:'Sports',tags:['Athletic/Sports','Madrid'],action:'Register'},
- {id:'bnp',title:'Paris | BNP Paribas CIB Consulting & Transformation: Rallye',start:'2026-10-19T17:00',end:'2026-10-19T19:00',campus:'Paris',site:'Montparnasse',place:'Paris Campus',host:'Paris Campus',group:'SXPARIS',cat:'Career',tags:['Company event','Paris','Career'],action:'View'},
- {id:'erasmus',title:'Erasmus+ Internship Support Info Session – Take 2!',start:'2026-10-19T17:30',end:'2026-10-19T18:15',campus:'Berlin',place:'Berlin Campus',host:'Berlin Campus',group:'SXBERLIN',cat:'Career',tags:['Career','Berlin'],action:'View'},
- {id:'mck',title:'Online | McKinsey & Company Italy – Tips & Insights on the Selection Process | IT',start:'2026-10-20T11:30',end:'2026-10-20T12:30',online:true,campus:'Turin',host:'Turin Campus',group:'SXTURIN',cat:'Career',tags:['Career workshop','Turin','Career'],lang:'IT',action:'View'},
- {id:'ebs1',title:'Study Sessions by EBS – Financial Accounting and Macroeconomics',start:'2026-10-20T15:00',end:'2026-10-20T17:00',campus:'Madrid',place:'—',host:'Bachelor Society (EBS) – Madrid Campus',group:'EBSMADRID',cat:'Academic',tags:['Academic','Madrid','Student Societies'],going:18,spots:12,free:true,action:'Register'},
- {id:'sk',title:'Paris | Rallye Conseil : Simon-Kucher | FR',start:'2026-10-20T17:00',end:'2026-10-20T19:00',campus:'Paris',site:'Champerret',place:'Champerret Campus – Amphithéâtre Monnet',host:'Paris Campus',group:'SXPARIS',cat:'Career',tags:['Company event','Paris','Career'],lang:'FR',action:'View'},
- {id:'aikpmg',title:'ESCP AI Society x KPMG',start:'2026-10-20T18:30',end:'2026-10-20T20:00',campus:'Paris',site:'Montparnasse',place:'Montparnasse Campus',host:'AI Society – Paris Campus',group:'AISOCIETY',cat:'Career',tags:['Company event','Paris','Student Societies'],lang:'EN',going:42,spots:8,free:true,action:'Register'},
- {id:'pitch',title:'ELEVATOR PITCH 4 FUNDRASING',start:'2026-10-21T18:00',end:'2026-10-21T20:00',campus:'Madrid',place:'ESCP María de Molina, 4 – AGORA',host:'Madrid Campus',group:'SXMADRID',cat:'Conference',tags:['Conference','Madrid','Blue Factory'],going:10,free:true,action:'Register'},
- {id:'tribunes',title:'Tribunes reçoit Pierre Lévy et Pierre Buhler',start:'2026-10-21T18:30',end:'2026-10-21T20:00',campus:'Paris',site:'Champerret',place:'Amphithéâtre Jacques Coeur, Campus de Champerret',host:'Tribunes – Paris Campus',group:'TRIBUNES',cat:'Conference',tags:['Conference','Paris','Student Societies'],lang:'FR',action:'View'},
- {id:'padelmini',title:'Padel Mini Tournament',start:'2026-10-21T20:00',end:'2026-10-21T21:30',campus:'Berlin',place:'Padel Bros',host:'Berlin Campus',group:'SXBERLIN',cat:'Sports',tags:['Athletic/Sports','Berlin','Student Life'],going:13,spots:3,free:true,action:'Register'},
- {id:'tennis',title:'Madrid Tennis Training – Intermediate Level',start:'2026-10-22T09:30',end:'2026-10-22T10:30',campus:'Madrid',place:'SCP Puerta de Hierro Guisando Club',host:'Padel & Tennis Team – Madrid Campus',group:'MADRIDRACKET',cat:'Sports',tags:['Athletic/Sports','Madrid'],going:3,spots:1,free:true,action:'Register'},
- {id:'pharma',title:'Paris | Pharma Company Connect | EN',start:'2026-10-22T12:00',end:'2026-10-22T14:30',campus:'Paris',site:'Montparnasse',place:'Montparnasse Campus – Espace Bamboo',host:'Paris Campus',group:'SXPARIS',cat:'Career',tags:['Company event','Paris','Career'],lang:'EN',action:'View'},
- {id:'studapart',title:'[English] Prepare your accommodation in Paris – Webinar with Studapart',start:'2026-10-22T13:00',end:'2026-10-22T14:00',online:true,campus:'Paris',host:'Paris Campus',group:'SXPARIS',cat:'Student Life',tags:['Online Webinar','Paris','Student Life'],lang:'EN',action:'View'},
- {id:'ebs2',title:'Study Sessions by EBS – Fundamentals of Mathematics and Marketing',start:'2026-10-22T13:30',end:'2026-10-22T15:30',campus:'Madrid',place:'—',host:'Bachelor Society (EBS) – Madrid Campus',group:'EBSMADRID',cat:'Academic',tags:['Academic','Madrid','Student Societies'],going:17,spots:13,free:true,action:'Register'},
- {id:'padeltr',title:'Madrid Padel Training – Basic Level',start:'2026-10-23T09:30',end:'2026-10-23T10:30',campus:'Madrid',place:'Madrid',host:'Padel & Tennis Team – Madrid Campus',group:'MADRIDRACKET',cat:'Sports',tags:['Athletic/Sports','Madrid'],going:4,free:true,action:'Register'},
- {id:'bake',title:'SPF Halloween Bake Sale',start:'2026-10-23T10:00',end:'2026-10-23T14:00',campus:'Berlin',place:'Berlin Campus',host:'SPF – Berlin Campus',group:'SPFBERLIN',cat:'Student Life',tags:['Student Life','Berlin'],action:'View'},
- {id:'muslim',title:'Muslim Community Society – Evening Talk',start:'2026-10-23T19:00',end:'2026-10-23T20:00',campus:'Paris',site:'Montparnasse',place:'Montparnasse Campus',host:'Muslim Community Society – Paris',group:'COMMUNAUTÉ',cat:'Student Life',tags:['Student Societies','Paris'],lang:'FR',action:'View'},
- {id:'impact',title:'Impact Consulting Day – ESCP x ESADE',start:'2026-10-24T09:30',end:'2026-10-24T17:00',campus:'Madrid',place:'Madrid Campus',host:'180 Degrees Consulting',group:'180DC',cat:'Career',tags:['Career','Madrid'],going:26,action:'Register'},
- {id:'volley',title:'Mixed Volleyball Training',start:'2026-10-24T11:00',end:'2026-10-24T13:00',campus:'Madrid',place:'Madrid',host:'Volleyball Team – Madrid Campus',group:'MADRIDVOLLEY',cat:'Sports',tags:['Athletic/Sports','Madrid'],action:'Register'},
- {id:'studio54',title:'Studio 54 : DISCO CHIC',start:'2026-10-24T22:00',end:'2026-10-25T04:00',campus:'Berlin',place:'Berlin',host:'EBS Berlin',group:'EBSBERLIN',cat:'Social',tags:['Social','Berlin'],action:'Register'}
+ {id:'studapart_en',title:'[English] Prepare your accommodation in Paris - Webinar with Studapart',start:'2026-11-10T17:30',end:'2026-11-10T18:30',online:true,campus:'Paris',host:'Paris Campus',group:'SXPARIS',cat:'Student Life',tags:['Online Webinar','Paris','Student Life'],lang:'EN',action:'View'},
+ {id:'quatter0',title:'Quatter ESCP Society Student Bar',start:'2026-11-10T18:00',end:'2026-11-10T21:30',campus:'Paris',site:'Champerret',place:'Level 0 Champerret',host:'Quatter (Le Q) - Paris Campus',group:'QUATTER',cat:'Social',tags:['Social','Paris','Student Societies'],action:'View'},
+ {id:'berge',title:'ESCP Women in Finance Chair x Women in Leadership Society - Aurore Bergé, France’s Minister Delegate for Gender Equality and…',start:'2026-11-10T18:30',end:'2026-11-10T20:00',campus:'Paris',site:'Champerret',place:'ESCP Paris Champerret campus - Amphitheater Etienne Marcel',host:'Paris Campus',group:'SXPARIS',cat:'Conference',tags:['Conference','Paris','Student Societies'],action:'Register'},
+ {id:'iagen',title:'IA Générative : guide de survie - Conférence Débat',start:'2026-11-10T18:30',end:'2026-11-10T21:00',campus:'Paris',site:'Montparnasse',place:'Campus Montparnasse – 3, rue Armand Moisant, Paris - France',host:'Paris Campus',group:'SXPARIS',cat:'Conference',tags:['Conference','Paris'],lang:'FR',action:'Register'},
+ {id:'braunpivet',title:'Tribunes reçoit Yaël Braun-Pivet',start:'2026-11-10T18:30',end:'2026-11-10T20:10',campus:'Paris',site:'Champerret',place:'Amphithéâtre Jacques Coeur, Campus de Champerret',host:'Tribunes - Paris Campus',group:'TRIBUNES',cat:'Conference',tags:['Conference','Paris','Student Societies'],lang:'FR',action:'View'},
+ {id:'vibe',title:'Vibe Coding Workshop: Building Your First App/Website with AI',start:'2026-11-11T14:00',end:'2026-11-11T17:00',campus:'London',place:'527 Finchley Road',host:'London Campus',group:'SXLONDON',cat:'Academic',tags:['Workshop','London'],going:11,spots:9,action:'Register'},
+ {id:'gmat',title:'Online | Crack the GMAT Preparation Session | EN',start:'2026-11-11T18:00',end:'2026-11-11T19:00',online:true,campus:'Turin',host:'Turin Campus',group:'SXTURIN',cat:'Academic',tags:['Online Webinar','Turin'],lang:'EN',action:'Register'},
+ {id:'pilates1',title:'Pilates classes',start:'2026-11-11T19:00',end:'2026-12-02T20:00',campus:'Turin',place:'ESCP Turin Campus - Wellbeing room',host:'Turin Campus',group:'SXTURIN',cat:'Sports',tags:['Athletic/Sports','Turin'],action:'Register'},
+ {id:'pilates2',title:'Pilates classes',start:'2026-11-11T19:00',end:'2026-11-11T20:00',campus:'Turin',place:'ESCP Turin Campus - Wellbeing room',host:'Turin Campus',group:'SXTURIN',cat:'Sports',tags:['Athletic/Sports','Turin'],going:3,action:'Register'},
+ {id:'arcadia',title:'ESCP Arcadia VS Frassati S.Carlo 1 (AWAY)',start:'2026-11-11T21:20',end:'2026-11-11T23:20',campus:'Turin',place:'San Francesco al Campo',host:'Turin Campus',group:'SXTURIN',cat:'Sports',tags:['Athletic/Sports','Turin'],action:'Register'},
+ {id:'kindness',title:'World Kindness Day with SPF Paris 💛',start:'2026-11-12T09:00',end:'2026-11-13T15:00',campus:'Paris',site:'Champerret',place:'Hall Blondeau, Champerret campus',host:"Students' Philanthropic Foundation (SPF) - Paris Campus",group:'SPFPARIS',cat:'Student Life',tags:['Student Societies','Paris','Student Life'],action:'View'},
+ {id:'tennis',title:'Madrid Tennis Training - Intermediate Level',start:'2026-11-12T09:30',end:'2026-11-12T10:30',campus:'Madrid',place:'SCP Puerta de Hierro Guisando Club',host:'Padel & Tennis Team - Madrid Campus',group:'MADRIDRACKET',cat:'Sports',tags:['Athletic/Sports','Madrid'],going:3,action:'Register'},
+ {id:'thinkcell',title:'180DC x JET : ThinkCell Workshop',start:'2026-11-12T15:00',end:'2026-11-12T17:00',campus:'Berlin',place:'France',host:'180 Degrees Consulting - Berlin Campus',group:'180DC',cat:'Career',tags:['Career workshop','Berlin'],going:12,spots:38,action:'Register'},
+ {id:'wfoot',title:"Women's Football training",start:'2026-11-12T16:30',end:'2026-11-12T17:30',campus:'London',place:'Princes Park Youth Football Club astroturf pitch',host:'Football Team (Women) - London Campus',group:'LDNFOOTBALL',cat:'Sports',tags:['Athletic/Sports','London'],action:'Register'},
+ {id:'dignity',title:'Dignity and Development: Human Rights at the Heart of the Sustainable Future',start:'2026-11-12T18:00',end:'2026-11-12T19:30',campus:'Turin',place:'France',host:'International Politics - Turin Campus',group:'INTLPOLITICS',cat:'Conference',tags:['Conference','Turin','Student Societies'],going:9,action:'Register'},
+ {id:'quatter1',title:'Quatter ESCP Society Student Bar',start:'2026-11-12T18:00',end:'2026-11-12T21:30',campus:'Paris',site:'Champerret',place:'Level 0 Champerret',host:'Quatter (Le Q) - Paris Campus',group:'QUATTER',cat:'Social',tags:['Social','Paris','Student Societies'],action:'View'},
+ {id:'gomart',title:'Exclusive Talk with Christophe Gomart, French Deputy to the European Parliament and former Head of French Intelligence',start:'2026-11-12T18:30',end:'2026-11-12T20:30',campus:'Paris',site:'Montparnasse',place:'Campus Montparnasse Auditorium',host:'ESCPRIT Défense - Paris Campus',group:'ESCPRIT',cat:'Conference',tags:['Conference','Paris','Student Societies'],action:'Register'},
+ {id:'euros',title:'Two digital euros for a sovereign and competitive EU',start:'2026-11-16T18:00',end:'2026-11-16T19:00',campus:'Paris',place:'France',host:'International Politics - Paris Campus',group:'INTLPOLITICS',cat:'Conference',tags:['Conference','Paris','Student Societies'],going:7,action:'Register'},
+ {id:'brexit',title:'Beyond Brexit: France–UK Economic Collaboration, with Pierre Chabrol, Minister Counsellor at the French Embassy',start:'2026-11-16T18:30',end:'2026-11-16T19:30',campus:'London',place:'527 Finchley Road',host:'London Campus',group:'SXLONDON',cat:'Conference',tags:['Conference','London'],going:113,spots:37,action:'Register'},
+ {id:'selfdef',title:'Self-Defense Classes',start:'2026-11-16T19:00',end:'2026-11-16T20:00',campus:'Turin',place:'ESCP Turin Campus - Wellbeing room',host:'Turin Campus',group:'SXTURIN',cat:'Sports',tags:['Athletic/Sports','Turin'],going:1,action:'Register'},
+ {id:'hackathon',title:'Entrepreneurship Festival - Hackathon',start:'2026-11-17T09:00',end:'2026-11-17T20:00',campus:'Berlin',place:'Delta Campus',host:'Berlin Campus',group:'SXBERLIN',cat:'Career',tags:['Career','Berlin'],action:'Register'},
+ {id:'studapart',title:'En pleine recherche de logement ? Rejoignez notre webinaire ESCP x STUDAPART',start:'2026-11-17T13:00',end:'2026-11-17T14:00',online:true,campus:'Paris',host:'Paris Campus',group:'SXPARIS',cat:'Student Life',tags:['Online Webinar','Paris','Student Life'],lang:'FR',action:'View'},
+ {id:'quatter2',title:'Quatter ESCP Society Student Bar',start:'2026-11-17T18:00',end:'2026-11-17T21:30',campus:'Paris',site:'Champerret',place:'Level 0 Champerret',host:'Quatter (Le Q) - Paris Campus',group:'QUATTER',cat:'Social',tags:['Social','Paris','Student Societies'],action:'View'},
+ {id:'ibsummit',title:'Investment Banking Summit - ESCP HEC Finance Club',start:'2026-11-17T18:15',end:'2026-11-17T21:30',campus:'Paris',place:'France',host:'ESCP HEC Finance Club - Paris Campus',group:'HECFINANCE',cat:'Career',tags:['Company event','Paris','Career'],action:'Register'},
+ {id:'bakesale',title:'SPF Bake Sale',start:'2026-11-19T12:00',end:'2026-11-19T16:00',campus:'London',place:'France',host:"Students' Philanthropic Foundation (SPF) - London Campus",group:'SPFLONDON',cat:'Student Life',tags:['Student Life','London'],action:'View'}
 ];
 /* UN Sustainable Development Goals (sdgs.un.org/goals) */
 const SDGS=[null,
@@ -741,32 +748,34 @@ const SDGS=[null,
  {t:'Climate Action',c:'#3F7E44'},{t:'Life Below Water',c:'#0A97D9'},{t:'Life on Land',c:'#3E9A1D'},{t:'Peace, Justice and Strong Institutions',c:'#00689D'},{t:'Partnerships for the Goals',c:'#19486A'}];
 /* Draft classification – the team has not agreed definitions yet. [goals, reason] */
 const SDG_TAGS={
- lib:[[4,16],'Curated reading on media and journalism: learning, and public access to information (target 16.10).'],
- oreilly:[[4,9],'Free access to business research databases supports learning and innovation.'],
- pickle:[[3],'Sport and physical activity for student well-being.'],
- padelT:[[3],'Sport and physical activity for student well-being.'],
- bnp:[[8],'Recruitment and career insight in consulting: decent work and employment.'],
- erasmus:[[8,4],'Support for finding internships abroad: employability and learning.'],
- mck:[[8],'Recruitment tips for a consulting career.'],
- ebs1:[[4],'Peer-to-peer study sessions: quality education.'],
- sk:[[8],'Company presentation and recruitment.'],
- aikpmg:[[9,8],'AI in professional services: innovation and the future of work.'],
- pitch:[[8,9],'Entrepreneurship and fundraising skills: economic growth and innovation.'],
- tribunes:[[16,17],'Former ambassadors on negotiating peace and the new balance of power: peace, strong institutions and international cooperation.'],
- padelmini:[[3],'Sport and physical activity for student well-being.'],
+ studapart_en:[[11],'Finding safe, affordable student housing.'],
+ quatter0:[[],'Student bar – no clear SDG link.'],
+ berge:[[5,10],'Women in finance and leadership, with the Minister for Gender Equality: gender equality and reduced inequalities.'],
+ iagen:[[4,9],'Generative AI and how to use it well: learning and innovation.'],
+ braunpivet:[[16],'A talk with a leading figure of the French National Assembly: democratic, strong institutions.'],
+ vibe:[[4,9],'Hands-on workshop building with AI: digital skills and innovation.'],
+ gmat:[[4],'Test preparation for graduate studies: quality education.'],
+ pilates1:[[3],'Sport and physical activity for student well-being.'],
+ pilates2:[[3],'Sport and physical activity for student well-being.'],
+ arcadia:[[3],'Sport and physical activity for student well-being.'],
+ kindness:[[16,3],'Kindness and solidarity on campus: peaceful, inclusive communities and well-being.'],
  tennis:[[3],'Sport and physical activity for student well-being.'],
- pharma:[[3,8],'Careers in the pharmaceutical industry: health and employment.'],
+ thinkcell:[[8,4],'Consulting tools and data storytelling: employability and skills.'],
+ wfoot:[[3,5],"Women's team sport: well-being and gender equality."],
+ dignity:[[16,10],'Human rights and sustainable development: justice, strong institutions and reduced inequalities.'],
+ quatter1:[[],'Student bar – no clear SDG link.'],
+ gomart:[[16],'European Parliament and intelligence services: peace, security and strong institutions.'],
+ euros:[[8,16],'Digital currency and EU sovereignty: economic growth and strong institutions.'],
+ brexit:[[17,8],'France–UK economic cooperation: partnerships and economic growth.'],
+ selfdef:[[3],'Self-defence training: personal safety and well-being.'],
+ hackathon:[[8,9],'Start-up challenges and coding: entrepreneurship and innovation.'],
  studapart:[[11],'Finding safe, affordable student housing.'],
- ebs2:[[4],'Peer-to-peer study sessions: quality education.'],
- padeltr:[[3],'Sport and physical activity for student well-being.'],
- bake:[[1,17],'Charity bake sale (assumed to raise money for a cause).'],
- muslim:[[10,16],'Faith community society talk: inclusion and peaceful, inclusive societies.'],
- impact:[[17,8],'Students consulting for non-profits: partnerships and social impact.'],
- volley:[[3],'Sport and physical activity for student well-being.'],
- studio54:[[],'Party – no clear SDG link.']
+ quatter2:[[],'Student bar – no clear SDG link.'],
+ ibsummit:[[8],'Investment banking recruitment: decent work and economic growth.'],
+ bakesale:[[1,17],'Charity bake sale raising money for a cause.']
 };
 EVENTS.forEach(ev=>{const x=SDG_TAGS[ev.id]||[[],''];ev.sdg=x[0];ev.sdgWhy=x[1]});
-/* Aurion: sample student timetable for Oct 18–24 (from a real student calendar, anonymised) */
+/* Aurion: sample student timetable, repeats every week (from a real student calendar, anonymised) */
 const SAMPLE_CLASSES=[
  {id:'c1',day:1,start:'17:00',end:'19:00',course:'Français',room:'',site:'Champerret',note:'End time assumed – cut off in screenshot'},
  {id:'c2',day:2,start:'09:00',end:'12:00',course:'Design Thinking',room:'Salle …',site:'Champerret'},
@@ -775,8 +784,8 @@ const SAMPLE_CLASSES=[
 ];
 /* Blackboard (illustrative) and CampusLife history (illustrative) */
 const DEADLINES=[
- {course:'Information Ethics',what:'Individual essay',due:'2026-10-22T23:59'},
- {course:'Design Thinking',what:'Prototype presentation',due:'2026-10-23T12:00'}
+ {course:'Information Ethics',what:'Individual essay',due:'2026-11-12T23:59'},
+ {course:'Design Thinking',what:'Prototype presentation',due:'2026-11-13T12:00'}
 ];
 const HISTORY={Career:3,Conference:2};
 const SAMPLE_PROFILE={name:'Student Name',sid:'e123456',campus:'Paris',site:'Champerret',interests:['Career','Conference','Student Life'],langs:['EN'],sdgs:[16],buffer:45,src:{aurion:true,blackboard:true,campuslife:true}};
@@ -789,20 +798,22 @@ const CAT_VAR={Career:'--c-career',Academic:'--c-academic',Conference:'--c-confe
 const LANG={EN:'English',FR:'French',DE:'German',ES:'Spanish',IT:'Italian'};
 const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const WEEK0=new Date(2026,9,18), WEEK1=new Date(2026,9,25);
+const WEEK0=new Date(2026,10,10), NDAYS=10, WEEK1=new Date(2026,10,10+NDAYS);
+const DAYS=[...Array(NDAYS)].map((_,i)=>new Date(WEEK0.getFullYear(),WEEK0.getMonth(),WEEK0.getDate()+i));
 const REAL=new Date();
-const NOW=(REAL>=WEEK0&&REAL<WEEK1)?REAL:new Date(2026,9,20,11,55);
+const NOW=(REAL>=WEEK0&&REAL<WEEK1)?REAL:new Date(2026,10,10,11,55);
 
 /* ---------- State ---------- */
 const KEY='smart-campus-events-v5';
 let saved={};
 try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
 const freshProfile=()=>({...SAMPLE_PROFILE,interests:[...SAMPLE_PROFILE.interests],langs:[...SAMPLE_PROFILE.langs],sdgs:[...SAMPLE_PROFILE.sdgs],src:{...SAMPLE_PROFILE.src}});
+const HT=(location.hash||'').slice(1).toLowerCase().split(/[-&+,_/]/);
 const state={
   view:saved.view||'home', smart:saved.smart!==false, hideClash:saved.hideClash!==false, myCampus:saved.myCampus!==false, hideLang:saved.hideLang!==false,
-  showClasses:saved.showClasses!==false, showHidden:false, calDay:Math.max(0,Math.min(6,Math.floor((new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate())-WEEK0)/864e5))),
+  showClasses:saved.showClasses!==false, showHidden:false, calDay:Math.max(0,Math.min(NDAYS-1,Math.floor((new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate())-WEEK0)/864e5))),
   mv:saved.mv||'home', evTab:saved.evTab||'foryou', evWhen:'upcoming', calMode:saved.calMode||'day', calSug:true, saved:new Set(saved.saved||[]), sheet:null, chat:[], mSearch:false,
-  mode:(location.hash==='#mobile'||location.hash==='#phone')?'mobile':location.hash==='#desktop'?'desktop':(saved.mode||((window.innerWidth||1200)<600?'mobile':'desktop')), q:'',cat:'',loc:'',sdg:'',sdgFocus:0,
+  mode:(HT.includes('mobile')||HT.includes('phone'))?'mobile':HT.includes('desktop')?'desktop':(saved.mode||((window.innerWidth||1200)<600?'mobile':'desktop')), q:'',cat:'',loc:'',sdg:'',sdgFocus:0,
   classes:Array.isArray(saved.classes)?saved.classes:SAMPLE_CLASSES.map(c=>({...c})),
   profile:saved.profile?{...freshProfile(),...saved.profile,src:{...SAMPLE_PROFILE.src,...(saved.profile.src||{})}}:freshProfile(),
   plan:new Set(saved.plan||[])
@@ -811,6 +822,8 @@ function persist(){try{localStorage.setItem(KEY,JSON.stringify({mode:state.mode,
 
 /* ---------- Helpers ---------- */
 const $=s=>document.querySelector(s);
+const todayIdx=()=>Math.max(0,Math.min(NDAYS-1,Math.floor((new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate())-WEEK0)/864e5)));
+const RANGE=()=>`${MON[DAYS[0].getMonth()]} ${DAYS[0].getDate()} – ${MON[DAYS[NDAYS-1].getMonth()]} ${DAYS[NDAYS-1].getDate()}`;
 const isMobile=()=>state.mode==='mobile';
 function toTop(){try{window.scrollTo({top:0})}catch(e){}const a=document.getElementById('app');if(a)a.scrollTop=0}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -901,6 +914,8 @@ function verdict(r){
 }
 const fitKind=r=>r.status==='clash'||r.status==='lang'?'bad':(r.status==='tight'||r.status==='partial')?'warn':r.status==='other'?'info':'ok';
 const FITS=['ok','anytime'];
+/* soonest first; same start time → better match first */
+const byDate=(a,b)=>(P(a.ev.start)-P(b.ev.start))||((b.r.score||0)-(a.r.score||0));
 function filtered(opt){
   const q=state.q.trim().toLowerCase();
   return EVENTS.map(ev=>({ev,r:evaluate(ev,opt)})).filter(({ev})=>{
@@ -917,7 +932,7 @@ function proposals(){
   const up=EVENTS.map(ev=>({ev,r:evaluate(ev)})).filter(x=>FITS.includes(x.r.status)&&!x.r.inPlan);
   const mySdg=x=>(x.ev.sdg||[]).some(n=>state.profile.sdgs.includes(n));
   const disc=up.filter(x=>!state.profile.interests.includes(x.ev.cat)&&(mySdg(x)||['Conference','Academic'].includes(x.ev.cat))).sort((a,b)=>(mySdg(b)-mySdg(a))||(b.r.score-a.r.score))[0]||null;
-  const picks=up.filter(x=>x!==disc).sort((a,b)=>b.r.score-a.r.score).slice(0,4);
+  const picks=up.filter(x=>x!==disc).sort((a,b)=>b.r.score-a.r.score).slice(0,4).sort(byDate);
   return{picks,disc};
 }
 
@@ -943,7 +958,7 @@ function card({ev,r},opts={}){
   if(s<=NOW&&NOW<e)badge='<span class="badge b-live">LIVE</span>';
   else if(sameDay(s,NOW))badge='<span class="badge b-today">TODAY</span>';
   else if(sameDay(s,tomorrowOf(NOW)))badge='<span class="badge b-tomorrow">TOMORROW</span>';
-  const time=r.multi?`${fmtD(s)} ${fmtT(s)} –<br>${fmtD(e)} ${fmtT(e)}<br>(GMT+2)`:`${fmtD(s)}<br>${fmtR(s,e)}<br>(GMT+2)`;
+  const time=r.multi?`${fmtD(s)} ${fmtT(s)} –<br>${fmtD(e)} ${fmtT(e)}<br>(GMT+1)`:`${fmtD(s)}<br>${fmtR(s,e)}<br>(GMT+1)`;
   const going=ev.going?`<div class="going">${ICON.person}<div><b>${ev.going}</b> going${ev.spots!=null?`<br><span class="spots">${ev.spots}</span>Spots Left`:''}</div></div>`:'';
   const v=verdict(r);
   const fit=state.smart&&r.status!=='past'?`<div class="fit"><span class="pill ${v.c}">${esc(v.t)}</span>${r.chips.map(chipHTML).join('')}</div>`:'';
@@ -1055,7 +1070,7 @@ function weekStrip(opts={}){
   const H0=8,H1=23,span=H1-H0;
   const pct=d=>Math.max(0,Math.min(100,((d.getHours()+d.getMinutes()/60)-H0)/span*100));
   const evs=opts.classesOnly?[]:filtered();
-  const days=[...Array(7)].map((_,i)=>new Date(2026,9,18+i));
+  const days=DAYS;
   let rows='';
   for(const d of days){
     const base=classesOn(d).map(c=>({...c,cls:'class'}));
@@ -1083,9 +1098,9 @@ function viewRecommended(){
   if(!state.smart)return `<div class="rec-head"><h2>Timetable suggestions are off</h2><p>Turn on “Plan around my timetable” above to rank events by your free time, campus, languages and interests.</p></div>`;
   const up=filtered().filter(x=>x.r.status!=='past'&&!x.r.away);
   const plan=up.filter(x=>x.r.inPlan),rest=up.filter(x=>!x.r.inPlan);
-  const top=rest.filter(x=>FITS.includes(x.r.status)&&x.r.score>=75).sort((a,b)=>b.r.score-a.r.score);
-  const fits=rest.filter(x=>FITS.includes(x.r.status)&&x.r.score<75).sort((a,b)=>b.r.score-a.r.score);
-  const tight=rest.filter(x=>['tight','partial'].includes(x.r.status)).sort((a,b)=>b.r.score-a.r.score);
+  const top=rest.filter(x=>FITS.includes(x.r.status)&&x.r.score>=75).sort(byDate);
+  const fits=rest.filter(x=>FITS.includes(x.r.status)&&x.r.score<75).sort(byDate);
+  const tight=rest.filter(x=>['tight','partial'].includes(x.r.status)).sort(byDate);
   const no=rest.filter(x=>['clash','lang'].includes(x.r.status));
   const sec=(t,sub,arr)=>arr.length?`<h2 class="group-h">${t}</h2>${sub?`<p style="margin:-4px 0 10px 4px;color:var(--muted)">${sub}</p>`:''}<div class="list">${arr.map(x=>card(x)).join('')}</div>`:'';
   return `<div class="rec-head"><h2>Proposed for ${esc(state.profile.name)}</h2>
@@ -1101,7 +1116,7 @@ function viewRecommended(){
 
 function viewCalendar(){
   const all=filtered();
-  const allDays=[...Array(7)].map((_,i)=>new Date(2026,9,18+i));
+  const allDays=DAYS;
   const days=isMobile()?[allDays[state.calDay]]:allDays;
   const pick=isMobile()?`<div class="daypick" role="group" aria-label="Day">${allDays.map((d,i)=>{const n=all.filter(x=>!x.r.multi&&sameDay(P(x.ev.start),d)&&FITS.includes(x.r.status)).length;
     return `<button data-calday="${i}" class="${sameDay(d,NOW)?'today':''}" aria-pressed="${i===state.calDay}">${DAYN[d.getDay()]}<b>${d.getDate()}</b><i class="${n?'':'none'}"></i></button>`}).join('')}</div>`:'';
@@ -1115,9 +1130,9 @@ function viewCalendar(){
     items.sort((a,b)=>a.sort-b.sort);
     return `<div class="cal-col ${sameDay(d,NOW)?'today':''}"><div class="cal-day">${DAYN[d.getDay()].toUpperCase()}, ${MON[d.getMonth()].toUpperCase()} ${d.getDate()}</div>${items.map(i=>i.html).join('')||'<div style="padding:12px;color:var(--muted);font-size:13px">No events</div>'}</div>`;
   }).join('');
-  return `<div class="cal-head"><h2>Calendar</h2><span class="range">Oct 18 – Oct 24, 2026</span>
+  return `<div class="cal-head"><h2>Calendar</h2><span class="range">${RANGE()}, ${DAYS[0].getFullYear()}</span>
     ${state.smart?`<button class="tog" aria-pressed="${state.showClasses}" data-act="showClasses">Show my classes</button>`:''}</div>
-    ${pick}<div class="cal-scroll"><div class="cal">${cols}</div></div>${hiddenNote(all.filter(x=>x.r.status!=='past'))}`;
+    ${pick}<div class="cal-scroll"><div class="cal" style="grid-template-columns:repeat(${days.length},minmax(140px,1fr));min-width:${days.length*140}px">${cols}</div></div>${hiddenNote(all.filter(x=>x.r.status!=='past'))}`;
 }
 function calItem({ev,r},cont){
   const s=P(ev.start),e=P(ev.end);let fit='';
@@ -1126,7 +1141,7 @@ function calItem({ev,r},cont){
     fit=`<div class="cf fit-${r.inPlan?'info':k}">${t}</div>`}
   const cls=r.status==='past'?'dim':(state.smart&&['clash','lang'].includes(r.status))?'clash':'';
   return `<div class="citem ${cls}"><div class="ch" style="background:var(${CAT_VAR[ev.cat]})">${esc(ev.group)}</div>${cont?'<div class="cont">CONTINUED</div>':''}
-    <div class="cb"><div class="ct">${r.multi?`${MON[s.getMonth()]} ${s.getDate()} – ${MON[e.getMonth()]} ${e.getDate()}`:fmtR(s,e)} (GMT+2)</div><button class="linkbtn cn" data-goto="${ev.id}">${esc(ev.title)}</button>${ev.sdg.length?`<div>${sdgMini(ev)}</div>`:''}${ev.going?`<div style="color:var(--muted)">${ev.going} going</div>`:''}${fit}</div></div>`;
+    <div class="cb"><div class="ct">${r.multi?`${MON[s.getMonth()]} ${s.getDate()} – ${MON[e.getMonth()]} ${e.getDate()}`:fmtR(s,e)} (GMT+1)</div><button class="linkbtn cn" data-goto="${ev.id}">${esc(ev.title)}</button>${ev.sdg.length?`<div>${sdgMini(ev)}</div>`:''}${ev.going?`<div style="color:var(--muted)">${ev.going} going</div>`:''}${fit}</div></div>`;
 }
 
 function viewPast(){
@@ -1139,10 +1154,10 @@ function viewDigest(){
   const c=k=>wk.filter(x=>k.includes(x.r.status)).length;
   const total=wk.length,away=c(['other']),lang=c(['lang']),clash=c(['clash']),tight=c(['tight','partial']),fit=c(FITS);
   const seg=(n,v)=>n?`<i style="width:${n/total*100}%;background:var(${v})"></i>`:'';
-  const picks=wk.filter(x=>FITS.includes(x.r.status)).sort((a,b)=>b.r.score-a.r.score);
+  const picks=wk.filter(x=>FITS.includes(x.r.status)).sort(byDate);
   const p=state.profile;
   return `<div class="rec-head"><h2>From mass emails to one weekly digest</h2>
-    <p>Instead of announcing every event to every student, CampusLife sends one email on Sunday with only the events that fit your week. Below: this week (Oct 18–24) for ${esc(p.name)}.</p></div>
+    <p>Instead of announcing every event to every student, CampusLife sends one email with only the events that fit your week. Below: ${RANGE()} for ${esc(p.name)}.</p></div>
   <div class="digest">
     <div class="box"><h2>Today: every event to everyone</h2><p class="sub">${total} event announcements this week. How many are useful to ${esc(p.name)}?</p>
       <div class="bar" role="img" aria-label="Share of useful announcements">${seg(fit,'--ok')}${seg(tight,'--warn')}${seg(clash,'--bad')}${seg(lang,'--c-social')}${seg(away,'--class')}</div>
@@ -1155,7 +1170,7 @@ function viewDigest(){
         return `<div class="bigrow" style="align-items:center"><span class="sdg-mini" style="background:${SDGS[n].c};width:28px;height:28px;font-size:13px">${n}</span><span>SDG ${n} events at their campus this week: <b>${loc.length}</b><small>${fr.length} in a language they didn't select · ${ok.length} reach them in the digest</small></span></div>`}).join('')}
     </div>
     <div class="mail" aria-label="Email preview">
-      <div class="mh"><span><b>From:</b> CampusLife &lt;events@campuslife&gt;</span><span><b>To:</b> ${esc(p.sid)} · ${esc(p.name)}</span><span><b>Sent:</b> Sun, Oct 18, 6:00 PM</span>
+      <div class="mh"><span><b>From:</b> CampusLife &lt;events@campuslife&gt;</span><span><b>To:</b> ${esc(p.sid)} · ${esc(p.name)}</span><span><b>Sent:</b> ${(d=>`${DAYN[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`)(new Date(WEEK0.getTime()-864e5))}, 6:00 PM</span>
         <div class="subject">Your week: ${picks.length} event${picks.length===1?'':'s'} that fit your timetable</div></div>
       <div class="mb"><p>Hi ${esc(p.name)},</p><p>Here are the events that fit around your classes this week. We left out ${total-picks.length} that clash with your timetable, are at other campuses or are in languages you didn't select.</p>
         ${picks.map(x=>{const s=P(x.ev.start),e=P(x.ev.end),g=x.r.chips.filter(c=>c.k==='good')[0];return `<div class="mitem"><i></i><div><b>${sdgMini(x.ev)}${esc(x.ev.title)}</b><small>${x.r.multi?`Until ${fmtD(e)}`:`${fmtD(s)} · ${fmtR(s,e)}`} · ${x.ev.online?'Online':esc(x.ev.place)}</small>${g?`<small style="color:var(--ok)">${esc(g.t)}</small>`:''}</div></div>`}).join('')||'<p>No events fit your week. Enjoy the free time.</p>'}
@@ -1213,7 +1228,7 @@ function viewTimetable(){
    <div class="box">
      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center">
        <h2>My timetable</h2><span class="synced">● ${src().aurion?`Synced from Aurion · ${esc(p.sid)}`:'Aurion sync off'}</span></div>
-     <p class="sub">Week of Oct 18–24, from your calendar. Course names cut off in the app are shown with “…”.</p>
+     <p class="sub">Repeats every week, from your calendar. Course names cut off in the app are shown with “…”.</p>
      <div class="tbl-wrap"><table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th><th>Campus</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="6" style="color:var(--muted)">No classes yet. Add one below.</td></tr>'}</tbody></table></div>
      <form class="addform" id="addForm">
        <label>Day<select id="fDay">${[1,2,3,4,5,6].map(d=>`<option value="${d}">${DAYN[d]}</option>`).join('')}</select></label>
@@ -1410,7 +1425,7 @@ function mEventsList(){
   let note='';
   if(state.evTab==='foryou'){
     if(!state.smart)return `<div class="mempty">${svg('star')}<h3>Proposals are off</h3><p>Turn on “Plan around my timetable” in Filters.</p><button class="mbtn" data-msheet="filters">Open filters</button></div>`;
-    list=list.filter(x=>[...FITS,'tight','partial'].includes(x.r.status)||x.r.inPlan).sort((a,b)=>(b.r.inPlan-a.r.inPlan)||((b.r.score||0)-(a.r.score||0)));
+    list=list.filter(x=>[...FITS,'tight','partial'].includes(x.r.status)||x.r.inPlan).sort(byDate);
     const left=all.filter(x=>x.r.status!=='past'&&['clash','lang','other'].includes(x.r.status)).length;
     note=state.evWhen==='upcoming'?`<div class="mintro">Ranked for you from your <b>Aurion timetable</b>, <b>Blackboard deadlines</b>, campus and languages. <b>${left}</b> events were left out because they clash with class, are at other campuses or are in another language. <button class="mlink" data-mv="timetable">Why these?</button></div>`:'';
   }else if(state.evTab==='mine')list=list.filter(x=>state.plan.has(x.ev.id));
@@ -1438,9 +1453,10 @@ function mEvents(){
 
 /* Calendar */
 function mCalendar(){
-  const allDays=[...Array(7)].map((_,i)=>new Date(2026,9,18+i));
+  const allDays=DAYS;
   const week=state.calMode==='week';
-  const days=week?allDays:[allDays[state.calDay]];
+  const ws=state.calDay<7?0:NDAYS-7;
+  const days=week?allDays.slice(ws,ws+7):[allDays[state.calDay]];
   const H0=8,H1=22,PX=week?40:52,H=(H1-H0)*PX;
   const evs=EVENTS.map(ev=>({ev,r:evaluate(ev)}));
   const col=d=>{
@@ -1461,7 +1477,7 @@ function mCalendar(){
   };
   let hrs='';for(let i=1;i<(H1-H0);i++){const hh=H0+i;hrs+=`<span style="top:${i*PX-8}px">${hh%12||12}${hh<12?'am':'pm'}</span>`}
   const d0=days[0];
-  const dateTxt=week?'Oct 18 – 24, 2026':`${['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d0.getDay()]}, ${['January','February','March','April','May','June','July','August','September','October','November','December'][d0.getMonth()]} ${d0.getDate()}`;
+  const dateTxt=week?`${MON[days[0].getMonth()]} ${days[0].getDate()} – ${MON[days[6].getMonth()]} ${days[6].getDate()}, ${days[0].getFullYear()}`:`${['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d0.getDay()]}, ${['January','February','March','April','May','June','July','August','September','October','November','December'][d0.getMonth()]} ${d0.getDate()}`;
   const nFit=d=>evs.filter(x=>!x.r.multi&&sameDay(P(x.ev.start),d)&&FITS.includes(x.r.status)).length;
   return mTop('light','Calendar')+`<div class="mbody">
     <div class="calbar">
@@ -1471,12 +1487,12 @@ function mCalendar(){
       <div class="caldate">${dateTxt}</div>
       <div class="calmeta"><button class="ical" data-mtoast="iCal feed link copied (prototype)">${svg('copy')}Copy iCal Feed</button><span class="sid">${svg('user')}${esc(state.profile.sid)}</span>
         <button class="sugtog" data-act="calSug" aria-pressed="${state.calSug&&state.smart}">${state.calSug&&state.smart?'✓ ':''}Proposed events</button></div>
-      ${week?'':`<div class="daytabs">${allDays.map((d,i)=>`<button data-calday="${i}" aria-pressed="${i===state.calDay}">${DAYN[d.getDay()]}<b>${d.getDate()}</b><i class="${nFit(d)?'':'none'}"></i></button>`).join('')}</div>`}
+      ${week?'':`<div class="daytabs" style="grid-template-columns:repeat(${NDAYS},1fr)">${allDays.map((d,i)=>`<button data-calday="${i}" aria-pressed="${i===state.calDay}">${DAYN[d.getDay()]}<b>${d.getDate()}</b><i class="${nFit(d)?'':'none'}"></i></button>`).join('')}</div>`}
     </div>
     <div class="calwrap">
-      ${week?`<div class="dayhead" style="grid-template-columns:repeat(7,1fr)">${allDays.map(d=>`<div class="${sameDay(d,NOW)?'on':''}">${DAYN[d.getDay()]}, Oct<br>${d.getDate()}</div>`).join('')}</div>`:`<div class="dayhead" style="grid-template-columns:1fr"><div class="on">${dateTxt}</div></div>`}
+      ${week?`<div class="dayhead" style="grid-template-columns:repeat(7,1fr)">${days.map(d=>`<div class="${sameDay(d,NOW)?'on':''}">${DAYN[d.getDay()]}<br>${d.getDate()}</div>`).join('')}</div>`:`<div class="dayhead" style="grid-template-columns:1fr"><div class="on">${dateTxt}</div></div>`}
       <div class="grid"><div class="hrs" style="height:${H}px">${hrs}</div><div class="cols" style="grid-template-columns:repeat(${days.length},minmax(0,1fr))">${days.map(col).join('')}</div></div>
-      <div class="tzbar">(GMT+02:00) Central European Summer Time - <b>Paris</b></div>
+      <div class="tzbar">(GMT+01:00) Central European Standard Time - <b>Paris</b></div>
     </div>
     <div class="mnote"><span style="display:inline-block;width:14px;height:10px;background:var(--m-app);border-radius:2px"></span>Class (Aurion) <span style="display:inline-block;width:14px;height:10px;outline:2px dashed var(--ok);outline-offset:-2px;border-radius:2px"></span>Proposed event that fits <span style="display:inline-block;width:14px;height:10px;background:var(--ok);border-radius:2px"></span>Going</div>
   </div>`;
@@ -1511,12 +1527,12 @@ function aiAnswer(q){
   const evs=EVENTS.map(ev=>({ev,r:evaluate(ev)}));
   const item=x=>{const st=P(x.ev.start),e=P(x.ev.end);const why=(x.r.chips.find(c=>c.src==='Aurion')||x.r.chips[0]||{}).t||'';
     return `<button data-open="${x.ev.id}"><b>${esc(shortTitle(x.ev.title))}</b>${x.r.multi?'All week':`${dLbl(st)} · ${t24(st)}-${t24(e)}`} · ${x.ev.online?'Online':esc(x.ev.site||x.ev.campus)}<br><small>✓ ${esc(why)}</small></button>`};
-  if(/sdg|peace|justice|16|institution/.test(s)){
+  if(/sdg|peace|justice|16|institution|odd|ods|paix|pace|paz|frieden|giustizia|justicia/.test(s)){
     const all=evs.filter(x=>x.ev.sdg.includes(16)&&!x.r.away&&x.r.status!=='past');
     const ok=all.filter(x=>FITS.includes(x.r.status));const fr=all.filter(x=>x.r.status==='lang');
     return `<p>This week there ${all.length===1?'is':'are'} <b>${all.length}</b> SDG 16 event${all.length===1?'':'s'} at the Paris campuses. ${ok.length} fit${ok.length===1?'s':''} your timetable:</p><div class="ans">${ok.map(item).join('')||'<p>None right now.</p>'}</div>${fr.length?`<p>${fr.length} more ${fr.length===1?'is':'are'} only in French: ${fr.map(x=>esc(shortTitle(x.ev.title))).join(', ')}. Add French in Timetable &amp; data if you'd like to see them.</p>`:''}`;
   }
-  if(/today|tonight|after class|now/.test(s)){
+  if(/today|tonight|after class|now|aujourd|ce soir|après|oggi|stasera|dopo|hoy|esta noche|después|heute|nach dem/.test(s)){
     const cls=classesOn(NOW).sort((a,b)=>a.end-b.end);const last=cls[cls.length-1];
     const ok=evs.filter(x=>!x.r.multi&&sameDay(P(x.ev.start),NOW)&&P(x.ev.end)>NOW&&FITS.includes(x.r.status));
     return `<p>${last?`Your last class today, <b>${esc(last.label)}</b>, ends at <b>${t24(last.end)}</b>.`:'You have no more classes today.'} ${ok.length?`Here's what fits after that:`:'Nothing else fits today.'}</p>${ok.length?`<div class="ans">${ok.map(item).join('')}</div>`:''}`;
@@ -1548,7 +1564,7 @@ function mSheet(){
     const r=evaluate(ev),st=P(ev.start),e=P(ev.end),v=verdict(r),going=state.plan.has(ev.id),saved=state.saved.has(ev.id);
     body=`<div class="simg" style="background:var(${CAT_VAR[ev.cat]})"><b>${esc(ev.cat==='Career'?'Career event':ev.cat)}</b><span>${esc(ev.host)}</span></div>
       <h2>${esc(ev.title)}</h2>
-      <div><div class="mrow">${svg('cal')}<span>${r.multi?`${dLbl(st)} – ${dLbl(e)}`:dLbl(st)}</span></div>${r.multi?'':`<div class="mrow">${svg('clock')}<span>${t24(st)} - ${t24(e)} (GMT+2)</span></div>`}
+      <div><div class="mrow">${svg('cal')}<span>${r.multi?`${dLbl(st)} – ${dLbl(e)}`:dLbl(st)}</span></div>${r.multi?'':`<div class="mrow">${svg('clock')}<span>${t24(st)} - ${t24(e)} (GMT+1)</span></div>`}
       <div class="mrow">${svg(ev.online?'screen':'pin')}<span>${ev.online?'Online Event':esc(ev.place)}</span></div><div class="mrow">${svg('people')}<span>${esc(ev.host)}${ev.going?` · ${ev.going} going`:''}</span></div></div>
       ${sdgRow(ev)}
       ${state.smart&&r.status!=='past'?`<div class="verdict"><span class="pill ${v.c}" style="justify-self:start">${esc(v.t)}</span>${r.chips.map(chipHTML).join('')}</div>`:''}
@@ -1603,7 +1619,7 @@ document.addEventListener('click',e=>{
   if(d.view){stop();mapViewToMobile(d.view);state.sheet=null;render();toTop();return}
   if(d.calmode){stop();state.calMode=d.calmode;render();return}
   if(d.calday){stop();state.calDay=Number(d.calday);render();return}
-  if(d.calnav){stop();if(d.calnav==='today')state.calDay=Math.max(0,Math.min(6,Math.floor((new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate())-WEEK0)/864e5)));else if(state.calMode==='day')state.calDay=Math.max(0,Math.min(6,state.calDay+Number(d.calnav)));else toast('This prototype only has the week of Oct 18–24.');render();return}
+  if(d.calnav){stop();if(d.calnav==='today')state.calDay=todayIdx();else{const step=state.calMode==='day'?1:7;const nd=state.calDay+step*Number(d.calnav);if(nd<0||nd>NDAYS-1)toast('This prototype only covers '+RANGE()+'.');state.calDay=Math.max(0,Math.min(NDAYS-1,nd))}render();return}
   if(d.act==='calSug'){stop();if(!state.smart)state.smart=true;else state.calSug=!state.calSug;render();return}
   if(d.mtoast){stop();toast(d.mtoast);return}
   if(d.msearch){stop();state.mSearch=!state.mSearch;render();if(state.mSearch){const i=$('#mq');if(i)i.focus()}return}
@@ -1717,9 +1733,7 @@ function tflush(beacon){
 }
 function tstart(){
   if(TRACK.on||!TRACK_URL)return;
-  TRACK.on=true;TRACK.visitor=tid(()=>localStorage,'cl-visitor');TRACK.session=tid(()=>sessionStorage,'cl-session');
-  let ref='direct';try{if(document.referrer)ref=new URL(document.referrer).hostname}catch(e){}
-  tlog('session_start',ref,`${window.innerWidth}x${window.innerHeight} · ${navigator.language||''}`);
+  TRACK.on=true;TRACK.active=0;TRACK.lastAct=Date.now();TRACK.visitor=tid(()=>localStorage,'cl-visitor');TRACK.session=tid(()=>sessionStorage,'cl-session');
   TRACK.last=screenKey();tlog('screen',TRACK.last);
 }
 function tconsentUI(){
@@ -1733,7 +1747,7 @@ function tconsentUI(){
 }
 function getConsent(){try{return localStorage.getItem('cl-track-consent')||''}catch(e){return ''}}
 function setConsent(v){try{localStorage.setItem('cl-track-consent',v)}catch(e){}
-  if(v==='yes')tstart();else{tlog('tracking_stopped');tflush();TRACK.on=false}
+  if(v==='yes')tstart();else{tflush();TRACK.on=false}
   tconsentUI();
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-consent]');if(!b)return;e.stopImmediatePropagation();setConsent(b.dataset.consent);toast(b.dataset.consent==='yes'?'Thank you. Clicks are recorded anonymously.':'Tracking is off. Nothing is recorded.')},true);
@@ -1755,9 +1769,14 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{if(TRACK.on&&e.target.matches('select'))tlog('filter',e.target.id+'='+e.target.value)},true);
 document.addEventListener('submit',e=>{if(!TRACK.on)return;if(e.target.id==='aiForm')tlog('ask_custom','','(text not recorded)');if(e.target.id==='addForm')tlog('add_class')},true);
 document.addEventListener('input',e=>{if(!TRACK.on||!['q','mq'].includes(e.target.id))return;clearTimeout(TRACK.searchT);TRACK.searchT=setTimeout(()=>tlog('search','','(text not recorded)'),1500)},true);
+/* Active time: counts 1-second ticks while the page is visible and the visitor did something in the last 60 s */
+TRACK.active=0;TRACK.lastAct=Date.now();TRACK.sentActive=-1;
+['click','keydown','scroll','touchstart','pointermove','wheel'].forEach(t=>document.addEventListener(t,()=>{TRACK.lastAct=Date.now()},{capture:true,passive:true}));
+setInterval(()=>{if(TRACK.on&&document.visibilityState==='visible'&&Date.now()-TRACK.lastAct<60000)TRACK.active++},1000);
+function tTime(){if(!TRACK.on||TRACK.active===TRACK.sentActive)return;TRACK.sentActive=TRACK.active;tlog('time_on_page',TRACK.active,'active seconds so far')}
 setInterval(()=>tflush(),5000);
-window.addEventListener('pagehide',()=>{tlog('session_end',Math.round((Date.now()-TRACK.start)/1000)+'s');tflush(true)});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')tflush(true)});
+window.addEventListener('pagehide',()=>{tTime();tflush(true)});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){tTime();tflush(true)}else TRACK.lastAct=Date.now()});
 /* log a "screen" step whenever the visible screen changes */
 const _render=render;
 render=function(){_render();if(TRACK.on){const k=screenKey();if(k!==TRACK.last){TRACK.last=k;tlog('screen',k)}}};
@@ -1765,6 +1784,560 @@ render=function(){_render();if(TRACK.on){const k=screenKey();if(k!==TRACK.last){
 if(isMobile()&&!saved.mv)mapViewToMobile(state.view);
 render();
 tconsentUI();if(getConsent()==='yes')tstart();
+
+/* ---------- Translation: English · Français · Italiano · Español · Deutsch ----------
+   Translates what is on screen after every render. Event titles, course names and places stay as published. */
+const I18N_LANGS=['en','fr','it','es','de'];
+const I18N_ROWS=[
+["Women in finance and leadership, with the Minister for Gender Equality: gender equality and reduced inequalities.", "Les femmes dans la finance et le leadership, avec la ministre chargée de l'Égalité femmes-hommes : égalité entre les sexes et inégalités réduites.", "Donne nella finanza e nella leadership, con la ministra per la parità di genere: parità di genere e meno disuguaglianze.", "Mujeres en las finanzas y el liderazgo, con la ministra de Igualdad de Género: igualdad de género y menos desigualdades.", "Frauen in Finanzen und Führung, mit der Ministerin für Gleichstellung: Geschlechtergleichheit und weniger Ungleichheit."],
+["Generative AI and how to use it well: learning and innovation.", "L'IA générative et comment bien l'utiliser : apprentissage et innovation.", "L'IA generativa e come usarla bene: apprendimento e innovazione.", "La IA generativa y cómo usarla bien: aprendizaje e innovación.", "Generative KI und ihr sinnvoller Einsatz: Lernen und Innovation."],
+["A talk with a leading figure of the French National Assembly: democratic, strong institutions.", "Rencontre avec une figure majeure de l'Assemblée nationale : institutions démocratiques et efficaces.", "Incontro con una figura di primo piano dell'Assemblea nazionale francese: istituzioni democratiche e solide.", "Charla con una figura destacada de la Asamblea Nacional francesa: instituciones democráticas y sólidas.", "Gespräch mit einer führenden Persönlichkeit der französischen Nationalversammlung: demokratische, starke Institutionen."],
+["Workshop", "Atelier", "Workshop", "Taller", "Workshop"],
+["Hands-on workshop building with AI: digital skills and innovation.", "Atelier pratique pour créer avec l'IA : compétences numériques et innovation.", "Workshop pratico per creare con l'IA: competenze digitali e innovazione.", "Taller práctico para crear con IA: competencias digitales e innovación.", "Praxis-Workshop zum Bauen mit KI: digitale Kompetenzen und Innovation."],
+["Test preparation for graduate studies: quality education.", "Préparation à un test pour les études supérieures : éducation de qualité.", "Preparazione ai test per gli studi post-laurea: istruzione di qualità.", "Preparación de exámenes para estudios de posgrado: educación de calidad.", "Testvorbereitung für ein weiterführendes Studium: hochwertige Bildung."],
+["Kindness and solidarity on campus: peaceful, inclusive communities and well-being.", "Bienveillance et solidarité sur le campus : communautés pacifiques et inclusives, bien-être.", "Gentilezza e solidarietà nel campus: comunità pacifiche e inclusive e benessere.", "Amabilidad y solidaridad en el campus: comunidades pacíficas e inclusivas y bienestar.", "Freundlichkeit und Solidarität auf dem Campus: friedliche, inklusive Gemeinschaft und Wohlbefinden."],
+["Consulting tools and data storytelling: employability and skills.", "Outils de conseil et data storytelling : employabilité et compétences.", "Strumenti di consulenza e data storytelling: occupabilità e competenze.", "Herramientas de consultoría y data storytelling: empleabilidad y competencias.", "Beratungstools und Data Storytelling: Beschäftigungsfähigkeit und Kompetenzen."],
+["Women's team sport: well-being and gender equality.", "Sport d'équipe féminin : bien-être et égalité entre les sexes.", "Sport di squadra femminile: benessere e parità di genere.", "Deporte de equipo femenino: bienestar e igualdad de género.", "Frauen-Teamsport: Wohlbefinden und Geschlechtergleichheit."],
+["Human rights and sustainable development: justice, strong institutions and reduced inequalities.", "Droits humains et développement durable : justice, institutions efficaces et inégalités réduites.", "Diritti umani e sviluppo sostenibile: giustizia, istituzioni solide e meno disuguaglianze.", "Derechos humanos y desarrollo sostenible: justicia, instituciones sólidas y menos desigualdades.", "Menschenrechte und nachhaltige Entwicklung: Gerechtigkeit, starke Institutionen und weniger Ungleichheit."],
+["Student bar – no clear SDG link.", "Bar étudiant – pas de lien clair avec un ODD.", "Bar studentesco – nessun legame chiaro con gli SDG.", "Bar estudiantil – sin relación clara con los ODS.", "Studierendenbar – kein klarer SDG-Bezug."],
+["European Parliament and intelligence services: peace, security and strong institutions.", "Parlement européen et renseignement : paix, sécurité et institutions efficaces.", "Parlamento europeo e intelligence: pace, sicurezza e istituzioni solide.", "Parlamento Europeo e inteligencia: paz, seguridad e instituciones sólidas.", "Europäisches Parlament und Nachrichtendienste: Frieden, Sicherheit und starke Institutionen."],
+["Digital currency and EU sovereignty: economic growth and strong institutions.", "Monnaie numérique et souveraineté de l'UE : croissance économique et institutions efficaces.", "Moneta digitale e sovranità dell'UE: crescita economica e istituzioni solide.", "Moneda digital y soberanía de la UE: crecimiento económico e instituciones sólidas.", "Digitale Währung und EU-Souveränität: Wirtschaftswachstum und starke Institutionen."],
+["France–UK economic cooperation: partnerships and economic growth.", "Coopération économique France–Royaume-Uni : partenariats et croissance économique.", "Cooperazione economica Francia–Regno Unito: partnership e crescita economica.", "Cooperación económica Francia–Reino Unido: alianzas y crecimiento económico.", "Wirtschaftliche Zusammenarbeit Frankreich–UK: Partnerschaften und Wirtschaftswachstum."],
+["Self-defence training: personal safety and well-being.", "Cours d'autodéfense : sécurité personnelle et bien-être.", "Corso di autodifesa: sicurezza personale e benessere.", "Clases de defensa personal: seguridad personal y bienestar.", "Selbstverteidigungstraining: persönliche Sicherheit und Wohlbefinden."],
+["Start-up challenges and coding: entrepreneurship and innovation.", "Défis de start-up et code : entrepreneuriat et innovation.", "Sfide per startup e coding: imprenditorialità e innovazione.", "Retos de startups y programación: emprendimiento e innovación.", "Start-up-Challenges und Coding: Unternehmertum und Innovation."],
+["Investment banking recruitment: decent work and economic growth.", "Recrutement en banque d'investissement : travail décent et croissance économique.", "Reclutamento nell'investment banking: lavoro dignitoso e crescita economica.", "Reclutamiento en banca de inversión: trabajo decente y crecimiento económico.", "Recruiting im Investmentbanking: menschenwürdige Arbeit und Wirtschaftswachstum."],
+["Charity bake sale raising money for a cause.", "Vente de gâteaux caritative au profit d'une cause.", "Vendita di dolci di beneficenza per una causa.", "Venta benéfica de dulces para una causa.", "Kuchenverkauf für einen guten Zweck."],
+["CampusLife concept","Concept CampusLife","Concept CampusLife","Concepto CampusLife","CampusLife-Konzept"],
+["personalised events prototype","prototype d'événements personnalisés","prototipo di eventi personalizzati","prototipo de eventos personalizados","Prototyp für personalisierte Events"],
+["visits","visites","visite","visitas","Besuche"],
+["Usage tracking off","Suivi désactivé","Tracciamento disattivato","Seguimiento desactivado","Tracking aus"],
+["Anonymous usage tracking on","Suivi anonyme activé","Tracciamento anonimo attivo","Seguimiento anónimo activado","Anonymes Tracking an"],
+["Allow","Autoriser","Consenti","Permitir","Erlauben"],
+["Stop","Arrêter","Interrompi","Detener","Stoppen"],
+["Computer","Ordinateur","Computer","Ordenador","Computer"],
+["Phone","Téléphone","Telefono","Móvil","Handy"],
+["Student research prototype","Prototype de recherche étudiant","Prototipo di ricerca studentesco","Prototipo de investigación estudiantil","Studentischer Forschungsprototyp"],
+["Help us study how people use this page","Aidez-nous à étudier l'utilisation de cette page","Aiutaci a capire come viene usata questa pagina","Ayúdanos a estudiar cómo se usa esta página","Hilf uns zu verstehen, wie diese Seite genutzt wird"],
+["We'd like to record which screens you open and what you click, so we can see how students move through the prototype.","Nous aimerions enregistrer les écrans que vous ouvrez et ce sur quoi vous cliquez, pour voir comment les étudiants parcourent le prototype.","Vorremmo registrare quali schermate apri e cosa clicchi, per capire come gli studenti si muovono nel prototipo.","Nos gustaría registrar qué pantallas abres y en qué haces clic, para ver cómo se mueven los estudiantes por el prototipo.","Wir möchten erfassen, welche Ansichten du öffnest und was du anklickst, um zu sehen, wie sich Studierende durch den Prototyp bewegen."],
+["Anonymous: a random ID, no name, email or IP address","Anonyme : un identifiant aléatoire, sans nom, e-mail ni adresse IP","Anonimo: un ID casuale, nessun nome, e-mail o indirizzo IP","Anónimo: un ID aleatorio, sin nombre, correo ni dirección IP","Anonym: eine zufällige ID, kein Name, keine E-Mail, keine IP-Adresse"],
+["Nothing you type is recorded","Rien de ce que vous tapez n'est enregistré","Nulla di ciò che scrivi viene registrato","No se registra nada de lo que escribes","Nichts, was du eintippst, wird gespeichert"],
+["Used only for our course project and deleted afterwards","Utilisé uniquement pour notre projet de cours, puis supprimé","Usato solo per il nostro progetto del corso e poi cancellato","Solo se usa para nuestro proyecto del curso y luego se borra","Nur für unser Kursprojekt genutzt und danach gelöscht"],
+["You can stop at any time from the link at the top","Vous pouvez arrêter à tout moment via le lien en haut","Puoi interrompere in qualsiasi momento dal link in alto","Puedes detenerlo en cualquier momento desde el enlace de arriba","Du kannst jederzeit über den Link oben stoppen"],
+["Allow and enter","Autoriser et entrer","Consenti ed entra","Permitir y entrar","Erlauben und weiter"],
+["Enter without tracking","Entrer sans suivi","Entra senza tracciamento","Entrar sin seguimiento","Ohne Tracking weiter"],
+["Concept prototype","Prototype conceptuel","Prototipo concettuale","Prototipo conceptual","Konzept-Prototyp"],
+["Home","Accueil","Home","Inicio","Start"],
+["Groups","Groupes","Gruppi","Grupos","Gruppen"],
+["Events","Événements","Eventi","Eventos","Events"],
+["Chats","Discussions","Chat","Chats","Chats"],
+["Student Name","Nom de l'étudiant","Nome Studente","Nombre del estudiante","Studierendenname"],
+["ALL EVENTS","TOUS LES ÉVÉNEMENTS","TUTTI GLI EVENTI","TODOS LOS EVENTOS","ALLE EVENTS"],
+["Upcoming Events","Événements à venir","Prossimi eventi","Próximos eventos","Kommende Events"],
+["Proposed for Me","Proposés pour moi","Proposti per me","Propuestos para mí","Für mich vorgeschlagen"],
+["Proposed for me","Proposés pour moi","Proposti per me","Propuestos para mí","Für mich vorgeschlagen"],
+["Proposed for you","Proposés pour vous","Proposti per te","Propuestos para ti","Für dich vorgeschlagen"],
+["NEW","NOUVEAU","NUOVO","NUEVO","NEU"],
+["Calendar","Calendrier","Calendario","Calendario","Kalender"],
+["SDG Map","Carte des ODD","Mappa SDG","Mapa de ODS","SDG-Karte"],
+["SDG map","Carte des ODD","Mappa SDG","Mapa de ODS","SDG-Karte"],
+["Past Events","Événements passés","Eventi passati","Eventos pasados","Vergangene Events"],
+["MY PROFILE","MON PROFIL","IL MIO PROFILO","MI PERFIL","MEIN PROFIL"],
+["Timetable & Data","Emploi du temps et données","Orario e dati","Horario y datos","Stundenplan & Daten"],
+["Timetable & data","Emploi du temps et données","Orario e dati","Horario y datos","Stundenplan & Daten"],
+["Weekly Email","E-mail hebdomadaire","Email settimanale","Correo semanal","Wochen-E-Mail"],
+["Weekly email","E-mail hebdomadaire","Email settimanale","Correo semanal","Wochen-E-Mail"],
+["- Category -","- Catégorie -","- Categoria -","- Categoría -","- Kategorie -"],
+["Career","Carrière","Carriera","Carrera","Karriere"],
+["Academic","Académique","Accademico","Académico","Akademisch"],
+["Conference","Conférence","Conferenza","Conferencia","Konferenz"],
+["Sports","Sport","Sport","Deportes","Sport"],
+["Student Life","Vie étudiante","Vita studentesca","Vida estudiantil","Studentenleben"],
+["Social","Vie sociale","Vita sociale","Vida social","Soziales"],
+["- Location Type -","- Type de lieu -","- Tipo di luogo -","- Tipo de lugar -","- Ortstyp -"],
+["In person","En présentiel","In presenza","Presencial","Vor Ort"],
+["Online","En ligne","Online","En línea","Online"],
+["- SDG -","- ODD -","- SDG -","- ODS -","- SDG -"],
+["List","Liste","Lista","Lista","Liste"],
+["Proposed events for you","Événements proposés pour vous","Eventi proposti per te","Eventos propuestos para ti","Vorgeschlagene Events für dich"],
+["See all","Tout voir","Vedi tutti","Ver todo","Alle ansehen"],
+["View All","Tout voir","Vedi tutti","Ver todo","Alle ansehen"],
+["Register","S'inscrire","Iscriviti","Inscribirse","Anmelden"],
+["View","Voir","Vedi","Ver","Ansehen"],
+["Attend","Participer","Partecipa","Asistir","Teilnehmen"],
+["No classes that day","Pas de cours ce jour-là","Nessuna lezione quel giorno","Sin clases ese día","An dem Tag keine Kurse"],
+["Before your first class","Avant votre premier cours","Prima della tua prima lezione","Antes de tu primera clase","Vor deinem ersten Kurs"],
+["In a free slot of your timetable","Dans un créneau libre de votre emploi du temps","In uno spazio libero del tuo orario","En un hueco libre de tu horario","In einer freien Lücke deines Stundenplans"],
+["Something different","Quelque chose de différent","Qualcosa di diverso","Algo diferente","Etwas anderes"],
+["linked to the SDGs you follow","lié aux ODD que vous suivez","legato agli SDG che segui","vinculado a los ODS que sigues","passend zu deinen SDGs"],
+["learn outside your usual interests","découvrez autre chose que vos centres d'intérêt habituels","scopri qualcosa fuori dai tuoi interessi","aprende fuera de tus intereses habituales","lerne etwas außerhalb deiner Interessen"],
+["new topic","nouveau sujet","nuovo argomento","tema nuevo","neues Thema"],
+["Runs for several days – drop by when you are free","Dure plusieurs jours – passez quand vous êtes libre","Dura più giorni – passa quando sei libero","Dura varios días – pásate cuando tengas tiempo","Läuft mehrere Tage – schau vorbei, wenn du Zeit hast"],
+["Online – join from anywhere","En ligne – participez d'où vous voulez","Online – partecipa da dove vuoi","En línea – únete desde donde quieras","Online – von überall teilnehmen"],
+["At your campus","Sur votre campus","Nel tuo campus","En tu campus","An deinem Campus"],
+["Based on:","Basé sur :","Basato su:","Basado en:","Basierend auf:"],
+["timetable","emploi du temps","orario","horario","Stundenplan"],
+["deadlines","échéances","scadenze","plazos","Fristen"],
+["past events","événements passés","eventi passati","eventos pasados","vergangene Events"],
+["none","aucun","nessuno","ninguno","keine"],
+["Why these? Manage my data","Pourquoi ceux-ci ? Gérer mes données","Perché questi? Gestisci i miei dati","¿Por qué estos? Gestionar mis datos","Warum diese? Meine Daten verwalten"],
+["Why these?","Pourquoi ceux-ci ?","Perché questi?","¿Por qué estos?","Warum diese?"],
+["Same box in the app","La même section dans l'appli","Lo stesso riquadro nell'app","El mismo recuadro en la app","Dieselbe Box in der App"],
+["Today's classes","Cours du jour","Lezioni di oggi","Clases de hoy","Kurse heute"],
+["No classes today","Pas de cours aujourd'hui","Nessuna lezione oggi","Sin clases hoy","Heute keine Kurse"],
+["Nothing fits right now","Rien de compatible pour le moment","Niente di compatibile per ora","Nada encaja por ahora","Gerade passt nichts"],
+["all week","toute la semaine","tutta la settimana","toda la semana","die ganze Woche"],
+["All week","Toute la semaine","Tutta la settimana","Toda la semana","Die ganze Woche"],
+["runs all week","toute la semaine","tutta la settimana","toda la semana","die ganze Woche"],
+["Menu","Menu","Menu","Menú","Menü"],
+["AI","IA","IA","IA","KI"],
+["Your week at a glance","Votre semaine en un coup d'œil","La tua settimana in breve","Tu semana de un vistazo","Deine Woche im Überblick"],
+["Today","Aujourd'hui","Oggi","Hoy","Heute"],
+["Tomorrow","Demain","Domani","Mañana","Morgen"],
+["Class (Aurion)","Cours (Aurion)","Lezione (Aurion)","Clase (Aurion)","Kurs (Aurion)"],
+["Deadline (Blackboard)","Échéance (Blackboard)","Scadenza (Blackboard)","Plazo (Blackboard)","Frist (Blackboard)"],
+["In your plan","Dans votre programme","Nel tuo piano","En tu plan","In deinem Plan"],
+["In my plan","Dans mon programme","Nel mio piano","En mi plan","In meinem Plan"],
+["Fits your free time","Compatible avec votre temps libre","Rientra nel tuo tempo libero","Encaja en tu tiempo libre","Passt in deine Freizeit"],
+["Tight / partly overlaps","Serré / chevauchement partiel","Stretto / sovrapposizione parziale","Justo / se solapa en parte","Knapp / teilweise überschneidend"],
+["Clashes with class","En conflit avec un cours","In conflitto con una lezione","Coincide con una clase","Kollidiert mit einem Kurs"],
+["Clashes with a class","En conflit avec un cours","In conflitto con una lezione","Coincide con una clase","Kollidiert mit einem Kurs"],
+["Clashes with your plan","En conflit avec votre programme","In conflitto con il tuo piano","Coincide con tu plan","Kollidiert mit deinem Plan"],
+["clashes with class","est en conflit avec un cours","è in conflitto con una lezione","coincide con una clase","kollidiert mit einem Kurs"],
+["Visits counted by GoatCounter","Visites comptées par GoatCounter","Visite contate da GoatCounter","Visitas contadas por GoatCounter","Besuche gezählt von GoatCounter"],
+["View as","Afficher en","Visualizza come","Ver como","Ansicht"],
+["Main","Principal","Principale","Principal","Hauptmenü"],
+["Event views","Vues des événements","Viste eventi","Vistas de eventos","Event-Ansichten"],
+["Search Events","Rechercher des événements","Cerca eventi","Buscar eventos","Events suchen"],
+["Search events","Rechercher des événements","Cerca eventi","Buscar eventos","Events suchen"],
+["Category","Catégorie","Categoria","Categoría","Kategorie"],
+["Location type","Type de lieu","Tipo di luogo","Tipo de lugar","Ortstyp"],
+["Sustainable Development Goal","Objectif de développement durable","Obiettivo di sviluppo sostenibile","Objetivo de Desarrollo Sostenible","Ziel für nachhaltige Entwicklung"],
+["Sustainable Development Goals","Objectifs de développement durable","Obiettivi di sviluppo sostenibile","Objetivos de Desarrollo Sostenible","Ziele für nachhaltige Entwicklung"],
+["Layout","Disposition","Layout","Diseño","Layout"],
+["Timetable-aware suggestions","Suggestions selon l'emploi du temps","Suggerimenti in base all'orario","Sugerencias según el horario","Vorschläge nach Stundenplan"],
+["Proposed events","Événements proposés","Eventi proposti","Eventos propuestos","Vorgeschlagene Events"],
+["App preview","Aperçu de l'appli","Anteprima dell'app","Vista previa de la app","App-Vorschau"],
+["App","Appli","App","App","App"],
+["Tracking is off. Nothing is recorded.","Le suivi est désactivé. Rien n'est enregistré.","Il tracciamento è disattivato. Non viene registrato nulla.","El seguimiento está desactivado. No se registra nada.","Tracking ist aus. Es wird nichts gespeichert."],
+["Thank you. Clicks are recorded anonymously.","Merci. Les clics sont enregistrés anonymement.","Grazie. I clic vengono registrati in forma anonima.","Gracias. Los clics se registran de forma anónima.","Danke. Klicks werden anonym erfasst."],
+["Plan around my timetable","Planifier selon mon emploi du temps","Pianifica in base al mio orario","Planificar según mi horario","Nach meinem Stundenplan planen"],
+["Using","Utilise","In uso:","Usando","Verwendet"],
+["no timetable (Aurion off)","pas d'emploi du temps (Aurion désactivé)","nessun orario (Aurion disattivato)","sin horario (Aurion desactivado)","kein Stundenplan (Aurion aus)"],
+["English","Anglais","Inglese","Inglés","Englisch"],
+["French","Français","Francese","Francés","Französisch"],
+["German","Allemand","Tedesco","Alemán","Deutsch"],
+["Spanish","Espagnol","Spagnolo","Español","Spanisch"],
+["Italian","Italien","Italiano","Italiano","Italienisch"],
+["no language","aucune langue","nessuna lingua","ningún idioma","keine Sprache"],
+["Edit","Modifier","Modifica","Editar","Bearbeiten"],
+["Hide clashes with class","Masquer les conflits avec les cours","Nascondi conflitti con le lezioni","Ocultar choques con clases","Kollisionen mit Kursen ausblenden"],
+["Only my languages","Seulement mes langues","Solo le mie lingue","Solo mis idiomas","Nur meine Sprachen"],
+["fit your free time","compatibles avec votre temps libre","rientrano nel tuo tempo libero","encajan en tu tiempo libre","passen in deine Freizeit"],
+["tight or partly overlapping","serrés ou en partie superposés","stretti o parzialmente sovrapposti","justos o solapados en parte","knapp oder teilweise überschneidend"],
+["clash with class","en conflit avec un cours","in conflitto con le lezioni","coinciden con clases","kollidieren mit Kursen"],
+["in another language","dans une autre langue","in un'altra lingua","en otro idioma","in einer anderen Sprache"],
+["at other campuses","sur d'autres campus","in altri campus","en otros campus","an anderen Campus"],
+["Ongoing","En cours","In corso","En curso","Laufend"],
+["LIVE","EN DIRECT","IN CORSO","EN DIRECTO","LIVE"],
+["TODAY","AUJOURD'HUI","OGGI","HOY","HEUTE"],
+["TOMORROW","DEMAIN","DOMANI","MAÑANA","MORGEN"],
+["FREE","GRATUIT","GRATIS","GRATIS","KOSTENLOS"],
+["Career event","Événement carrière","Evento carriera","Evento de carrera","Karriere-Event"],
+["going","participants","partecipanti","asistentes","Teilnehmende"],
+["Spots Left","places restantes","posti rimasti","plazas libres","Plätze frei"],
+["Company event","Événement entreprise","Evento aziendale","Evento de empresa","Unternehmens-Event"],
+["Student Societies","Associations étudiantes","Associazioni studentesche","Asociaciones estudiantiles","Studentische Vereine"],
+["Career workshop","Atelier carrière","Workshop carriera","Taller de carrera","Karriere-Workshop"],
+["Online Webinar","Webinaire en ligne","Webinar online","Webinario en línea","Online-Webinar"],
+["Athletic/Sports","Sport","Sport","Deportes","Sport"],
+["Hidden for you:","Masqués pour vous :","Nascosti per te:","Ocultos para ti:","Für dich ausgeblendet:"],
+["are in a language you didn't select","sont dans une langue que vous n'avez pas choisie","sono in una lingua che non hai scelto","están en un idioma que no elegiste","sind in einer Sprache, die du nicht gewählt hast"],
+["are at other campuses","sont sur d'autres campus","sono in altri campus","están en otros campus","sind an anderen Campus"],
+["clash with your classes or plan","sont en conflit avec vos cours ou votre programme","sono in conflitto con le tue lezioni o il tuo piano","coinciden con tus clases o tu plan","kollidieren mit deinen Kursen oder deinem Plan"],
+["Show them","Les afficher","Mostrali","Mostrarlos","Anzeigen"],
+["Hide them again","Les masquer à nouveau","Nascondili di nuovo","Ocultarlos de nuevo","Wieder ausblenden"],
+["Hide them","Les masquer","Nascondili","Ocultarlos","Ausblenden"],
+["Events this week that fit around your classes and deadlines, ranked by free time, campus, interests and past attendance. Click a block in the week view to jump to it.","Les événements de la semaine compatibles avec vos cours et échéances, classés selon votre temps libre, votre campus, vos centres d'intérêt et votre participation passée. Cliquez sur un bloc de la semaine pour y accéder.","Gli eventi della settimana compatibili con lezioni e scadenze, ordinati per tempo libero, campus, interessi e partecipazione passata. Clicca su un blocco della settimana per andarci.","Eventos de esta semana que encajan con tus clases y plazos, ordenados por tiempo libre, campus, intereses y asistencia anterior. Haz clic en un bloque de la semana para ir a él.","Events dieser Woche, die zu deinen Kursen und Fristen passen, sortiert nach Freizeit, Campus, Interessen und bisheriger Teilnahme. Klicke auf einen Block in der Wochenansicht, um hinzuspringen."],
+["Top picks","Meilleurs choix","Scelte migliori","Mejores opciones","Top-Empfehlungen"],
+["Top pick","Meilleur choix","Scelta top","Mejor opción","Top-Empfehlung"],
+["Good fit","Bonne compatibilité","Buona compatibilità","Buen encaje","Gute Passung"],
+["Fits your timetable","Compatible avec votre emploi du temps","Compatibile con il tuo orario","Encaja en tu horario","Passt in deinen Stundenplan"],
+["Tight timing","Horaire serré","Tempi stretti","Horario justo","Knappe Zeit"],
+["Partly overlaps","Chevauchement partiel","Sovrapposizione parziale","Se solapa en parte","Teilweise Überschneidung"],
+["Not in your language","Pas dans votre langue","Non nella tua lingua","No está en tu idioma","Nicht in deiner Sprache"],
+["Not your language","Pas dans votre langue","Non nella tua lingua","No está en tu idioma","Nicht deine Sprache"],
+["Other campus","Autre campus","Altro campus","Otro campus","Anderer Campus"],
+["Ended","Terminé","Terminato","Finalizado","Beendet"],
+["Fits","Compatible","Compatibile","Encaja","Passt"],
+["Also fits your timetable","Compatible aussi avec votre emploi du temps","Compatibili anche con il tuo orario","También encajan en tu horario","Passt auch in deinen Stundenplan"],
+["Possible, with tight timing","Possible, mais serré","Possibile, ma con tempi stretti","Posible, pero justo de tiempo","Möglich, aber knapp"],
+["You would need to arrive late, leave early or rush between campuses.","Il faudrait arriver en retard, partir tôt ou courir entre les campus.","Dovresti arrivare tardi, uscire prima o correre tra i campus.","Tendrías que llegar tarde, salir antes o correr entre campus.","Du müsstest später kommen, früher gehen oder zwischen Campus hetzen."],
+["Events you registered for also count as busy time.","Les événements auxquels vous êtes inscrit comptent aussi comme temps occupé.","Anche gli eventi a cui sei iscritto contano come tempo occupato.","Los eventos a los que te inscribiste también cuentan como tiempo ocupado.","Events, für die du angemeldet bist, zählen auch als belegte Zeit."],
+["Nothing fits your free time this week with these filters.","Rien ne correspond à votre temps libre cette semaine avec ces filtres.","Niente rientra nel tuo tempo libero questa settimana con questi filtri.","Nada encaja en tu tiempo libre esta semana con estos filtros.","Mit diesen Filtern passt diese Woche nichts in deine Freizeit."],
+["No events fit your free time right now.","Aucun événement ne correspond à votre temps libre pour le moment.","Nessun evento rientra nel tuo tempo libero per ora.","Ningún evento encaja en tu tiempo libre por ahora.","Gerade passt kein Event in deine Freizeit."],
+["No events fit your free time this week.","Aucun événement ne correspond à votre temps libre cette semaine.","Nessun evento rientra nel tuo tempo libero questa settimana.","Ningún evento encaja en tu tiempo libre esta semana.","Diese Woche passt kein Event in deine Freizeit."],
+["Not proposed at your campus:","Non proposés sur votre campus :","Non proposti nel tuo campus:","No propuestos en tu campus:","An deinem Campus nicht vorgeschlagen:"],
+["Show my classes","Afficher mes cours","Mostra le mie lezioni","Mostrar mis clases","Meine Kurse anzeigen"],
+["CONTINUED","SUITE","CONTINUA","CONTINÚA","FORTSETZUNG"],
+["CLASS","COURS","LEZIONE","CLASE","KURS"],
+["No events","Aucun événement","Nessun evento","Sin eventos","Keine Events"],
+["Events by Sustainable Development Goal","Événements par objectif de développement durable","Eventi per obiettivo di sviluppo sostenibile","Eventos por Objetivo de Desarrollo Sostenible","Events nach Nachhaltigkeitsziel"],
+["Draft","Brouillon","Bozza","Borrador","Entwurf"],
+["Each event is tagged with one or two of the UN's 17 goals (","Chaque événement est associé à un ou deux des 17 objectifs de l'ONU (","Ogni evento è associato a uno o due dei 17 obiettivi dell'ONU (","Cada evento está etiquetado con uno o dos de los 17 objetivos de la ONU (","Jedes Event ist einem oder zwei der 17 UN-Ziele zugeordnet ("],
+["). The tags are a first proposal: our group has not agreed the definitions yet, so the reason for each tag is listed below.","). Ces étiquettes sont une première proposition : notre groupe n'a pas encore validé les définitions, la raison de chaque étiquette est donc indiquée ci-dessous.","). Le etichette sono una prima proposta: il nostro gruppo non ha ancora concordato le definizioni, quindi il motivo di ogni etichetta è indicato qui sotto.","). Las etiquetas son una primera propuesta: nuestro grupo aún no ha acordado las definiciones, así que el motivo de cada etiqueta aparece abajo.","). Die Zuordnung ist ein erster Vorschlag: Unsere Gruppe hat die Definitionen noch nicht festgelegt, daher steht der Grund für jede Zuordnung unten."],
+["SDGs I follow","ODD que je suis","SDG che seguo","ODS que sigo","SDGs, denen ich folge"],
+["events linked to these rank higher","les événements liés sont mieux classés","gli eventi collegati salgono in classifica","los eventos vinculados suben en la lista","verknüpfte Events werden höher eingestuft"],
+["events this week across all campuses,","événements cette semaine sur tous les campus,","eventi questa settimana in tutti i campus,","eventos esta semana en todos los campus,","Events diese Woche an allen Campus,"],
+["No events this week","Aucun événement cette semaine","Nessun evento questa settimana","Sin eventos esta semana","Keine Events diese Woche"],
+["How each event was classified","Comment chaque événement a été classé","Come è stato classificato ogni evento","Cómo se clasificó cada evento","Wie jedes Event eingeordnet wurde"],
+["Show all goals","Afficher tous les objectifs","Mostra tutti gli obiettivi","Mostrar todos los objetivos","Alle Ziele anzeigen"],
+["Open in event list","Ouvrir dans la liste","Apri nell'elenco eventi","Abrir en la lista de eventos","In der Eventliste öffnen"],
+["Event","Événement","Evento","Evento","Event"],
+["Why this goal","Pourquoi cet objectif","Perché questo obiettivo","Por qué este objetivo","Warum dieses Ziel"],
+["Several days","Plusieurs jours","Più giorni","Varios días","Mehrere Tage"],
+["Curated reading on media and journalism: learning, and public access to information (target 16.10).","Sélection de lectures sur les médias et le journalisme : apprentissage et accès public à l'information (cible 16.10).","Letture selezionate su media e giornalismo: apprendimento e accesso pubblico all'informazione (target 16.10).","Lecturas seleccionadas sobre medios y periodismo: aprendizaje y acceso público a la información (meta 16.10).","Ausgewählte Lektüre zu Medien und Journalismus: Lernen und öffentlicher Zugang zu Informationen (Zielvorgabe 16.10)."],
+["Free access to business research databases supports learning and innovation.","L'accès gratuit à des bases de données de recherche en gestion soutient l'apprentissage et l'innovation.","L'accesso gratuito a banche dati di ricerca aziendale sostiene apprendimento e innovazione.","El acceso gratuito a bases de datos de investigación empresarial apoya el aprendizaje y la innovación.","Freier Zugang zu Wirtschaftsdatenbanken unterstützt Lernen und Innovation."],
+["Sport and physical activity for student well-being.","Sport et activité physique pour le bien-être des étudiants.","Sport e attività fisica per il benessere degli studenti.","Deporte y actividad física para el bienestar estudiantil.","Sport und Bewegung für das Wohlbefinden der Studierenden."],
+["Recruitment and career insight in consulting: decent work and employment.","Recrutement et découverte des métiers du conseil : travail décent et emploi.","Reclutamento e orientamento nella consulenza: lavoro dignitoso e occupazione.","Reclutamiento y orientación profesional en consultoría: trabajo decente y empleo.","Recruiting und Einblicke in die Beratung: menschenwürdige Arbeit und Beschäftigung."],
+["Support for finding internships abroad: employability and learning.","Aide pour trouver un stage à l'étranger : employabilité et apprentissage.","Supporto per trovare tirocini all'estero: occupabilità e apprendimento.","Apoyo para encontrar prácticas en el extranjero: empleabilidad y aprendizaje.","Unterstützung bei Auslandspraktika: Beschäftigungsfähigkeit und Lernen."],
+["Recruitment tips for a consulting career.","Conseils de recrutement pour une carrière dans le conseil.","Consigli di selezione per una carriera nella consulenza.","Consejos de selección para una carrera en consultoría.","Bewerbungstipps für eine Karriere in der Beratung."],
+["Peer-to-peer study sessions: quality education.","Séances de révision entre pairs : éducation de qualité.","Sessioni di studio tra pari: istruzione di qualità.","Sesiones de estudio entre compañeros: educación de calidad.","Lerngruppen unter Studierenden: hochwertige Bildung."],
+["Company presentation and recruitment.","Présentation d'entreprise et recrutement.","Presentazione aziendale e reclutamento.","Presentación de empresa y reclutamiento.","Unternehmenspräsentation und Recruiting."],
+["AI in professional services: innovation and the future of work.","L'IA dans les services professionnels : innovation et avenir du travail.","L'IA nei servizi professionali: innovazione e futuro del lavoro.","La IA en los servicios profesionales: innovación y futuro del trabajo.","KI in professionellen Dienstleistungen: Innovation und Zukunft der Arbeit."],
+["Entrepreneurship and fundraising skills: economic growth and innovation.","Entrepreneuriat et levée de fonds : croissance économique et innovation.","Imprenditorialità e raccolta fondi: crescita economica e innovazione.","Emprendimiento y captación de fondos: crecimiento económico e innovación.","Unternehmertum und Fundraising: Wirtschaftswachstum und Innovation."],
+["Former ambassadors on negotiating peace and the new balance of power: peace, strong institutions and international cooperation.","D'anciens ambassadeurs sur la négociation de la paix et le nouvel équilibre des puissances : paix, institutions efficaces et coopération internationale.","Ex ambasciatori sulla negoziazione della pace e sui nuovi equilibri di potere: pace, istituzioni solide e cooperazione internazionale.","Exembajadores sobre la negociación de la paz y el nuevo equilibrio de poder: paz, instituciones sólidas y cooperación internacional.","Ehemalige Botschafter über Friedensverhandlungen und das neue Machtgefüge: Frieden, starke Institutionen und internationale Zusammenarbeit."],
+["Careers in the pharmaceutical industry: health and employment.","Carrières dans l'industrie pharmaceutique : santé et emploi.","Carriere nell'industria farmaceutica: salute e occupazione.","Carreras en la industria farmacéutica: salud y empleo.","Karrieren in der Pharmaindustrie: Gesundheit und Beschäftigung."],
+["Finding safe, affordable student housing.","Trouver un logement étudiant sûr et abordable.","Trovare un alloggio studentesco sicuro ed economico.","Encontrar alojamiento estudiantil seguro y asequible.","Sicheren, bezahlbaren Studierendenwohnraum finden."],
+["Charity bake sale (assumed to raise money for a cause).","Vente de gâteaux caritative (au profit d'une cause, supposé).","Vendita di dolci di beneficenza (si presume per una causa).","Venta benéfica de dulces (se supone que para una causa).","Kuchenverkauf für einen guten Zweck (angenommen)."],
+["Faith community society talk: inclusion and peaceful, inclusive societies.","Conférence d'une association confessionnelle : inclusion et sociétés pacifiques et ouvertes.","Incontro di un'associazione religiosa: inclusione e società pacifiche e inclusive.","Charla de una asociación religiosa: inclusión y sociedades pacíficas e inclusivas.","Vortrag einer Glaubensgemeinschaft: Inklusion und friedliche, inklusive Gesellschaften."],
+["Students consulting for non-profits: partnerships and social impact.","Des étudiants conseillent des associations : partenariats et impact social.","Studenti che fanno consulenza per il non profit: partnership e impatto sociale.","Estudiantes que asesoran a ONG: alianzas e impacto social.","Studierende beraten gemeinnützige Organisationen: Partnerschaften und soziale Wirkung."],
+["Party – no clear SDG link.","Soirée – pas de lien clair avec un ODD.","Festa – nessun legame chiaro con gli SDG.","Fiesta – sin relación clara con los ODS.","Party – kein klarer SDG-Bezug."],
+["Past events this week","Événements passés cette semaine","Eventi passati di questa settimana","Eventos pasados de esta semana","Vergangene Events dieser Woche"],
+["No past events.","Aucun événement passé.","Nessun evento passato.","No hay eventos pasados.","Keine vergangenen Events."],
+["No upcoming events match these filters.","Aucun événement à venir ne correspond à ces filtres.","Nessun evento in arrivo corrisponde a questi filtri.","Ningún próximo evento coincide con estos filtros.","Keine kommenden Events passen zu diesen Filtern."],
+["My timetable","Mon emploi du temps","Il mio orario","Mi horario","Mein Stundenplan"],
+["Synced from Aurion","Synchronisé depuis Aurion","Sincronizzato da Aurion","Sincronizado desde Aurion","Aus Aurion synchronisiert"],
+["Aurion sync off","Synchro Aurion désactivée","Sincronizzazione Aurion disattivata","Sincronización con Aurion desactivada","Aurion-Sync aus"],
+["Repeats every week, from your calendar. Course names cut off in the app are shown with “…”.","Se répète chaque semaine, depuis votre calendrier. Les noms de cours coupés dans l'appli sont affichés avec « … ».","Si ripete ogni settimana, dal tuo calendario. I nomi dei corsi tagliati nell'app sono mostrati con «…».","Se repite cada semana, desde tu calendario. Los nombres de cursos cortados en la app se muestran con «…».","Wiederholt sich jede Woche, aus deinem Kalender. In der App abgeschnittene Kursnamen werden mit „…“ angezeigt."],
+["Day","Jour","Giorno","Día","Tag"],
+["Week","Semaine","Settimana","Semana","Woche"],
+["Time","Heure","Ora","Hora","Uhrzeit"],
+["Course","Cours","Corso","Curso","Kurs"],
+["Room","Salle","Aula","Aula","Raum"],
+["Campus","Campus","Campus","Campus","Campus"],
+["Start","Début","Inizio","Inicio","Beginn"],
+["End","Fin","Fine","Fin","Ende"],
+["End time assumed – cut off in screenshot","Heure de fin supposée – coupée sur la capture","Ora di fine ipotizzata – tagliata nello screenshot","Hora de fin supuesta – cortada en la captura","Endzeit angenommen – im Screenshot abgeschnitten"],
+["Remove","Retirer","Rimuovi","Quitar","Entfernen"],
+["Not set","Non défini","Non impostato","Sin definir","Nicht gesetzt"],
+["Add class","Ajouter un cours","Aggiungi lezione","Añadir clase","Kurs hinzufügen"],
+["Add a course name.","Ajoutez un nom de cours.","Aggiungi il nome del corso.","Añade un nombre de curso.","Gib einen Kursnamen ein."],
+["The end time must be after the start time.","L'heure de fin doit être après l'heure de début.","L'ora di fine deve essere successiva all'inizio.","La hora de fin debe ser posterior a la de inicio.","Die Endzeit muss nach der Startzeit liegen."],
+["No classes yet. Add one below.","Pas encore de cours. Ajoutez-en un ci-dessous.","Ancora nessuna lezione. Aggiungine una qui sotto.","Aún no hay clases. Añade una abajo.","Noch keine Kurse. Füge unten einen hinzu."],
+["Classes and deadlines this week","Cours et échéances de la semaine","Lezioni e scadenze della settimana","Clases y plazos de esta semana","Kurse und Fristen diese Woche"],
+["Data used for suggestions","Données utilisées pour les suggestions","Dati usati per i suggerimenti","Datos usados para las sugerencias","Für Vorschläge genutzte Daten"],
+["You choose what CampusLife may use. Turn a source off and suggestions update right away.","Vous choisissez ce que CampusLife peut utiliser. Désactivez une source et les suggestions se mettent à jour aussitôt.","Scegli tu cosa può usare CampusLife. Disattiva una fonte e i suggerimenti si aggiornano subito.","Tú eliges qué puede usar CampusLife. Desactiva una fuente y las sugerencias se actualizan al momento.","Du entscheidest, was CampusLife nutzen darf. Schalte eine Quelle aus und die Vorschläge aktualisieren sich sofort."],
+["Timetable, campus and programme. Used to skip events during your classes.","Emploi du temps, campus et programme. Sert à écarter les événements pendant vos cours.","Orario, campus e programma. Serve a escludere gli eventi durante le lezioni.","Horario, campus y programa. Sirve para descartar eventos durante tus clases.","Stundenplan, Campus und Programm. Damit werden Events während deiner Kurse ausgeschlossen."],
+["Assignment and exam deadlines. Events right before a deadline rank lower. (Sample deadlines in this prototype.)","Échéances de devoirs et d'examens. Les événements juste avant une échéance sont moins bien classés. (Échéances d'exemple dans ce prototype.)","Scadenze di compiti ed esami. Gli eventi subito prima di una scadenza scendono in classifica. (Scadenze di esempio in questo prototipo.)","Plazos de trabajos y exámenes. Los eventos justo antes de un plazo bajan en la lista. (Plazos de ejemplo en este prototipo.)","Abgabe- und Prüfungsfristen. Events kurz vor einer Frist werden niedriger eingestuft. (Beispielfristen in diesem Prototyp.)"],
+["Events you went to before. Similar events rank higher. (Sample history.)","Les événements auxquels vous avez participé. Les événements similaires sont mieux classés. (Historique d'exemple.)","Eventi a cui hai partecipato. Gli eventi simili salgono in classifica. (Cronologia di esempio.)","Eventos a los que fuiste antes. Los eventos parecidos suben en la lista. (Historial de ejemplo.)","Events, die du besucht hast. Ähnliche Events werden höher eingestuft. (Beispielverlauf.)"],
+["Individual essay","Dissertation individuelle","Saggio individuale","Ensayo individual","Einzelessay"],
+["Prototype presentation","Présentation du prototype","Presentazione del prototipo","Presentación del prototipo","Prototyp-Präsentation"],
+["Home campus","Campus principal","Campus principale","Campus principal","Heimatcampus"],
+["Languages I follow","Langues que je suis","Lingue che seguo","Idiomas que sigo","Meine Sprachen"],
+["Interests","Centres d'intérêt","Interessi","Intereses","Interessen"],
+["Travel time between Paris campuses","Temps de trajet entre les campus de Paris","Tempo di viaggio tra i campus di Parigi","Tiempo de trayecto entre los campus de París","Fahrzeit zwischen den Pariser Campus"],
+["My plan","Mon programme","Il mio piano","Mi plan","Mein Plan"],
+["Nothing yet. Register for an event to add it.","Rien pour l'instant. Inscrivez-vous à un événement pour l'ajouter.","Ancora niente. Iscriviti a un evento per aggiungerlo.","Nada todavía. Inscríbete en un evento para añadirlo.","Noch nichts. Melde dich für ein Event an, um es hinzuzufügen."],
+["Reset to my original data","Rétablir mes données d'origine","Ripristina i miei dati originali","Restablecer mis datos originales","Auf meine Originaldaten zurücksetzen"],
+["e.g. Negotiation","ex. Négociation","es. Negoziazione","p. ej. Negociación","z. B. Verhandlung"],
+["From mass emails to one weekly digest","Des e-mails de masse à un seul récapitulatif hebdomadaire","Dalle email di massa a un unico riepilogo settimanale","De los correos masivos a un único resumen semanal","Von Massen-E-Mails zu einer Wochenübersicht"],
+["Today: every event to everyone","Aujourd'hui : chaque événement pour tout le monde","Oggi: ogni evento a tutti","Hoy: cada evento para todos","Heute: jedes Event an alle"],
+["at another campus","sur un autre campus","in un altro campus","en otro campus","an einem anderen Campus"],
+["Berlin, Madrid or Turin, or only for their students","Berlin, Madrid ou Turin, ou réservés à leurs étudiants","Berlino, Madrid o Torino, o solo per i loro studenti","Berlín, Madrid o Turín, o solo para sus estudiantes","Berlin, Madrid oder Turin oder nur für deren Studierende"],
+["during a class","pendant un cours","durante una lezione","durante una clase","während eines Kurses"],
+["tight timing","horaires serrés","tempi stretti","horario justo","knappe Zeit"],
+["actually fit this student's week","correspondent vraiment à la semaine de cet étudiant","rientrano davvero nella settimana di questo studente","encajan de verdad en la semana de este estudiante","passen wirklich in die Woche dieser Person"],
+["From:","De :","Da:","De:","Von:"],
+["To:","À :","A:","Para:","An:"],
+["Sent:","Envoyé :","Inviato:","Enviado:","Gesendet:"],
+["No events fit your week. Enjoy the free time.","Aucun événement ne correspond à votre semaine. Profitez de votre temps libre.","Nessun evento rientra nella tua settimana. Goditi il tempo libero.","Ningún evento encaja en tu semana. Disfruta del tiempo libre.","Kein Event passt in deine Woche. Genieß die freie Zeit."],
+["Why these? Based on your Aurion timetable, Blackboard deadlines and CampusLife activity. Change what we use in Timetable & Data, or switch to all announcements.","Pourquoi ceux-ci ? D'après votre emploi du temps Aurion, vos échéances Blackboard et votre activité CampusLife. Modifiez ce que nous utilisons dans Emploi du temps et données, ou recevez toutes les annonces.","Perché questi? In base al tuo orario Aurion, alle scadenze Blackboard e alla tua attività su CampusLife. Cambia cosa usiamo in Orario e dati, o passa a tutti gli annunci.","¿Por qué estos? Según tu horario de Aurion, tus plazos de Blackboard y tu actividad en CampusLife. Cambia lo que usamos en Horario y datos, o recibe todos los anuncios.","Warum diese? Basierend auf deinem Aurion-Stundenplan, Blackboard-Fristen und deiner CampusLife-Aktivität. Ändere unter Stundenplan & Daten, was wir nutzen, oder erhalte alle Ankündigungen."],
+["Share of useful announcements","Part d'annonces utiles","Quota di annunci utili","Proporción de anuncios útiles","Anteil nützlicher Ankündigungen"],
+["Email preview","Aperçu de l'e-mail","Anteprima email","Vista previa del correo","E-Mail-Vorschau"],
+["Showing everything, including events that clash, are at other campuses or in other languages.","Tout est affiché, y compris les événements en conflit, sur d'autres campus ou dans d'autres langues.","Mostriamo tutto, compresi gli eventi in conflitto, in altri campus o in altre lingue.","Se muestra todo, incluidos eventos que coinciden, en otros campus o en otros idiomas.","Alles wird angezeigt, auch kollidierende Events, Events an anderen Campus oder in anderen Sprachen."],
+["Showing every event, like the original list.","Tous les événements sont affichés, comme dans la liste d'origine.","Mostriamo tutti gli eventi, come nell'elenco originale.","Se muestran todos los eventos, como en la lista original.","Alle Events werden angezeigt, wie in der ursprünglichen Liste."],
+["Timetable suggestions are off","Les suggestions selon l'emploi du temps sont désactivées","I suggerimenti in base all'orario sono disattivati","Las sugerencias según el horario están desactivadas","Stundenplan-Vorschläge sind aus"],
+["Turn on “Plan around my timetable” above to rank events by your free time, campus, languages and interests.","Activez « Planifier selon mon emploi du temps » ci-dessus pour classer les événements selon votre temps libre, votre campus, vos langues et vos centres d'intérêt.","Attiva «Pianifica in base al mio orario» qui sopra per ordinare gli eventi per tempo libero, campus, lingue e interessi.","Activa «Planificar según mi horario» arriba para ordenar los eventos por tiempo libre, campus, idiomas e intereses.","Aktiviere oben „Nach meinem Stundenplan planen“, um Events nach Freizeit, Campus, Sprachen und Interessen zu sortieren."],
+["Switch Hubs","Changer de hub","Cambia hub","Cambiar de hub","Hub wechseln"],
+["Fits your timetable, campus and languages","Compatible avec votre emploi du temps, campus et langues","Compatibili con orario, campus e lingue","Encajan con tu horario, campus e idiomas","Passend zu Stundenplan, Campus und Sprachen"],
+["Going","Inscrit","Iscritto","Inscrito","Angemeldet"],
+["Proposed","Proposé","Proposto","Propuesto","Vorgeschlagen"],
+["My Groups","Mes groupes","I miei gruppi","Mis grupos","Meine Gruppen"],
+["Student Society","Association étudiante","Associazione studentesca","Asociación estudiantil","Studentischer Verein"],
+["AI Assistant","Assistant IA","Assistente IA","Asistente de IA","KI-Assistent"],
+["Notifications","Notifications","Notifiche","Notificaciones","Benachrichtigungen"],
+["Student Card","Carte étudiante","Tessera studente","Carné de estudiante","Studierendenausweis"],
+["My Studies","Mes études","I miei studi","Mis estudios","Mein Studium"],
+["Life On Campus","Vie sur le campus","Vita nel campus","Vida en el campus","Leben auf dem Campus"],
+["Housing Marketplace","Logement","Mercato degli alloggi","Mercado de alojamiento","Wohnungsbörse"],
+["Careers & Alumni","Carrières et alumni","Carriere e alumni","Carreras y alumni","Karriere & Alumni"],
+["Call International SOS","Appeler International SOS","Chiama International SOS","Llamar a International SOS","International SOS anrufen"],
+["Chat","Discussion","Chat","Chat","Chat"],
+["Info desk","Point info","Info point","Punto de información","Infoschalter"],
+["PERSONALISED EVENTS","ÉVÉNEMENTS PERSONNALISÉS","EVENTI PERSONALIZZATI","EVENTOS PERSONALIZADOS","PERSONALISIERTE EVENTS"],
+["Events that fit your timetable","Événements compatibles avec votre emploi du temps","Eventi compatibili con il tuo orario","Eventos que encajan en tu horario","Events, die in deinen Stundenplan passen"],
+["Events by UN goal","Événements par objectif de l'ONU","Eventi per obiettivo ONU","Eventos por objetivo de la ONU","Events nach UN-Ziel"],
+["Your personalised digest","Votre récapitulatif personnalisé","Il tuo riepilogo personalizzato","Tu resumen personalizado","Deine persönliche Übersicht"],
+["ACCOUNT","COMPTE","ACCOUNT","CUENTA","KONTO"],
+["Settings & Privacy","Paramètres et confidentialité","Impostazioni e privacy","Ajustes y privacidad","Einstellungen & Datenschutz"],
+["Log Out","Se déconnecter","Esci","Cerrar sesión","Abmelden"],
+["Privacy","Confidentialité","Privacy","Privacidad","Datenschutz"],
+["QR code","Code QR","Codice QR","Código QR","QR-Code"],
+["Copy iCal Feed","Copier le flux iCal","Copia feed iCal","Copiar feed iCal","iCal-Feed kopieren"],
+["(GMT+01:00) Central European Standard Time -","(GMT+01:00) Heure normale d'Europe centrale -","(GMT+01:00) Ora standard dell'Europa centrale -","(GMT+01:00) Hora estándar de Europa central -","(GMT+01:00) Mitteleuropäische Normalzeit -"],
+["Proposed event that fits","Événement proposé compatible","Evento proposto compatibile","Evento propuesto que encaja","Passendes vorgeschlagenes Event"],
+["Refresh","Actualiser","Aggiorna","Actualizar","Aktualisieren"],
+["Previous","Précédent","Precedente","Anterior","Zurück"],
+["Next","Suivant","Successivo","Siguiente","Weiter"],
+["Discover","Découvrir","Scopri","Descubrir","Entdecken"],
+["Intelligent Assistant","Assistant intelligent","Assistente intelligente","Asistente inteligente","Intelligenter Assistent"],
+["Hello, I'm your AI assistant.","Bonjour, je suis votre assistant IA.","Ciao, sono il tuo assistente IA.","Hola, soy tu asistente de IA.","Hallo, ich bin dein KI-Assistent."],
+["With your permission, I can now read your","Avec votre accord, je peux désormais lire votre","Con il tuo permesso, ora posso leggere il tuo","Con tu permiso, ahora puedo leer tu","Mit deiner Erlaubnis kann ich jetzt deinen"],
+["to suggest events that fit. Today's assistant says it has no access to personal records; this is the change we propose.","pour proposer des événements compatibles. L'assistant actuel indique qu'il n'a pas accès aux données personnelles ; c'est ce que nous proposons de changer.","per suggerirti eventi compatibili. L'assistente attuale dice di non avere accesso ai dati personali: è questo il cambiamento che proponiamo.","para sugerirte eventos que encajen. El asistente actual dice que no tiene acceso a datos personales; este es el cambio que proponemos.","lesen und passende Events vorschlagen. Der heutige Assistent hat keinen Zugriff auf persönliche Daten; genau das wollen wir ändern."],
+["Which events fit my schedule this week?","Quels événements sont compatibles avec mon emploi du temps cette semaine ?","Quali eventi rientrano nel mio orario questa settimana?","¿Qué eventos encajan en mi horario esta semana?","Welche Events passen diese Woche in meinen Stundenplan?"],
+["What can I do after class today?","Que puis-je faire après les cours aujourd'hui ?","Cosa posso fare dopo le lezioni oggi?","¿Qué puedo hacer hoy después de clase?","Was kann ich heute nach dem Kurs machen?"],
+["Any SDG 16 events I can join?","Y a-t-il des événements ODD 16 auxquels je peux participer ?","Ci sono eventi SDG 16 a cui posso partecipare?","¿Hay eventos del ODS 16 a los que pueda ir?","Gibt es SDG-16-Events, an denen ich teilnehmen kann?"],
+["AI answers are not perfect, double check any information. Prototype: answers come from the sample data on this page.","Les réponses de l'IA ne sont pas parfaites, vérifiez les informations. Prototype : les réponses viennent des données d'exemple de cette page.","Le risposte dell'IA non sono perfette, verifica le informazioni. Prototipo: le risposte usano i dati di esempio di questa pagina.","Las respuestas de la IA no son perfectas, comprueba la información. Prototipo: las respuestas usan los datos de ejemplo de esta página.","KI-Antworten sind nicht perfekt, prüfe die Angaben. Prototyp: Die Antworten stammen aus den Beispieldaten dieser Seite."],
+["Ask the Intelligent Assistant…","Demandez à l'assistant intelligent…","Chiedi all'assistente intelligente…","Pregunta al asistente inteligente…","Frag den intelligenten Assistenten…"],
+["Ask the assistant","Interroger l'assistant","Chiedi all'assistente","Preguntar al asistente","Assistenten fragen"],
+["Send","Envoyer","Invia","Enviar","Senden"],
+["Back","Retour","Indietro","Atrás","Zurück"],
+["For You","Pour vous","Per te","Para ti","Für dich"],
+["All","Tous","Tutti","Todos","Alle"],
+["My Events","Mes événements","I miei eventi","Mis eventos","Meine Events"],
+["Saved","Enregistrés","Salvati","Guardados","Gespeichert"],
+["Filters","Filtres","Filtri","Filtros","Filter"],
+["Upcoming","À venir","In arrivo","Próximos","Kommend"],
+["Live","En direct","In corso","En directo","Live"],
+["Past","Passés","Passati","Pasados","Vergangen"],
+["Ranked for you from your","Classés pour vous selon votre","Ordinati per te in base al tuo","Ordenados para ti según tu","Für dich sortiert nach deinem"],
+["Aurion timetable","emploi du temps Aurion","orario Aurion","horario de Aurion","Aurion-Stundenplan"],
+["Blackboard deadlines","échéances Blackboard","scadenze Blackboard","plazos de Blackboard","Blackboard-Fristen"],
+[", campus and languages.",", campus et langues.",", campus e lingue.",", campus e idiomas.",", Campus und Sprachen."],
+["events were left out because they clash with class, are at other campuses or are in another language.","événements ont été écartés car ils sont en conflit avec un cours, sur d'autres campus ou dans une autre langue.","eventi sono stati esclusi perché in conflitto con le lezioni, in altri campus o in un'altra lingua.","eventos se dejaron fuera porque coinciden con clases, son en otros campus o en otro idioma.","Events wurden weggelassen, weil sie mit Kursen kollidieren, an anderen Campus stattfinden oder in einer anderen Sprache sind."],
+["Search","Rechercher","Cerca","Buscar","Suchen"],
+["New","Nouveau","Nuovo","Nuevo","Neu"],
+["Save","Enregistrer","Salva","Guardar","Speichern"],
+["No events fit your free time with these filters","Aucun événement compatible avec votre temps libre avec ces filtres","Nessun evento rientra nel tuo tempo libero con questi filtri","Ningún evento encaja en tu tiempo libre con estos filtros","Mit diesen Filtern passt kein Event in deine Freizeit"],
+["See all events","Voir tous les événements","Vedi tutti gli eventi","Ver todos los eventos","Alle Events ansehen"],
+["You're not attending any events yet","Vous ne participez encore à aucun événement","Non partecipi ancora a nessun evento","Aún no asistes a ningún evento","Du nimmst noch an keinem Event teil"],
+["Explore upcoming events and find something that interests you","Explorez les événements à venir et trouvez ce qui vous intéresse","Esplora i prossimi eventi e trova qualcosa che ti interessa","Explora los próximos eventos y encuentra algo que te interese","Entdecke kommende Events und finde etwas, das dich interessiert"],
+["Discover All","Tout découvrir","Scopri tutto","Descubrir todo","Alle entdecken"],
+["No saved events yet","Aucun événement enregistré","Nessun evento salvato","Aún no hay eventos guardados","Noch keine gespeicherten Events"],
+["Tap the heart on an event to save it","Touchez le cœur d'un événement pour l'enregistrer","Tocca il cuore di un evento per salvarlo","Toca el corazón de un evento para guardarlo","Tippe auf das Herz eines Events, um es zu speichern"],
+["Try another filter","Essayez un autre filtre","Prova un altro filtro","Prueba otro filtro","Versuche einen anderen Filter"],
+["Reset filters","Réinitialiser les filtres","Reimposta filtri","Restablecer filtros","Filter zurücksetzen"],
+["Close","Fermer","Chiudi","Cerrar","Schließen"],
+["Community Hubs","Hubs de la communauté","Hub della community","Hubs de la comunidad","Community-Hubs"],
+["Your home campus decides which events you see first. Paris has two sites.","Votre campus principal détermine les événements affichés en premier. Paris compte deux sites.","Il tuo campus principale decide quali eventi vedi per primi. Parigi ha due sedi.","Tu campus principal decide qué eventos ves primero. París tiene dos sedes.","Dein Heimatcampus bestimmt, welche Events du zuerst siehst. Paris hat zwei Standorte."],
+["All categories","Toutes les catégories","Tutte le categorie","Todas las categorías","Alle Kategorien"],
+["All goals","Tous les objectifs","Tutti gli obiettivi","Todos los objetivos","Alle Ziele"],
+["Any","Tous","Qualsiasi","Cualquiera","Alle"],
+["Show results","Afficher les résultats","Mostra risultati","Mostrar resultados","Ergebnisse anzeigen"],
+["I checked your timetable (Aurion), deadlines (Blackboard) and languages. These events this week don't clash with any class:","J'ai vérifié votre emploi du temps (Aurion), vos échéances (Blackboard) et vos langues. Ces événements de la semaine n'entrent en conflit avec aucun cours :","Ho controllato il tuo orario (Aurion), le scadenze (Blackboard) e le lingue. Questi eventi della settimana non si sovrappongono a nessuna lezione:","He revisado tu horario (Aurion), tus plazos (Blackboard) e idiomas. Estos eventos de la semana no coinciden con ninguna clase:","Ich habe deinen Stundenplan (Aurion), Fristen (Blackboard) und Sprachen geprüft. Diese Events dieser Woche kollidieren mit keinem Kurs:"],
+["I left out events in languages you didn't select and events at other campuses.","J'ai écarté les événements dans des langues non choisies et ceux sur d'autres campus.","Ho escluso gli eventi in lingue che non hai scelto e quelli in altri campus.","He dejado fuera los eventos en idiomas que no elegiste y los de otros campus.","Events in nicht gewählten Sprachen und an anderen Campus habe ich weggelassen."],
+["None right now.","Aucun pour le moment.","Nessuno per ora.","Ninguno por ahora.","Gerade keine."],
+["Your last class today,","Votre dernier cours aujourd'hui,","La tua ultima lezione di oggi,","Tu última clase de hoy,","Dein letzter Kurs heute,"],
+["ends at","se termine à","finisce alle","termina a las","endet um"],
+["Online Event","Événement en ligne","Evento online","Evento en línea","Online-Event"],
+["Here's what fits after that","Voici ce qui est compatible ensuite :","Ecco cosa rientra dopo:","Esto es lo que encaja después:","Das passt danach:"],
+["Here's what fits after that:","Voici ce qui est compatible ensuite :","Ecco cosa rientra dopo:","Esto es lo que encaja después:","Das passt danach:"],
+["Nothing else fits today","Rien d'autre n'est compatible aujourd'hui","Nient'altro rientra oggi","Nada más encaja hoy","Heute passt sonst nichts"],
+["You have no more classes today.","Vous n'avez plus de cours aujourd'hui.","Oggi non hai altre lezioni.","Hoy no tienes más clases.","Du hast heute keine Kurse mehr."],
+["This week there are","Cette semaine, il y a","Questa settimana ci sono","Esta semana hay","Diese Woche gibt es"],
+["This week there is","Cette semaine, il y a","Questa settimana c'è","Esta semana hay","Diese Woche gibt es"],
+["Turn on “Plan around my timetable” in Events › Filters to get proposals.","Activez « Planifier selon mon emploi du temps » dans Événements › Filtres pour recevoir des propositions.","Attiva «Pianifica in base al mio orario» in Eventi › Filtri per ricevere proposte.","Activa «Planificar según mi horario» en Eventos › Filtros para recibir propuestas.","Aktiviere „Nach meinem Stundenplan planen“ unter Events › Filter, um Vorschläge zu bekommen."],
+["Proposals are off","Propositions désactivées","Proposte disattivate","Propuestas desactivadas","Vorschläge sind aus"],
+["Turn on “Plan around my timetable” in Filters.","Activez « Planifier selon mon emploi du temps » dans Filtres.","Attiva «Pianifica in base al mio orario» in Filtri.","Activa «Planificar según mi horario» en Filtros.","Aktiviere „Nach meinem Stundenplan planen“ unter Filter."],
+["Open filters","Ouvrir les filtres","Apri filtri","Abrir filtros","Filter öffnen"],
+["No classes or events today.","Aucun cours ni événement aujourd'hui.","Nessuna lezione o evento oggi.","No hay clases ni eventos hoy.","Heute keine Kurse oder Events."],
+["Saved.","Enregistré.","Salvato.","Guardado.","Gespeichert."],
+["Removed from saved.","Retiré des enregistrés.","Rimosso dai salvati.","Quitado de guardados.","Aus Gespeichert entfernt."],
+["Refreshed","Actualisé","Aggiornato","Actualizado","Aktualisiert"],
+["Removed from your plan.","Retiré de votre programme.","Rimosso dal tuo piano.","Quitado de tu plan.","Aus deinem Plan entfernt."],
+["Back to your original timetable and settings.","Retour à votre emploi du temps et à vos réglages d'origine.","Tornato al tuo orario e alle impostazioni originali.","Vuelta a tu horario y ajustes originales.","Zurück zu deinem ursprünglichen Stundenplan und deinen Einstellungen."],
+["This prototype only has the week of Oct 18–24.","Ce prototype ne contient que la semaine du 18 au 24 oct.","Questo prototipo contiene solo la settimana 18–24 ott.","Este prototipo solo tiene la semana del 18 al 24 de oct.","Dieser Prototyp enthält nur die Woche vom 18.–24. Okt."],
+["iCal feed link copied (prototype)","Lien du flux iCal copié (prototype)","Link del feed iCal copiato (prototipo)","Enlace del feed iCal copiado (prototipo)","iCal-Feed-Link kopiert (Prototyp)"],
+["Privacy centre (prototype)","Centre de confidentialité (prototype)","Centro privacy (prototipo)","Centro de privacidad (prototipo)","Datenschutzzentrale (Prototyp)"],
+["Student QR code (prototype)","Code QR étudiant (prototype)","Codice QR studente (prototipo)","Código QR de estudiante (prototipo)","Studierenden-QR-Code (Prototyp)"],
+["Discover groups is not part of this prototype","La découverte de groupes ne fait pas partie de ce prototype","Scopri gruppi non fa parte di questo prototipo","Descubrir grupos no forma parte de este prototipo","Gruppen entdecken ist nicht Teil dieses Prototyps"]
+];
+const SDG_I18N={fr:['Pas de pauvreté','Faim « zéro »','Bonne santé et bien-être','Éducation de qualité','Égalité entre les sexes','Eau propre et assainissement',"Énergie propre et d'un coût abordable",'Travail décent et croissance économique','Industrie, innovation et infrastructure','Inégalités réduites','Villes et communautés durables','Consommation et production responsables','Lutte contre les changements climatiques','Vie aquatique','Vie terrestre','Paix, justice et institutions efficaces','Partenariats pour la réalisation des objectifs'],
+ it:['Sconfiggere la povertà','Sconfiggere la fame','Salute e benessere','Istruzione di qualità','Parità di genere','Acqua pulita e servizi igienico-sanitari','Energia pulita e accessibile','Lavoro dignitoso e crescita economica','Imprese, innovazione e infrastrutture','Ridurre le disuguaglianze','Città e comunità sostenibili','Consumo e produzione responsabili','Lotta contro il cambiamento climatico',"Vita sott'acqua",'Vita sulla terra','Pace, giustizia e istituzioni solide','Partnership per gli obiettivi'],
+ es:['Fin de la pobreza','Hambre cero','Salud y bienestar','Educación de calidad','Igualdad de género','Agua limpia y saneamiento','Energía asequible y no contaminante','Trabajo decente y crecimiento económico','Industria, innovación e infraestructura','Reducción de las desigualdades','Ciudades y comunidades sostenibles','Producción y consumo responsables','Acción por el clima','Vida submarina','Vida de ecosistemas terrestres','Paz, justicia e instituciones sólidas','Alianzas para lograr los objetivos'],
+ de:['Keine Armut','Kein Hunger','Gesundheit und Wohlergehen','Hochwertige Bildung','Geschlechtergleichheit','Sauberes Wasser und Sanitäreinrichtungen','Bezahlbare und saubere Energie','Menschenwürdige Arbeit und Wirtschaftswachstum','Industrie, Innovation und Infrastruktur','Weniger Ungleichheiten','Nachhaltige Städte und Gemeinden','Nachhaltige/r Konsum und Produktion','Maßnahmen zum Klimaschutz','Leben unter Wasser','Leben an Land','Frieden, Gerechtigkeit und starke Institutionen','Partnerschaften zur Erreichung der Ziele']};
+const I18N_D={fr:{},it:{},es:{},de:{}};
+I18N_ROWS.forEach(r=>['fr','it','es','de'].forEach((l,i)=>{I18N_D[l][r[0]]=r[i+1]}));
+SDGS.forEach((g,n)=>{if(g)['fr','it','es','de'].forEach(l=>{I18N_D[l][g.t]=SDG_I18N[l][n-1]})});
+const I18N_LN={English:['anglais','inglese','inglés','Englisch'],French:['français','francese','francés','Französisch'],German:['allemand','tedesco','alemán','Deutsch'],Spanish:['espagnol','spagnolo','español','Spanisch'],Italian:['italien','italiano','italiano','Italienisch']};
+const I18N_DT={
+ fr:{d:['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'],D:['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'],m:['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'],M:['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre']},
+ it:{d:['dom','lun','mar','mer','gio','ven','sab'],D:['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'],m:['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'],M:['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre']},
+ es:{d:['dom','lun','mar','mié','jue','vie','sáb'],D:['domingo','lunes','martes','miércoles','jueves','viernes','sábado'],m:['ene','feb','mar','abr','may','jun','jul','ago','sept','oct','nov','dic'],M:['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']},
+ de:{d:['So.','Mo.','Di.','Mi.','Do.','Fr.','Sa.'],D:['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],m:['Jan.','Feb.','März','Apr.','Mai','Juni','Juli','Aug.','Sept.','Okt.','Nov.','Dez.'],M:['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember']}};
+const EN_D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],EN_DF=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],EN_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],EN_MF=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const RD='(Sun|Mon|Tue|Wed|Thu|Fri|Sat)',RM='(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
+let UIL='en';
+const LI=()=>I18N_LANGS.indexOf(UIL)-1;
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function i18nDay(day,mon){const t=I18N_DT[UIL];const m=t.m[EN_M.indexOf(mon)];return UIL==='de'?`${day}. ${m}`:UIL==='es'?`${day} ${m}`:`${day} ${m}`}
+function i18nDate(dow,day,mon,year){const t=I18N_DT[UIL];const d=dow?t.d[EN_D.indexOf(dow)]:'';const core=i18nDay(day,mon)+(year?' '+year:'');return d?(UIL==='de'?`${d}, ${core}`:`${d} ${core}`):core}
+function i18nTokens(s){
+  if(UIL==='en')return s;
+  const t=I18N_DT[UIL];
+  s=s.replace(new RegExp(`^(SUN|MON|TUE|WED|THU|FRI|SAT), (JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) (\\d{1,2})$`),(m,a,b,c)=>i18nDate(cap(a.toLowerCase()),c,cap(b.toLowerCase())).toUpperCase());
+  s=s.replace(new RegExp(`\\b(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), (January|February|March|April|May|June|July|August|September|October|November|December) (\\d{1,2})\\b`,'g'),(m,a,b,c)=>{const d=t.D[EN_DF.indexOf(a)],mo=t.M[EN_MF.indexOf(b)];return cap(UIL==='de'?`${d}, ${c}. ${mo}`:UIL==='es'?`${d}, ${c} de ${mo}`:`${d} ${c} ${mo}`)});
+  s=s.replace(new RegExp(`\\b${RM} (\\d{1,2}) – ${RM} (\\d{1,2})(?:, (\\d{4}))?`,'g'),(m,a,b,c,d,y)=>`${i18nDay(b,a)} – ${i18nDay(d,c)}${y?' '+y:''}`);
+  s=s.replace(new RegExp(`\\b${RM} (\\d{1,2}) – (\\d{1,2}), (\\d{4})`,'g'),(m,a,b,c,y)=>UIL==='de'?`${b}.–${i18nDay(c,a)} ${y}`:`${b}–${i18nDay(c,a)} ${y}`);
+  s=s.replace(new RegExp(`\\b${RD}, ${RM} (\\d{1,2})(?:, (\\d{4}))?`,'g'),(m,a,b,c,y)=>i18nDate(a,c,b,y));
+  s=s.replace(new RegExp(`\\b(Today|Tomorrow), ${RM} (\\d{1,2})\\b`,'g'),(m,a,b,c)=>`${I18N_D[UIL][a]}, ${i18nDay(c,b)}`);
+  s=s.replace(new RegExp(`\\b${RD} (\\d{1,2}) ${RM}\\b`,'g'),(m,a,b,c)=>i18nDate(a,b,c));
+  s=s.replace(new RegExp(`\\b(\\d{1,2}) ${RM} (\\d{4})\\b`,'g'),(m,a,b,c)=>i18nDate('',a,b,c));
+  s=s.replace(new RegExp(`\\b${RM} (\\d{1,2})\\b`,'g'),(m,a,b)=>i18nDay(b,a));
+  s=s.replace(new RegExp(`\\b${RD} (\\d{1,2})\\b`,'g'),(m,a,b)=>`${t.d[EN_D.indexOf(a)]} ${b}`);
+  s=s.replace(new RegExp(`^${RD}, ${RM}$`),(m,a)=>t.d[EN_D.indexOf(a)]);
+  s=s.replace(new RegExp(`^${RD}$`),(m,a)=>t.d[EN_D.indexOf(a)]);
+  s=s.replace(new RegExp(`^${RM}$`),(m,a)=>t.m[EN_M.indexOf(a)]);
+  s=s.replace(/\b(\d{1,2})(?::(\d{2}))? ?(AM|PM)\b/g,(m,h,mi,ap)=>{h=+h%12+(ap==='PM'?12:0);return `${pad(h)}:${mi||'00'}`});
+  s=s.replace(/^(\d{1,2})(am|pm)$/,(m,h,ap)=>{h=+h%12+(ap==='pm'?12:0);return UIL==='fr'?`${h} h`:UIL==='de'?`${h} Uhr`:`${h}:00`});
+  s=s.replace(/\b(Today|Tomorrow)\b/g,w=>I18N_D[UIL][w]);
+  if(UIL==='fr')s=s.replace(/\bSDGs?\b/g,'ODD');
+  if(UIL==='es')s=s.replace(/\bSDGs?\b/g,'ODS');
+  return s;
+}
+const ln=x=>I18N_LN[x]?I18N_LN[x][LI()]:x;
+/* sentence patterns: [regex, (m, tr) => text] per language */
+const PAT=[
+ [/^Good (morning|afternoon|evening), (.+)$/,(m,t)=>({fr:{morning:'Bonjour',afternoon:'Bon après-midi',evening:'Bonsoir'},it:{morning:'Buongiorno',afternoon:'Buon pomeriggio',evening:'Buonasera'},es:{morning:'Buenos días',afternoon:'Buenas tardes',evening:'Buenas noches'},de:{morning:'Guten Morgen',afternoon:'Guten Tag',evening:'Guten Abend'}})[UIL][m[1]]+', '+t(m[2])],
+ [/^Events this week that fit your timetable, campus and languages\. Out of (\d+) upcoming events, (\d+) clash with your classes, (\d+) are in a language you didn't select and (\d+) are at other campuses, so they are left out\.$/,m=>({fr:`Les événements de la semaine compatibles avec votre emploi du temps, votre campus et vos langues. Sur ${m[1]} événements à venir, ${m[2]} sont en conflit avec vos cours, ${m[3]} sont dans une langue non choisie et ${m[4]} sur d'autres campus : ils sont donc écartés.`,it:`Gli eventi della settimana compatibili con orario, campus e lingue. Su ${m[1]} eventi in arrivo, ${m[2]} sono in conflitto con le lezioni, ${m[3]} sono in una lingua non scelta e ${m[4]} in altri campus, quindi sono esclusi.`,es:`Eventos de esta semana que encajan con tu horario, campus e idiomas. De ${m[1]} próximos eventos, ${m[2]} coinciden con tus clases, ${m[3]} están en un idioma que no elegiste y ${m[4]} son en otros campus, así que se dejan fuera.`,de:`Events dieser Woche, die zu Stundenplan, Campus und Sprachen passen. Von ${m[1]} kommenden Events kollidieren ${m[2]} mit deinen Kursen, ${m[3]} sind in einer nicht gewählten Sprache und ${m[4]} an anderen Campus – sie werden weggelassen.`})[UIL]],
+ [/^Personalised from your timetable$/,()=>({fr:'Personnalisé selon votre emploi du temps',it:'Personalizzato in base al tuo orario',es:'Personalizado según tu horario',de:'Personalisiert nach deinem Stundenplan'})[UIL]],
+ [/^updated (.+)$/,(m,t)=>({fr:'mis à jour à ',it:'aggiornato alle ',es:'actualizado a las ',de:'aktualisiert um '})[UIL]+t(m[1])],
+ [/^Right after (.+) \(ends (.+)\)$/,(m,t)=>({fr:`Juste après ${m[1]} (fin à ${t(m[2])})`,it:`Subito dopo ${m[1]} (finisce alle ${t(m[2])})`,es:`Justo después de ${m[1]} (termina a las ${t(m[2])})`,de:`Direkt nach ${m[1]} (endet um ${t(m[2])})`})[UIL]],
+ [/^Matches your interest: (.+)$/,(m,t)=>({fr:'Correspond à votre intérêt : ',it:'In linea con il tuo interesse: ',es:'Coincide con tu interés: ',de:'Passt zu deinem Interesse: '})[UIL]+t(m[1])],
+ [/^You went to (\d+) (.+) events this semester$/,(m,t)=>({fr:`Vous avez participé à ${m[1]} événements « ${t(m[2])} » ce semestre`,it:`Sei andato a ${m[1]} eventi di ${t(m[2])} questo semestre`,es:`Fuiste a ${m[1]} eventos de ${t(m[2])} este semestre`,de:`Du warst dieses Semester bei ${m[1]} ${t(m[2])}-Events`})[UIL]],
+ [/^(.+) for (.+) due (.+)$/,(m,t)=>({fr:`${t(m[1])} pour ${m[2]} à rendre ${t(m[3])}`,it:`${t(m[1])} per ${m[2]} in scadenza ${t(m[3])}`,es:`${t(m[1])} de ${m[2]}, entrega ${t(m[3])}`,de:`${t(m[1])} für ${m[2]} fällig ${t(m[3])}`})[UIL]],
+ [/^Due: (.+)$/,(m,t)=>({fr:'À rendre : ',it:'Scadenza: ',es:'Entrega: ',de:'Fällig: '})[UIL]+t(m[1])],
+ [/^Due (.+)$/,(m,t)=>({fr:'À rendre ',it:'Scadenza ',es:'Entrega ',de:'Fällig '})[UIL]+t(m[1])],
+ [/^Until (.+)$/,(m,t)=>({fr:"Jusqu'au ",it:'Fino al ',es:'Hasta el ',de:'Bis '})[UIL]+t(m[1])],
+ [/^Linked to your goal: SDG (\d+) (.+)$/,(m,t)=>({fr:`Lié à votre objectif : ODD ${m[1]} ${t(m[2])}`,it:`Collegato al tuo obiettivo: SDG ${m[1]} ${t(m[2])}`,es:`Vinculado a tu objetivo: ODS ${m[1]} ${t(m[2])}`,de:`Passend zu deinem Ziel: SDG ${m[1]} ${t(m[2])}`})[UIL]],
+ [/^SDG focus: (.+)$/,(m,t)=>({fr:'Priorité ODD : ',it:'Focus SDG: ',es:'Enfoque ODS: ',de:'SDG-Fokus: '})[UIL]+t(m[1])],
+ [/^SDG (\d+) · (.+)$/,(m,t)=>`${t('SDG')} ${m[1]} · ${t(m[2])}`],
+ [/^SDG (\d+): (.+)$/,(m,t)=>`${t('SDG')} ${m[1]}${UIL==='fr'?' : ':': '}${t(m[2])}`],
+ [/^(\d+) this week$/,m=>({fr:`${m[1]} cette semaine`,it:`${m[1]} questa settimana`,es:`${m[1]} esta semana`,de:`${m[1]} diese Woche`})[UIL]],
+ [/^(\d+) classes from Aurion$/,m=>({fr:`${m[1]} cours d'Aurion`,it:`${m[1]} lezioni da Aurion`,es:`${m[1]} clases de Aurion`,de:`${m[1]} Kurse aus Aurion`})[UIL]],
+ [/^Only (.+) campuses \+ online$/,m=>({fr:`Seulement les campus de ${m[1]} + en ligne`,it:`Solo campus di ${m[1]} + online`,es:`Solo campus de ${m[1]} + en línea`,de:`Nur ${m[1]}-Campus + online`})[UIL]],
+ [/^Only (.+) \+ online$/,m=>({fr:`Seulement ${m[1]} + en ligne`,it:`Solo ${m[1]} + online`,es:`Solo ${m[1]} + en línea`,de:`Nur ${m[1]} + online`})[UIL]],
+ [/^(\d+) events? · (\d+) fits? you$/,m=>({fr:`${m[1]} évén. · ${m[2]} pour vous`,it:`${m[1]} eventi · ${m[2]} per te`,es:`${m[1]} eventos · ${m[2]} para ti`,de:`${m[1]} Events · ${m[2]} für dich`})[UIL]],
+ [/^(\d+) [Gg]oing$/,m=>`${m[1]} ${I18N_D[UIL].going}`],
+ [/^(.+) · (\d+)% match$/,(m,t)=>t(m[1])+' · '+({fr:`${m[2]} %`,it:`${m[2]}%`,es:`${m[2]} %`,de:`${m[2]} %`})[UIL]],
+ [/^In (English|French|German|Spanish|Italian)$/,m=>({fr:'En ',it:'In ',es:'En ',de:'Auf '})[UIL]+ln(m[1])],
+ [/^Held in (English|French|German|Spanish|Italian) – not one of your languages$/,m=>({fr:`En ${ln(m[1])} – pas une de vos langues`,it:`In ${ln(m[1])} – non è una delle tue lingue`,es:`En ${ln(m[1])} – no es uno de tus idiomas`,de:`Auf ${ln(m[1])} – keine deiner Sprachen`})[UIL]],
+ [/^\(in (English|French|German|Spanish|Italian)\)([,.]?)$/,m=>'('+({fr:'en ',it:'in ',es:'en ',de:'auf '})[UIL]+ln(m[1])+')'+m[2]],
+ [/^\(clashes with class\)([,.]?)$/,m=>'('+I18N_D[UIL]['clashes with class']+')'+m[1]],
+ [/^((?:English|French|German|Spanish|Italian)(?:, (?:English|French|German|Spanish|Italian))*)$/,m=>m[1].split(', ').map(x=>I18N_D[UIL][x]).join(', ')],
+ [/^Only (\d+) spots? left$/,m=>({fr:`Plus que ${m[1]} place${m[1]>1?'s':''}`,it:`Solo ${m[1]} posti rimasti`,es:`Solo quedan ${m[1]} plazas`,de:`Nur noch ${m[1]} Plätze`})[UIL]],
+ [/^At (.+), your other (.+) campus \(about (\d+) min from (.+)\)$/,m=>({fr:`À ${m[1]}, votre autre campus de ${m[2]} (env. ${m[3]} min de ${m[4]})`,it:`A ${m[1]}, l'altro tuo campus di ${m[2]} (circa ${m[3]} min da ${m[4]})`,es:`En ${m[1]}, tu otro campus de ${m[2]} (unos ${m[3]} min desde ${m[4]})`,de:`In ${m[1]}, deinem anderen ${m[2]}-Campus (ca. ${m[3]} Min. von ${m[4]})`})[UIL]],
+ [/^Held at (.+) Campus, not (.+)$/,m=>({fr:`Au campus de ${m[1]}, pas ${m[2]}`,it:`Al campus di ${m[1]}, non ${m[2]}`,es:`En el campus de ${m[1]}, no ${m[2]}`,de:`Am Campus ${m[1]}, nicht ${m[2]}`})[UIL]],
+ [/^Only for (.+) Campus students$/,m=>({fr:`Réservé aux étudiants du campus de ${m[1]}`,it:`Solo per gli studenti del campus di ${m[1]}`,es:`Solo para estudiantes del campus de ${m[1]}`,de:`Nur für Studierende des Campus ${m[1]}`})[UIL]],
+ [/^Clashes with your plan \((.+)\) · (.+)$/,(m,t)=>`${I18N_D[UIL]['Clashes with your plan']} (${m[1]}) · ${t(m[2])}`],
+ [/^Clashes with (.+) · (.+)$/,(m,t)=>({fr:'En conflit avec ',it:'In conflitto con ',es:'Coincide con ',de:'Kollidiert mit '})[UIL]+m[1]+' · '+t(m[2])],
+ [/^Overlaps (.+) by (\d+) min – arrive late or leave early$/,m=>({fr:`Chevauche ${m[1]} de ${m[2]} min – arrivez en retard ou partez plus tôt`,it:`Si sovrappone a ${m[1]} per ${m[2]} min – arriva tardi o esci prima`,es:`Se solapa con ${m[1]} durante ${m[2]} min – llega tarde o sal antes`,de:`Überschneidet sich ${m[2]} Min. mit ${m[1]} – später kommen oder früher gehen`})[UIL]],
+ [/^(\d+) min to get from (.+) to (.+)$/,m=>({fr:`${m[1]} min pour aller de ${m[2]} à ${m[3]}`,it:`${m[1]} min per andare da ${m[2]} a ${m[3]}`,es:`${m[1]} min para ir de ${m[2]} a ${m[3]}`,de:`${m[1]} Min. von ${m[2]} nach ${m[3]}`})[UIL]],
+ [/^Proposed for (.+)$/,(m,t)=>({fr:'Proposés pour ',it:'Proposti per ',es:'Propuestos para ',de:'Vorgeschlagen für '})[UIL]+t(m[1])],
+ [/^For (.+)$/,(m,t)=>({fr:'Pour ',it:'Per ',es:'Para ',de:'Für '})[UIL]+t(m[1])],
+ [/^Hello (.+),$/,(m,t)=>({fr:`Bonjour ${t(m[1])},`,it:`Ciao ${t(m[1])},`,es:`¡Hola, ${t(m[1])}!`,de:`Hallo ${t(m[1])},`})[UIL]],
+ [/^Hi (.+),$/,(m,t)=>({fr:`Bonjour ${t(m[1])},`,it:`Ciao ${t(m[1])},`,es:`Hola, ${t(m[1])}:`,de:`Hallo ${t(m[1])},`})[UIL]],
+ [/^at (\w+) \((.+) or (.+)\) or online\.$/,m=>({fr:`à ${m[1]} (${m[2]} ou ${m[3]}) ou en ligne.`,it:`a ${m[1]} (${m[2]} o ${m[3]}) o online.`,es:`en ${m[1]} (${m[2]} o ${m[3]}) o en línea.`,de:`in ${m[1]} (${m[2]} oder ${m[3]}) oder online.`})[UIL]],
+ [/^at (\w+) \(your campus\) or online\.$/,m=>({fr:`à ${m[1]} (votre campus) ou en ligne.`,it:`a ${m[1]} (il tuo campus) o online.`,es:`en ${m[1]} (tu campus) o en línea.`,de:`in ${m[1]} (dein Campus) oder online.`})[UIL]],
+ [/^(are|is) in (English|French|German|Spanish|Italian) \((.+)\)\.$/,m=>{const pl=m[1]==='are';return ({fr:`${pl?'sont':'est'} en ${ln(m[2])} (${m[3]}).`,it:`${pl?'sono':'è'} in ${ln(m[2])} (${m[3]}).`,es:`${pl?'están':'está'} en ${ln(m[2])} (${m[3]}).`,de:`${pl?'sind':'ist'} auf ${ln(m[2])} (${m[3]}).`})[UIL]}],
+ [/^(fits?) (.+)'s week\.$/,(m,t)=>{const pl=m[1]==='fit';return ({fr:`${pl?'sont compatibles':'est compatible'} avec la semaine de ${t(m[2])}.`,it:`${pl?'rientrano':'rientra'} nella settimana di ${t(m[2])}.`,es:`${pl?'encajan':'encaja'} en la semana de ${t(m[2])}.`,de:`${pl?'passen':'passt'} in die Woche von ${t(m[2])}.`})[UIL]}],
+ [/^Why SDG: (.+)$/,(m,t)=>({fr:'Pourquoi cet ODD : ',it:'Perché questo SDG: ',es:'Por qué este ODS: ',de:'Warum dieses SDG: '})[UIL]+t(m[1])],
+ [/^(\d+) ESCP campuses$/,m=>({fr:`${m[1]} campus ESCP`,it:`${m[1]} campus ESCP`,es:`${m[1]} campus de ESCP`,de:`${m[1]} ESCP-Campus`})[UIL]],
+ [/^Instead of announcing every event to every student, CampusLife sends one email with only the events that fit your week\. Below: (.+) for (.+)\.$/,(m,t)=>({fr:`Au lieu d'annoncer chaque événement à tous les étudiants, CampusLife envoie un seul e-mail avec uniquement les événements compatibles avec votre semaine. Ci-dessous : ${t(m[1])} pour ${t(m[2])}.`,it:`Invece di annunciare ogni evento a tutti gli studenti, CampusLife invia una sola email con i soli eventi compatibili con la tua settimana. Qui sotto: ${t(m[1])} per ${t(m[2])}.`,es:`En lugar de anunciar cada evento a todos los estudiantes, CampusLife envía un solo correo con los eventos que encajan en tu semana. Abajo: ${t(m[1])} para ${t(m[2])}.`,de:`Statt jedes Event an alle Studierenden zu schicken, sendet CampusLife eine E-Mail mit nur den Events, die in deine Woche passen. Unten: ${t(m[1])} für ${t(m[2])}.`})[UIL]],
+ [/^(\d+) event announcements this week\. How many are useful to (.+)\?$/,(m,t)=>({fr:`${m[1]} annonces d'événements cette semaine. Combien sont utiles à ${t(m[2])} ?`,it:`${m[1]} annunci di eventi questa settimana. Quanti sono utili a ${t(m[2])}?`,es:`${m[1]} anuncios de eventos esta semana. ¿Cuántos le sirven a ${t(m[2])}?`,de:`${m[1]} Event-Ankündigungen diese Woche. Wie viele sind für ${t(m[2])} nützlich?`})[UIL]],
+ [/^in a language (.+) didn't select$/,(m,t)=>({fr:`dans une langue que ${t(m[1])} n'a pas choisie`,it:`in una lingua che ${t(m[1])} non ha scelto`,es:`en un idioma que ${t(m[1])} no eligió`,de:`in einer Sprache, die ${t(m[1])} nicht gewählt hat`})[UIL]],
+ [/^(\d+)% of what they would receive$/,m=>({fr:`${m[1]} % de ce qu'il recevrait`,it:`${m[1]}% di ciò che riceverebbe`,es:`${m[1]} % de lo que recibiría`,de:`${m[1]} % der Mails, die ankämen`})[UIL]],
+ [/^SDG (\d+) events at their campus this week:$/,m=>({fr:`Événements ODD ${m[1]} sur son campus cette semaine :`,it:`Eventi SDG ${m[1]} nel suo campus questa settimana:`,es:`Eventos del ODS ${m[1]} en su campus esta semana:`,de:`SDG-${m[1]}-Events an diesem Campus diese Woche:`})[UIL]],
+ [/^(\d+) in a language they didn't select$/,m=>({fr:`${m[1]} dans une langue non choisie`,it:`${m[1]} in una lingua non scelta`,es:`${m[1]} en un idioma no elegido`,de:`${m[1]} in einer nicht gewählten Sprache`})[UIL]],
+ [/^(\d+) reach(?:es)? them in the digest$/,m=>({fr:`${m[1]} lui parvien${m[1]==1?'t':'nent'} dans le récapitulatif`,it:`${m[1]} gli arriva${m[1]==1?'':'no'} nel riepilogo`,es:`${m[1]} le llega${m[1]==1?'':'n'} en el resumen`,de:`${m[1]} komm${m[1]==1?'t':'en'} in der Übersicht an`})[UIL]],
+ [/^Your week: (\d+) events? that fit your timetable$/,m=>({fr:`Votre semaine : ${m[1]} événements compatibles avec votre emploi du temps`,it:`La tua settimana: ${m[1]} eventi compatibili con il tuo orario`,es:`Tu semana: ${m[1]} eventos que encajan en tu horario`,de:`Deine Woche: ${m[1]} Events, die in deinen Stundenplan passen`})[UIL]],
+ [/^Here are the events that fit around your classes this week\. We left out (\d+) that clash with your timetable, are at other campuses or are in languages you didn't select\.$/,m=>({fr:`Voici les événements compatibles avec vos cours cette semaine. Nous en avons écarté ${m[1]} qui sont en conflit avec votre emploi du temps, sur d'autres campus ou dans des langues que vous n'avez pas choisies.`,it:`Ecco gli eventi compatibili con le tue lezioni di questa settimana. Ne abbiamo esclusi ${m[1]} che si sovrappongono al tuo orario, sono in altri campus o in lingue che non hai scelto.`,es:`Estos son los eventos que encajan con tus clases esta semana. Dejamos fuera ${m[1]} que coinciden con tu horario, son en otros campus o en idiomas que no elegiste.`,de:`Hier sind die Events, die diese Woche zu deinen Kursen passen. ${m[1]} haben wir weggelassen, weil sie mit deinem Stundenplan kollidieren, an anderen Campus stattfinden oder in Sprachen sind, die du nicht gewählt hast.`})[UIL]],
+ [/^([\d,.]+) Members$/,m=>({fr:`${m[1]} membres`,it:`${m[1]} membri`,es:`${m[1]} miembros`,de:`${m[1]} Mitglieder`})[UIL]],
+ [/^SDG (\d+) events at the (.+) campuses\. (\d+) fits? your timetable:$/,m=>({fr:`événements ODD ${m[1]} sur les campus de ${m[2]}. ${m[3]} compatible(s) avec votre emploi du temps :`,it:`eventi SDG ${m[1]} nei campus di ${m[2]}. ${m[3]} compatibili con il tuo orario:`,es:`eventos del ODS ${m[1]} en los campus de ${m[2]}. ${m[3]} encaja(n) en tu horario:`,de:`SDG-${m[1]}-Events an den Campus in ${m[2]}. ${m[3]} passen in deinen Stundenplan:`})[UIL]],
+ [/^(\d+) more (?:is|are) only in French: (.+)\. Add French in Timetable & data if you'd like to see them\.$/,m=>({fr:`${m[1]} autre(s) uniquement en français : ${m[2]}. Ajoutez le français dans Emploi du temps et données pour les voir.`,it:`Altri ${m[1]} solo in francese: ${m[2]}. Aggiungi il francese in Orario e dati per vederli.`,es:`${m[1]} más solo en francés: ${m[2]}. Añade el francés en Horario y datos para verlos.`,de:`${m[1]} weitere nur auf Französisch: ${m[2]}. Füge Französisch unter Stundenplan & Daten hinzu, um sie zu sehen.`})[UIL]],
+ [/^(.+) is not part of this prototype$/,(m,t)=>({fr:`« ${t(m[1])} » ne fait pas partie de ce prototype`,it:`«${t(m[1])}» non fa parte di questo prototipo`,es:`«${t(m[1])}» no forma parte de este prototipo`,de:`„${t(m[1])}“ ist nicht Teil dieses Prototyps`})[UIL]],
+ [/^Added “(.+)” to your plan\. Events that overlap it are now flagged\.$/,m=>({fr:`« ${m[1]} » ajouté à votre programme. Les événements qui le chevauchent sont signalés.`,it:`«${m[1]}» aggiunto al tuo piano. Gli eventi sovrapposti ora sono segnalati.`,es:`«${m[1]}» añadido a tu plan. Los eventos que se solapan ahora aparecen marcados.`,de:`„${m[1]}“ zu deinem Plan hinzugefügt. Überschneidende Events sind jetzt markiert.`})[UIL]],
+ [/^Switched to (.+) Campus\.$/,m=>({fr:`Campus changé : ${m[1]}.`,it:`Campus cambiato: ${m[1]}.`,es:`Cambiado al campus ${m[1]}.`,de:`Zum Campus ${m[1]} gewechselt.`})[UIL]],
+ [/^This prototype only covers (.+)\.$/,(m,t)=>({fr:`Ce prototype couvre seulement ${t(m[1])}.`,it:`Questo prototipo copre solo ${t(m[1])}.`,es:`Este prototipo solo cubre ${t(m[1])}.`,de:`Dieser Prototyp umfasst nur ${t(m[1])}.`})[UIL]],
+ [/^Added (.+)\. Suggestions updated\.$/,m=>({fr:`${m[1]} ajouté. Suggestions mises à jour.`,it:`${m[1]} aggiunto. Suggerimenti aggiornati.`,es:`${m[1]} añadido. Sugerencias actualizadas.`,de:`${m[1]} hinzugefügt. Vorschläge aktualisiert.`})[UIL]]
+];
+const I18N_CACHE={fr:new Map(),it:new Map(),es:new Map(),de:new Map()};
+function trCore(t,depth=0){
+  if(depth>6)return i18nTokens(t);
+  const D=I18N_D[UIL];
+  if(Object.prototype.hasOwnProperty.call(D,t))return D[t];
+  const sub=x=>trCore(x,depth+1);
+  for(const [re,fn] of PAT){const m=t.match(re);if(m){const r=fn(m,sub);if(r!=null)return r}}
+  let m=t.match(/^([✓★✕⚠◐●♡♥]\s*)(.+)$/);if(m)return m[1]+sub(m[2]);
+  if(t.includes(' · '))return t.split(' · ').map(sub).join(' · ');
+  m=t.match(/^([,.·:]\s*)?(.*?)(\s*[,.·:])?$/);
+  if(m&&(m[1]||m[3])&&m[2]){const core=sub(m[2]);if(core!==m[2])return (m[1]||'')+core+(m[3]||'')}
+  return i18nTokens(t);
+}
+function tr(s){
+  if(UIL==='en'||!s||!/[A-Za-z]/.test(s))return s;
+  const m=s.match(/^(\s*)([\s\S]*?)(\s*)$/);const core=m[2].replace(/\s+/g,' ');
+  const C=I18N_CACHE[UIL];let out=C.get(core);
+  if(out===undefined){out=trCore(core);C.set(core,out)}
+  return out===core?s:m[1]+out+m[3];
+}
+const I18N_ATTR=['placeholder','aria-label','title'];
+let i18nObs=null;
+function i18nPass(){
+  if(!document.body)return;
+  if(i18nObs)i18nObs.disconnect();
+  try{
+    const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+    while((n=w.nextNode())){
+      const el=n.parentElement;if(!el||el.closest('script,style,code,[data-notr]'))continue;
+      const cur=n.nodeValue;
+      if(n.__out!==undefined&&cur===n.__out&&n.__lang===UIL)continue;
+      const en=(n.__out!==undefined&&cur===n.__out)?n.__en:cur;
+      const out=tr(en);n.__en=en;n.__out=out;n.__lang=UIL;if(out!==cur)n.nodeValue=out;
+    }
+    document.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el=>{
+      if(el.closest('[data-notr]'))return;const st=el.__i18n||(el.__i18n={});
+      for(const a of I18N_ATTR){const cur=el.getAttribute(a);if(cur==null)continue;const s=st[a];
+        if(s&&cur===s.out&&s.lang===UIL)continue;
+        const en=(s&&cur===s.out)?s.en:cur;const out=tr(en);st[a]={en,out,lang:UIL};if(out!==cur)el.setAttribute(a,out)}
+    });
+  }finally{if(i18nObs)i18nObs.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:I18N_ATTR})}
+}
+function setLang(l){
+  if(!I18N_LANGS.includes(l))l='en';UIL=l;
+  try{localStorage.setItem('cl-lang',l)}catch(e){}
+  document.documentElement.lang=l;
+  document.querySelectorAll('select.langpick').forEach(s=>{s.value=l});
+  i18nPass();
+}
+(function initI18n(){
+  let l='en';try{l=localStorage.getItem('cl-lang')||'en'}catch(e){}
+  const h=HT.find(x=>I18N_LANGS.includes(x));if(h)l=h;
+  i18nObs=new MutationObserver(()=>i18nPass());
+  document.addEventListener('change',e=>{if(e.target.matches&&e.target.matches('select.langpick'))setLang(e.target.value)});
+  setLang(l);
+})();
+
 </script>
 </body>
 </html>
