@@ -1,16 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Concept prototype: timetable-aware event recommendations for a campus life platform, with SDG tags, a phone view and five languages.">
-<style>
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-body{margin:0;font-size:14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-img{max-width:100%}
-[hidden]{display:none!important}
-</style>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Smart Campus Events</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap">
@@ -648,8 +638,7 @@ html.locked,html.locked body{overflow:hidden}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-</head>
-<body>
+
 <div class="modebar gutter"><span class="lbl"><b>CampusLife concept</b> · personalised events prototype<span class="visits" id="visits" hidden title="Visits counted by GoatCounter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg><b>0</b> visits</span></span>
   <div class="mbright"><button class="trktog" id="trackTog" hidden></button><label class="langsel" data-notr><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.93 6h-2.95a15.6 15.6 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.960zM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4zm.81 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.07 16zm2.950-8H5.07a7.99 7.99 0 0 1 4.33-3.56A15.6 15.6 0 0 0 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4z"/></svg><select id="langSel" class="langpick" aria-label="Language"><option value="en">English</option><option value="fr">Français</option><option value="it">Italiano</option><option value="es">Español</option><option value="de">Deutsch</option></select></label><div class="modeseg" role="group" aria-label="View as"><button id="modeDesk" data-mode="desktop"><svg viewBox="0 0 24 24"><path d="M20 18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2H0v2h24v-2zM4 6h16v10H4z"/></svg>Computer</button><button id="modePhone" data-mode="mobile"><svg viewBox="0 0 24 24"><path d="M16 1H8a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3zm-4 21a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5-4H7V4h10z"/></svg>Phone</button></div></div></div>
 <div class="consent" id="consent" role="dialog" aria-modal="true" aria-labelledby="consentTitle" hidden><div class="cbox">
@@ -712,33 +701,50 @@ html.locked,html.locked body{overflow:hidden}
 <div class="toast" id="toast" hidden></div>
 
 <script>
-/* ---------- Event data: CampusLife, Nov 10–19, 2026 (from app screenshots; tags, categories and a few hosts were filled in) ---------- */
+/* ---------- Event data: CampusLife, Nov 24 – Dec 1, 2026 (from CampusLife screenshots; times in Paris time, categories filled in) ---------- */
 const EVENTS=[
- {id:'studapart_en',title:'[English] Prepare your accommodation in Paris - Webinar with Studapart',start:'2026-11-10T17:30',end:'2026-11-10T18:30',online:true,campus:'Paris',host:'Paris Campus',group:'SXPARIS',cat:'Student Life',tags:['Online Webinar','Paris','Student Life'],lang:'EN',action:'View'},
- {id:'quatter0',title:'Quatter ESCP Society Student Bar',start:'2026-11-10T18:00',end:'2026-11-10T21:30',campus:'Paris',site:'Champerret',place:'Level 0 Champerret',host:'Quatter (Le Q) - Paris Campus',group:'QUATTER',cat:'Social',tags:['Social','Paris','Student Societies'],action:'View'},
- {id:'berge',title:'ESCP Women in Finance Chair x Women in Leadership Society - Aurore Bergé, France’s Minister Delegate for Gender Equality and…',start:'2026-11-10T18:30',end:'2026-11-10T20:00',campus:'Paris',site:'Champerret',place:'ESCP Paris Champerret campus - Amphitheater Etienne Marcel',host:'Paris Campus',group:'SXPARIS',cat:'Conference',tags:['Conference','Paris','Student Societies'],action:'Register'},
- {id:'iagen',title:'IA Générative : guide de survie - Conférence Débat',start:'2026-11-10T18:30',end:'2026-11-10T21:00',campus:'Paris',site:'Montparnasse',place:'Campus Montparnasse – 3, rue Armand Moisant, Paris - France',host:'Paris Campus',group:'SXPARIS',cat:'Conference',tags:['Conference','Paris'],lang:'FR',action:'Register'},
- {id:'braunpivet',title:'Tribunes reçoit Yaël Braun-Pivet',start:'2026-11-10T18:30',end:'2026-11-10T20:10',campus:'Paris',site:'Champerret',place:'Amphithéâtre Jacques Coeur, Campus de Champerret',host:'Tribunes - Paris Campus',group:'TRIBUNES',cat:'Conference',tags:['Conference','Paris','Student Societies'],lang:'FR',action:'View'},
- {id:'vibe',title:'Vibe Coding Workshop: Building Your First App/Website with AI',start:'2026-11-11T14:00',end:'2026-11-11T17:00',campus:'London',place:'527 Finchley Road',host:'London Campus',group:'SXLONDON',cat:'Academic',tags:['Workshop','London'],going:11,spots:9,action:'Register'},
- {id:'gmat',title:'Online | Crack the GMAT Preparation Session | EN',start:'2026-11-11T18:00',end:'2026-11-11T19:00',online:true,campus:'Turin',host:'Turin Campus',group:'SXTURIN',cat:'Academic',tags:['Online Webinar','Turin'],lang:'EN',action:'Register'},
- {id:'pilates1',title:'Pilates classes',start:'2026-11-11T19:00',end:'2026-12-02T20:00',campus:'Turin',place:'ESCP Turin Campus - Wellbeing room',host:'Turin Campus',group:'SXTURIN',cat:'Sports',tags:['Athletic/Sports','Turin'],action:'Register'},
- {id:'pilates2',title:'Pilates classes',start:'2026-11-11T19:00',end:'2026-11-11T20:00',campus:'Turin',place:'ESCP Turin Campus - Wellbeing room',host:'Turin Campus',group:'SXTURIN',cat:'Sports',tags:['Athletic/Sports','Turin'],going:3,action:'Register'},
- {id:'arcadia',title:'ESCP Arcadia VS Frassati S.Carlo 1 (AWAY)',start:'2026-11-11T21:20',end:'2026-11-11T23:20',campus:'Turin',place:'San Francesco al Campo',host:'Turin Campus',group:'SXTURIN',cat:'Sports',tags:['Athletic/Sports','Turin'],action:'Register'},
- {id:'kindness',title:'World Kindness Day with SPF Paris 💛',start:'2026-11-12T09:00',end:'2026-11-13T15:00',campus:'Paris',site:'Champerret',place:'Hall Blondeau, Champerret campus',host:"Students' Philanthropic Foundation (SPF) - Paris Campus",group:'SPFPARIS',cat:'Student Life',tags:['Student Societies','Paris','Student Life'],action:'View'},
- {id:'tennis',title:'Madrid Tennis Training - Intermediate Level',start:'2026-11-12T09:30',end:'2026-11-12T10:30',campus:'Madrid',place:'SCP Puerta de Hierro Guisando Club',host:'Padel & Tennis Team - Madrid Campus',group:'MADRIDRACKET',cat:'Sports',tags:['Athletic/Sports','Madrid'],going:3,action:'Register'},
- {id:'thinkcell',title:'180DC x JET : ThinkCell Workshop',start:'2026-11-12T15:00',end:'2026-11-12T17:00',campus:'Berlin',place:'France',host:'180 Degrees Consulting - Berlin Campus',group:'180DC',cat:'Career',tags:['Career workshop','Berlin'],going:12,spots:38,action:'Register'},
- {id:'wfoot',title:"Women's Football training",start:'2026-11-12T16:30',end:'2026-11-12T17:30',campus:'London',place:'Princes Park Youth Football Club astroturf pitch',host:'Football Team (Women) - London Campus',group:'LDNFOOTBALL',cat:'Sports',tags:['Athletic/Sports','London'],action:'Register'},
- {id:'dignity',title:'Dignity and Development: Human Rights at the Heart of the Sustainable Future',start:'2026-11-12T18:00',end:'2026-11-12T19:30',campus:'Turin',place:'France',host:'International Politics - Turin Campus',group:'INTLPOLITICS',cat:'Conference',tags:['Conference','Turin','Student Societies'],going:9,action:'Register'},
- {id:'quatter1',title:'Quatter ESCP Society Student Bar',start:'2026-11-12T18:00',end:'2026-11-12T21:30',campus:'Paris',site:'Champerret',place:'Level 0 Champerret',host:'Quatter (Le Q) - Paris Campus',group:'QUATTER',cat:'Social',tags:['Social','Paris','Student Societies'],action:'View'},
- {id:'gomart',title:'Exclusive Talk with Christophe Gomart, French Deputy to the European Parliament and former Head of French Intelligence',start:'2026-11-12T18:30',end:'2026-11-12T20:30',campus:'Paris',site:'Montparnasse',place:'Campus Montparnasse Auditorium',host:'ESCPRIT Défense - Paris Campus',group:'ESCPRIT',cat:'Conference',tags:['Conference','Paris','Student Societies'],action:'Register'},
- {id:'euros',title:'Two digital euros for a sovereign and competitive EU',start:'2026-11-16T18:00',end:'2026-11-16T19:00',campus:'Paris',place:'France',host:'International Politics - Paris Campus',group:'INTLPOLITICS',cat:'Conference',tags:['Conference','Paris','Student Societies'],going:7,action:'Register'},
- {id:'brexit',title:'Beyond Brexit: France–UK Economic Collaboration, with Pierre Chabrol, Minister Counsellor at the French Embassy',start:'2026-11-16T18:30',end:'2026-11-16T19:30',campus:'London',place:'527 Finchley Road',host:'London Campus',group:'SXLONDON',cat:'Conference',tags:['Conference','London'],going:113,spots:37,action:'Register'},
- {id:'selfdef',title:'Self-Defense Classes',start:'2026-11-16T19:00',end:'2026-11-16T20:00',campus:'Turin',place:'ESCP Turin Campus - Wellbeing room',host:'Turin Campus',group:'SXTURIN',cat:'Sports',tags:['Athletic/Sports','Turin'],going:1,action:'Register'},
- {id:'hackathon',title:'Entrepreneurship Festival - Hackathon',start:'2026-11-17T09:00',end:'2026-11-17T20:00',campus:'Berlin',place:'Delta Campus',host:'Berlin Campus',group:'SXBERLIN',cat:'Career',tags:['Career','Berlin'],action:'Register'},
- {id:'studapart',title:'En pleine recherche de logement ? Rejoignez notre webinaire ESCP x STUDAPART',start:'2026-11-17T13:00',end:'2026-11-17T14:00',online:true,campus:'Paris',host:'Paris Campus',group:'SXPARIS',cat:'Student Life',tags:['Online Webinar','Paris','Student Life'],lang:'FR',action:'View'},
- {id:'quatter2',title:'Quatter ESCP Society Student Bar',start:'2026-11-17T18:00',end:'2026-11-17T21:30',campus:'Paris',site:'Champerret',place:'Level 0 Champerret',host:'Quatter (Le Q) - Paris Campus',group:'QUATTER',cat:'Social',tags:['Social','Paris','Student Societies'],action:'View'},
- {id:'ibsummit',title:'Investment Banking Summit - ESCP HEC Finance Club',start:'2026-11-17T18:15',end:'2026-11-17T21:30',campus:'Paris',place:'France',host:'ESCP HEC Finance Club - Paris Campus',group:'HECFINANCE',cat:'Career',tags:['Company event','Paris','Career'],action:'Register'},
- {id:'bakesale',title:'SPF Bake Sale',start:'2026-11-19T12:00',end:'2026-11-19T16:00',campus:'London',place:'France',host:"Students' Philanthropic Foundation (SPF) - London Campus",group:'SPFLONDON',cat:'Student Life',tags:['Student Life','London'],action:'View'}
+ {id:"lean",title:"Lean Library webinar: less searching, more researching | Student webinar on 24 November",start:"2026-11-24T16:00",end:"2026-11-24T17:00",online:true,campus:"Berlin",host:"Berlin Campus",group:"BERLINCAMPUS",cat:"Academic",tags:["Online Webinar", "Berlin"],lang:"EN",action:"View"},
+ {id:"artmaniac",title:"Art Maniac - Atelier Théâtre & confiance en soi 🎭 Theatre & Self-Confidence 🎭",start:"2026-11-24T17:00",end:"2026-11-24T19:00",campus:"Paris",site:"Champerret",place:"ESCP Champerret",host:"Art Maniac - Paris Campus",group:"ARTMANIACPAR",cat:"Student Life",tags:["Workshop", "Paris", "Student Life", "Student Societies"],lang:"FR",action:"View"},
+ {id:"fifa",title:"FIFA TOURNAMENT",start:"2026-11-24T17:00",end:"2026-11-24T20:00",campus:"Madrid",place:"—",host:"Bachelor Society (EBS) - Madrid Campus",group:"BACHELORSOCI",cat:"Social",tags:["Party/Social", "Madrid", "Student Societies"],action:"View"},
+ {id:"roundtable",title:"Library - Round Table Discussion",start:"2026-11-24T17:30",end:"2026-11-24T18:30",campus:"Paris",site:"Champerret",place:"Champerret Library - 658",host:"Paris Campus",group:"PARISCAMPUS",cat:"Academic",tags:["Cultural", "Paris", "Academic", "Student Societies"],going:12,action:"Register"},
+ {id:"souverainete",title:"« Souveraineté, souverainetés ? » Penser, construire, mesurer",start:"2026-11-24T19:00",end:"2026-11-24T22:00",campus:"Paris",site:"Champerret",place:"ESCP Business School - 8 Avenue de la Porte de Champerret, 75017 Paris",host:"Paris Campus",group:"PARISCAMPUS",cat:"Conference",tags:["Conference", "Paris"],lang:"FR",action:"View"},
+ {id:"studapart",title:"En pleine recherche de logement ? Rejoignez notre webinaire ESCP x STUDAPART",start:"2026-11-25T12:30",end:"2026-11-25T13:30",online:true,campus:"Paris",host:"Paris Campus",group:"PARISCAMPUS",cat:"Student Life",tags:["Online Webinar", "Paris", "Student Life"],lang:"FR",action:"View"},
+ {id:"values1",title:"From Values to Performance: Purpose in Action. Workshop: Learn How to Choose your Future Work Environment",start:"2026-11-25T16:00",end:"2026-11-25T20:00",campus:"Berlin",place:"—",host:"Lighthouse - Berlin campus",group:"LIGHTHOUSEBE",cat:"Career",tags:["Workshop", "Berlin", "Student Societies"],going:2,action:"Register"},
+ {id:"skating",title:"CHRISTMAS CHARITY ICE SKATING",start:"2026-11-25T16:50",end:"2026-11-25T18:50",campus:"London",place:"Prince Charles Dr, Brent Cross, London NW4 3AJ",host:"Bachelor Society (EBS) - London Campus",group:"BACHELORSOCI",cat:"Social",tags:["Party/Social"],action:"View"},
+ {id:"entrefest",title:"ENTREPRENEURSHIP FESTIVAL MADRID",start:"2026-11-25T17:30",end:"2026-11-25T21:00",campus:"Madrid",place:"—",host:"Madrid Campus",group:"MADRIDCAMPUS",cat:"Career",tags:["Networking", "Madrid", "Blue Factory", "Competition"],going:7,action:"Register"},
+ {id:"quatter1",title:"Quatter ESCP Society Student Bar",start:"2026-11-25T18:00",end:"2026-11-25T21:30",campus:"Paris",site:"Champerret",place:"Level 0 Champerret",host:"Quatter (Le Q) - Paris Campus",group:"QUATTER",cat:"Social",tags:["Party/Social", "Paris", "Student Life", "Student Societies"],action:"View"},
+ {id:"spritz",title:"All You Can Spritz",start:"2026-11-25T18:00",end:"2026-11-25T21:00",campus:"Turin",place:"I Frighi Cocktail Bar",host:"Students' Philanthropic Foundation (SPF) - Turin Campus",group:"SPFTURIN",cat:"Social",tags:["Party/Social", "Turin", "Student Societies", "Charity/Fundraising"],going:13,action:"Register"},
+ {id:"pilates",title:"Pilates classes",start:"2026-11-25T19:00",end:"2026-11-25T20:00",campus:"Turin",place:"ESCP Turin Campus - Wellbeing room",host:"Turin Campus",group:"TURINCAMPUS",cat:"Sports",tags:["Athletic/Sports", "Turin", "Student Life"],going:2,spots:2,action:"Register"},
+ {id:"watchparty",title:"⚽ EU Trivia + Champions League Watch Party: PSG vs AS Roma 🇪🇺",start:"2026-11-25T19:00",end:"2026-11-25T23:00",campus:"Paris",place:"Fitzroy Bastille (1st floor)",host:"Students' Philanthropic Foundation (SPF) - Paris Campus",group:"SPFPARIS",cat:"Social",tags:["Party/Social", "Paris", "Student Societies", "Charity/Fundraising", "Competition"],action:"View"},
+ {id:"tennis",title:"Madrid Tennis Training - Intermediate Level",start:"2026-11-26T09:30",end:"2026-11-26T10:30",campus:"Madrid",place:"SCP Puerta de Hierro Guisando Club",host:"Padel & Tennis Team - Madrid Campus",group:"MADRIDRACKET",cat:"Sports",tags:["Athletic/Sports", "Madrid"],spots:4,action:"Register"},
+ {id:"market",title:"Season's Market & Student Societies Showcase",start:"2026-11-26T14:00",end:"2026-11-26T18:00",campus:"Berlin",place:"—",host:"Berlin Campus",group:"BERLINCAMPUS",cat:"Social",tags:["Party/Social", "Berlin", "Student Life", "Student Societies"],going:17,action:"Register"},
+ {id:"masterclass",title:"[FR] Appel à candidatures étudiants: Tournage de l'émission \"Masterclass\" Public Sénat",start:"2026-11-26T15:30",end:"2026-11-26T17:00",online:true,campus:"Paris",host:"Paris Campus",group:"PARISCAMPUS",cat:"Conference",tags:["Conference", "Paris", "Student Life"],lang:"FR",action:"View"},
+ {id:"values2",title:"From Values to Performance: Purpose in Action. Workshop: Learn How to Choose your Future Work Environment",start:"2026-11-26T16:00",end:"2026-11-26T20:00",campus:"Berlin",place:"—",host:"Lighthouse - Berlin campus",group:"LIGHTHOUSEBE",cat:"Career",tags:["Workshop", "Berlin", "Student Societies"],going:1,action:"Register"},
+ {id:"wfoot",title:"Women's Football training",start:"2026-11-26T16:30",end:"2026-11-26T17:30",campus:"London",place:"Princes Park Youth Football Club astroturf pitch",host:"Football Team (Women) - London Campus",group:"LDNFOOTBALL",cat:"Sports",tags:["Athletic/Sports", "London", "Student Life", "Health & Well-being"],action:"Register"},
+ {id:"bookclub",title:"Book Club - Library Turin",start:"2026-11-26T17:00",end:"2026-11-26T18:00",campus:"Turin",place:"—",host:"Turin Campus",group:"TURINCAMPUS",cat:"Student Life",tags:["Cultural", "Turin", "Student Life", "Health & Well-being"],going:9,action:"Register"},
+ {id:"eventures",title:"Eventures x Antico Cicinin Bar - Bites & Drinks",start:"2026-11-26T18:00",end:"2026-11-26T22:00",campus:"Turin",place:"Antico Cicinin Bar",host:"Regatta - Eventures",group:"REGATTAEVENT",cat:"Social",tags:["Afterwork", "Turin", "Student Societies"],going:14,action:"Register"},
+ {id:"mfoot",title:"Football Team training",start:"2026-11-26T19:30",end:"2026-11-26T21:00",campus:"London",place:"Crest Academy, Neasden, NW2 7SN",host:"Football Team (Men) - London Campus",group:"LDNFOOTBALL",cat:"Sports",tags:["Athletic/Sports", "London", "Student Life", "Health & Well-being"],action:"Register"},
+ {id:"arcadia",title:"ESCP Arcadia VS Kolbe Gen-YZ (HOME)",start:"2026-11-26T21:00",end:"2026-11-26T23:00",campus:"Turin",place:"IIS Russell - Moro - Guarini",host:"Turin Campus",group:"TURINCAMPUS",cat:"Sports",tags:["Athletic/Sports", "Turin", "Student Life"],action:"Register"},
+ {id:"throwback",title:"2000's Throwback Party",start:"2026-11-26T22:00",end:"2026-11-27T03:00",campus:"Turin",place:"Rosso di Sera Birreria",host:"Dance Society - Turin Campus",group:"DANCESOCIETY",cat:"Social",tags:["Party/Social", "Turin", "Student Societies"],action:"View"},
+ {id:"padel",title:"Madrid Padel Training - Basic Level",start:"2026-11-27T09:30",end:"2026-11-27T10:30",campus:"Madrid",place:"SCP Puerta de Hierro Guisando Club",host:"Padel & Tennis Team - Madrid Campus",group:"MADRIDRACKET",cat:"Sports",tags:["Athletic/Sports", "Madrid"],spots:4,action:"Register"},
+ {id:"studapart_en",title:"[English] Prepare your accommodation in Paris - Webinar with Studapart",start:"2026-11-27T12:00",end:"2026-11-27T13:00",online:true,campus:"Paris",host:"Paris Campus",group:"PARISCAMPUS",cat:"Student Life",tags:["Online Webinar", "Paris", "Student Life"],lang:"EN",action:"View"},
+ {id:"swap",title:"♻️ GEA Clothing Swap: Swap, Style & Sustain! 👕✨",start:"2026-11-27T12:00",end:"2026-11-27T15:00",campus:"Turin",place:"—",host:"GEA Sustainability - Turin Campus",group:"GEASUSTAINAB",cat:"Student Life",tags:["Workshop", "Turin", "Student Societies", "Sustainability"],action:"View"},
+ {id:"beachvolley",title:"Beach Volley Tournament",start:"2026-11-27T14:30",end:"2026-11-27T19:00",campus:"Turin",place:"Motovelodromo",host:"Turin Campus",group:"TURINCAMPUS",cat:"Sports",tags:["Athletic/Sports", "Turin", "Student Life"],going:7,spots:33,action:"Register"},
+ {id:"fashion",title:"Fashion on Screen",start:"2026-11-27T15:30",end:"2026-11-27T18:30",campus:"Madrid",place:"—",host:"Luxury Society - Madrid campus",group:"LUXURYSOCIET",cat:"Social",tags:["Afterwork"],going:1,spots:24,action:"Register"},
+ {id:"quatter2",title:"Quatter ESCP Society Student Bar",start:"2026-11-27T18:00",end:"2026-11-27T21:30",campus:"Paris",site:"Champerret",place:"Level 0 Champerret",host:"Quatter (Le Q) - Paris Campus",group:"QUATTER",cat:"Social",tags:["Party/Social", "Paris", "Student Life", "Student Societies"],action:"View"},
+ {id:"esports",title:"Excel Esports Tournament",start:"2026-11-27T18:00",end:"2026-11-27T20:30",campus:"Berlin",place:"B-019",host:"Lighthouse - Berlin campus",group:"LIGHTHOUSEBE",cat:"Academic",tags:["Workshop", "Berlin", "Student Societies", "Competition"],action:"Register"},
+ {id:"mixedvolley",title:"Mixed Volleyball Training.",start:"2026-11-28T11:00",end:"2026-11-28T13:00",campus:"Madrid",place:"Colegio Torrevilano",host:"Volleyball Team - Madrid Campus",group:"VOLLEYBALLTE",cat:"Sports",tags:["Athletic/Sports", "Madrid", "Student Life"],spots:15,action:"Register"},
+ {id:"alba",title:"ESCP Berlin Basketball @ ALBA Campus Cup",start:"2026-11-28T11:00",end:"2026-11-28T17:00",campus:"Berlin",place:"Max Schmeling Halle",host:"Berlin Campus",group:"BERLINCAMPUS",cat:"Sports",tags:["Athletic/Sports", "Berlin", "Student Life", "Competition"],action:"View"},
+ {id:"basketcup",title:"Basketball Team Cup match ESCP v UCL or Royal Holloway (Home)",start:"2026-11-28T14:00",end:"2026-11-28T16:00",campus:"London",place:"TBD",host:"Basketball Team (Men) - London Campus",group:"BASKETBALLTE",cat:"Sports",tags:["Athletic/Sports", "London", "Student Life", "Health & Well-being", "Competition"],action:"Register"},
+ {id:"artslondon",title:"Arts London v ESCP",start:"2026-11-28T14:00",end:"2026-11-28T16:00",campus:"London",place:"Harlington Football pitches",host:"Football Team (Men) - London Campus",group:"LDNFOOTBALL",cat:"Sports",tags:["Athletic/Sports", "London", "Student Life", "Health & Well-being", "Competition"],action:"Register"},
+ {id:"f1",title:"F1 RACE WATCH PARTY",start:"2026-11-29T17:00",end:"2026-11-29T22:00",campus:"Turin",place:"Amarillo - Wild Pub",host:"Driven by Turboscope - Turin Campus",group:"DRIVENBYTURB",cat:"Social",tags:["Party/Social", "Turin"],going:4,action:"Register"},
+ {id:"georisk",title:"How Geopolitical Risk Changes Global Investment Decisions ?",start:"2026-11-30T17:00",end:"2026-11-30T19:00",campus:"Madrid",place:"—",host:"International Politics - Madrid campus",group:"INTLPOLITICS",cat:"Conference",tags:["Conference", "Madrid"],going:1,spots:39,action:"Register"},
+ {id:"gea",title:"Inside Sustainability: Careers & Real-World Insights",start:"2026-11-30T18:00",end:"2026-11-30T19:00",campus:"Berlin",place:"—",host:"GEA Sustainability - Berlin Campus",group:"GEASUSTAINAB",cat:"Career",tags:["Workshop", "Berlin", "Student Societies", "Sustainability"],going:3,action:"Register"},
+ {id:"selfdef",title:"Self-Defense Classes",start:"2026-11-30T19:00",end:"2026-11-30T20:00",campus:"Turin",place:"ESCP Turin Campus - Wellbeing room",host:"Turin Campus",group:"TURINCAMPUS",cat:"Sports",tags:["Athletic/Sports", "Turin", "Student Life"],spots:4,action:"Register"},
+ {id:"volleycup",title:"Volleyball Cup match ESCP v London Met (away)",start:"2026-11-30T20:00",end:"2026-11-30T22:00",campus:"London",place:"TBD",host:"Volleyball Team - London Campus",group:"VOLLEYBALLTE",cat:"Sports",tags:["Athletic/Sports", "London", "Student Life", "Health & Well-being"],action:"Register"},
+ {id:"openlunch",title:"Open Lunch - Entrepreneurs",start:"2026-12-01T12:30",end:"2026-12-01T14:00",campus:"Paris",place:"—",host:"Blue Factory",group:"BLUEFACTORY",cat:"Career",tags:["Networking", "Paris", "Blue Factory"],action:"Register"},
+ {id:"policybrief",title:"European Society Policy Brief",start:"2026-12-01T18:00",end:"2026-12-01T19:30",campus:"Turin",place:"—",host:"European Society - Turin Campus",group:"EUROPEANSOCI",cat:"Conference",tags:["Conference", "Turin", "Student Societies"],going:1,action:"Register"},
+ {id:"concert",title:"SPF x EMC Charity Concert",start:"2026-12-01T19:30",end:"2026-12-02T00:00",campus:"Paris",place:"Le Truskel",host:"Students' Philanthropic Foundation (SPF) - Paris Campus",group:"SPFPARIS",cat:"Social",tags:["Party/Social", "Paris", "Student Societies", "Charity/Fundraising"],action:"View"}
 ];
 /* UN Sustainable Development Goals (sdgs.un.org/goals) */
 const SDGS=[null,
@@ -748,31 +754,48 @@ const SDGS=[null,
  {t:'Climate Action',c:'#3F7E44'},{t:'Life Below Water',c:'#0A97D9'},{t:'Life on Land',c:'#3E9A1D'},{t:'Peace, Justice and Strong Institutions',c:'#00689D'},{t:'Partnerships for the Goals',c:'#19486A'}];
 /* Draft classification – the team has not agreed definitions yet. [goals, reason] */
 const SDG_TAGS={
- studapart_en:[[11],'Finding safe, affordable student housing.'],
- quatter0:[[],'Student bar – no clear SDG link.'],
- berge:[[5,10],'Women in finance and leadership, with the Minister for Gender Equality: gender equality and reduced inequalities.'],
- iagen:[[4,9],'Generative AI and how to use it well: learning and innovation.'],
- braunpivet:[[16],'A talk with a leading figure of the French National Assembly: democratic, strong institutions.'],
- vibe:[[4,9],'Hands-on workshop building with AI: digital skills and innovation.'],
- gmat:[[4],'Test preparation for graduate studies: quality education.'],
- pilates1:[[3],'Sport and physical activity for student well-being.'],
- pilates2:[[3],'Sport and physical activity for student well-being.'],
- arcadia:[[3],'Sport and physical activity for student well-being.'],
- kindness:[[16,3],'Kindness and solidarity on campus: peaceful, inclusive communities and well-being.'],
- tennis:[[3],'Sport and physical activity for student well-being.'],
- thinkcell:[[8,4],'Consulting tools and data storytelling: employability and skills.'],
- wfoot:[[3,5],"Women's team sport: well-being and gender equality."],
- dignity:[[16,10],'Human rights and sustainable development: justice, strong institutions and reduced inequalities.'],
- quatter1:[[],'Student bar – no clear SDG link.'],
- gomart:[[16],'European Parliament and intelligence services: peace, security and strong institutions.'],
- euros:[[8,16],'Digital currency and EU sovereignty: economic growth and strong institutions.'],
- brexit:[[17,8],'France–UK economic cooperation: partnerships and economic growth.'],
- selfdef:[[3],'Self-defence training: personal safety and well-being.'],
- hackathon:[[8,9],'Start-up challenges and coding: entrepreneurship and innovation.'],
- studapart:[[11],'Finding safe, affordable student housing.'],
- quatter2:[[],'Student bar – no clear SDG link.'],
- ibsummit:[[8],'Investment banking recruitment: decent work and economic growth.'],
- bakesale:[[1,17],'Charity bake sale raising money for a cause.']
+ lean:[[4], "Library research skills for students: quality education."],
+ artmaniac:[[4, 3], "Theatre workshop that builds confidence for working life: skills and well-being."],
+ fifa:[[], "Video game tournament – no clear SDG link."],
+ roundtable:[[4], "A conversation on rethinking leadership: lifelong learning."],
+ souverainete:[[16], "Annual conference on sovereignty and how states are built: peace, justice and strong institutions."],
+ studapart:[[11], "Finding safe, affordable student housing."],
+ values1:[[8, 4], "Choosing a work environment that matches your values: decent work and skills."],
+ skating:[[1, 17], "Charity ice skating raising money for a cause."],
+ entrefest:[[8, 9], "Start-up networking and competition: entrepreneurship and innovation."],
+ quatter1:[[], "Student bar – no clear SDG link."],
+ spritz:[[1, 17], "Charity social night raising money for a cause."],
+ pilates:[[3], "Sport and physical activity for student well-being."],
+ watchparty:[[17], "EU trivia night raising money for charity: partnerships for the goals."],
+ tennis:[[3], "Sport and physical activity for student well-being."],
+ market:[[], "Festive market and society showcase – no clear SDG link."],
+ wfoot:[[3, 5], "Women's team sport: well-being and gender equality."],
+ masterclass:[[16, 4], "Students on a Public Sénat TV programme: civic participation and strong institutions."],
+ values2:[[8, 4], "Choosing a work environment that matches your values: decent work and skills."],
+ bookclub:[[4, 3], "Reading club: lifelong learning and well-being."],
+ eventures:[[], "Student bar night – no clear SDG link."],
+ mfoot:[[3], "Sport and physical activity for student well-being."],
+ arcadia:[[3], "Sport and physical activity for student well-being."],
+ throwback:[[], "Party – no clear SDG link."],
+ padel:[[3], "Sport and physical activity for student well-being."],
+ studapart_en:[[11], "Finding safe, affordable student housing."],
+ swap:[[12], "Clothing swap: responsible consumption and production."],
+ beachvolley:[[3], "Sport and physical activity for student well-being."],
+ fashion:[[], "Fashion film screening – no clear SDG link."],
+ quatter2:[[], "Student bar – no clear SDG link."],
+ esports:[[4, 8], "Excel skills competition: practical, job-ready skills."],
+ mixedvolley:[[3], "Sport and physical activity for student well-being."],
+ alba:[[3], "Sport and physical activity for student well-being."],
+ basketcup:[[3], "Sport and physical activity for student well-being."],
+ artslondon:[[3], "Sport and physical activity for student well-being."],
+ f1:[[], "Race watch party – no clear SDG link."],
+ georisk:[[16, 8], "How geopolitical risk shapes investment: peace, stable institutions and economic growth."],
+ gea:[[13, 8], "Careers in sustainability: climate action and decent work."],
+ selfdef:[[3], "Self-defence training: personal safety and well-being."],
+ volleycup:[[3], "Sport and physical activity for student well-being."],
+ openlunch:[[8, 9], "Networking lunch for student entrepreneurs: entrepreneurship and innovation."],
+ policybrief:[[16], "Writing EU policy briefs with professors: strong, accountable institutions."],
+ concert:[[1, 17], "Charity concert raising money for a cause."]
 };
 EVENTS.forEach(ev=>{const x=SDG_TAGS[ev.id]||[[],''];ev.sdg=x[0];ev.sdgWhy=x[1]});
 /* Aurion: sample student timetable, repeats every week (from a real student calendar, anonymised) */
@@ -784,8 +807,8 @@ const SAMPLE_CLASSES=[
 ];
 /* Blackboard (illustrative) and CampusLife history (illustrative) */
 const DEADLINES=[
- {course:'Information Ethics',what:'Individual essay',due:'2026-11-12T23:59'},
- {course:'Design Thinking',what:'Prototype presentation',due:'2026-11-13T12:00'}
+ {course:'Information Ethics',what:'Individual essay',due:'2026-11-26T23:59'},
+ {course:'Design Thinking',what:'Prototype presentation',due:'2026-11-27T12:00'}
 ];
 const HISTORY={Career:3,Conference:2};
 const SAMPLE_PROFILE={name:'Student Name',sid:'e123456',campus:'Paris',site:'Champerret',interests:['Career','Conference','Student Life'],langs:['EN'],sdgs:[16],buffer:45,src:{aurion:true,blackboard:true,campuslife:true}};
@@ -798,13 +821,13 @@ const CAT_VAR={Career:'--c-career',Academic:'--c-academic',Conference:'--c-confe
 const LANG={EN:'English',FR:'French',DE:'German',ES:'Spanish',IT:'Italian'};
 const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const WEEK0=new Date(2026,10,10), NDAYS=10, WEEK1=new Date(2026,10,10+NDAYS);
+const WEEK0=new Date(2026,10,24), NDAYS=8, WEEK1=new Date(2026,10,24+NDAYS);
 const DAYS=[...Array(NDAYS)].map((_,i)=>new Date(WEEK0.getFullYear(),WEEK0.getMonth(),WEEK0.getDate()+i));
 const REAL=new Date();
-const NOW=(REAL>=WEEK0&&REAL<WEEK1)?REAL:new Date(2026,10,10,11,55);
+const NOW=(REAL>=WEEK0&&REAL<WEEK1)?REAL:new Date(2026,10,24,11,55);
 
 /* ---------- State ---------- */
-const KEY='smart-campus-events-v5';
+const KEY='smart-campus-events-v6';
 let saved={};
 try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){saved={}}
 const freshProfile=()=>({...SAMPLE_PROFILE,interests:[...SAMPLE_PROFILE.interests],langs:[...SAMPLE_PROFILE.langs],sdgs:[...SAMPLE_PROFILE.sdgs],src:{...SAMPLE_PROFILE.src}});
@@ -1719,7 +1742,7 @@ document.addEventListener('click',e=>{
    3. Paste it below. Leave empty to turn tracking off (no banner, nothing sent). */
 const TRACK_URL='https://script.google.com/macros/s/AKfycbxB0Pu9kOo2WiahJnT6HCF5RFR-jc1S4wrND1kglz73UAf4OiZBe84Y4jtVL23O0jn8/exec';
 /* Test round: each round writes to its own sheet in the Google Sheet (round 1 = "events"). */
-const TRACK_SHEET='events2';
+const TRACK_SHEET='events3';
 const TRACK_POST=()=>TRACK_URL+(TRACK_URL.includes('?')?'&':'?')+'sheet='+encodeURIComponent(TRACK_SHEET);
 const TRACK={q:[],seq:0,last:'',on:false,start:Date.now(),searchT:0};
 function tid(get,key){try{const st=get();let v=st.getItem(key);if(!v){v=(window.crypto&&crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now().toString(36)).replace(/-/g,'').slice(0,12);st.setItem(key,v)}return v}catch(e){return 'x'+Math.random().toString(36).slice(2,10)}}
@@ -1792,6 +1815,38 @@ tconsentUI();if(getConsent()==='yes')tstart();
    Translates what is on screen after every render. Event titles, course names and places stay as published. */
 const I18N_LANGS=['en','fr','it','es','de'];
 const I18N_ROWS=[
+["Library research skills for students: quality education.", "Compétences de recherche documentaire pour les étudiants : éducation de qualité.", "Competenze di ricerca in biblioteca per gli studenti: istruzione di qualità.", "Habilidades de investigación en biblioteca para estudiantes: educación de calidad.", "Recherchekompetenzen in der Bibliothek für Studierende: hochwertige Bildung."],
+["Theatre workshop that builds confidence for working life: skills and well-being.", "Atelier théâtre pour gagner en confiance dans la vie professionnelle : compétences et bien-être.", "Laboratorio teatrale per acquisire fiducia nella vita professionale: competenze e benessere.", "Taller de teatro para ganar confianza en la vida profesional: competencias y bienestar.", "Theaterworkshop für mehr Selbstvertrauen im Berufsleben: Kompetenzen und Wohlbefinden."],
+["Video game tournament – no clear SDG link.", "Tournoi de jeu vidéo – pas de lien clair avec un ODD.", "Torneo di videogiochi – nessun legame chiaro con gli SDG.", "Torneo de videojuegos – sin relación clara con los ODS.", "Videospielturnier – kein klarer SDG-Bezug."],
+["A conversation on rethinking leadership: lifelong learning.", "Une discussion pour repenser le leadership : apprentissage tout au long de la vie.", "Una conversazione per ripensare la leadership: apprendimento permanente.", "Una conversación para repensar el liderazgo: aprendizaje a lo largo de la vida.", "Ein Gespräch über neue Formen von Führung: lebenslanges Lernen."],
+["Annual conference on sovereignty and how states are built: peace, justice and strong institutions.", "Colloque annuel sur la souveraineté et la construction des États : paix, justice et institutions efficaces.", "Convegno annuale sulla sovranità e su come si costruiscono gli Stati: pace, giustizia e istituzioni solide.", "Congreso anual sobre la soberanía y cómo se construyen los Estados: paz, justicia e instituciones sólidas.", "Jahreskonferenz über Souveränität und den Aufbau von Staaten: Frieden, Gerechtigkeit und starke Institutionen."],
+["Choosing a work environment that matches your values: decent work and skills.", "Choisir un environnement de travail en accord avec ses valeurs : travail décent et compétences.", "Scegliere un ambiente di lavoro in linea con i propri valori: lavoro dignitoso e competenze.", "Elegir un entorno de trabajo acorde con tus valores: trabajo decente y competencias.", "Ein Arbeitsumfeld wählen, das zu den eigenen Werten passt: menschenwürdige Arbeit und Kompetenzen."],
+["Charity ice skating raising money for a cause.", "Patinage caritatif au profit d'une cause.", "Pattinaggio su ghiaccio di beneficenza per una causa.", "Patinaje solidario para recaudar fondos para una causa.", "Benefiz-Eislaufen für einen guten Zweck."],
+["Start-up networking and competition: entrepreneurship and innovation.", "Networking et concours de start-up : entrepreneuriat et innovation.", "Networking e competizione per startup: imprenditorialità e innovazione.", "Networking y competición de startups: emprendimiento e innovación.", "Start-up-Networking und Wettbewerb: Unternehmertum und Innovation."],
+["Charity social night raising money for a cause.", "Soirée caritative au profit d'une cause.", "Serata di beneficenza per una causa.", "Noche solidaria para recaudar fondos para una causa.", "Benefizabend für einen guten Zweck."],
+["EU trivia night raising money for charity: partnerships for the goals.", "Quiz sur l'UE au profit d'une association : partenariats pour la réalisation des objectifs.", "Quiz sull'UE per raccogliere fondi in beneficenza: partnership per gli obiettivi.", "Trivial sobre la UE para recaudar fondos benéficos: alianzas para lograr los objetivos.", "EU-Quizabend für einen guten Zweck: Partnerschaften zur Erreichung der Ziele."],
+["Festive market and society showcase – no clear SDG link.", "Marché de fêtes et présentation des associations – pas de lien clair avec un ODD.", "Mercatino natalizio e presentazione delle associazioni – nessun legame chiaro con gli SDG.", "Mercadillo navideño y presentación de asociaciones – sin relación clara con los ODS.", "Weihnachtsmarkt und Vorstellung der Vereine – kein klarer SDG-Bezug."],
+["Students on a Public Sénat TV programme: civic participation and strong institutions.", "Des étudiants dans une émission de Public Sénat : participation citoyenne et institutions efficaces.", "Studenti in un programma TV di Public Sénat: partecipazione civica e istituzioni solide.", "Estudiantes en un programa de televisión de Public Sénat: participación cívica e instituciones sólidas.", "Studierende in einer TV-Sendung von Public Sénat: Bürgerbeteiligung und starke Institutionen."],
+["Reading club: lifelong learning and well-being.", "Club de lecture : apprentissage tout au long de la vie et bien-être.", "Club del libro: apprendimento permanente e benessere.", "Club de lectura: aprendizaje a lo largo de la vida y bienestar.", "Lesekreis: lebenslanges Lernen und Wohlbefinden."],
+["Student bar night – no clear SDG link.", "Soirée au bar étudiant – pas de lien clair avec un ODD.", "Serata al bar studentesco – nessun legame chiaro con gli SDG.", "Noche en un bar estudiantil – sin relación clara con los ODS.", "Abend in einer Studierendenbar – kein klarer SDG-Bezug."],
+["Clothing swap: responsible consumption and production.", "Troc de vêtements : consommation et production responsables.", "Scambio di vestiti: consumo e produzione responsabili.", "Intercambio de ropa: producción y consumo responsables.", "Kleidertausch: nachhaltiger Konsum und nachhaltige Produktion."],
+["Fashion film screening – no clear SDG link.", "Projection d'un film sur la mode – pas de lien clair avec un ODD.", "Proiezione di un film sulla moda – nessun legame chiaro con gli SDG.", "Proyección de una película sobre moda – sin relación clara con los ODS.", "Filmvorführung zum Thema Mode – kein klarer SDG-Bezug."],
+["Excel skills competition: practical, job-ready skills.", "Compétition Excel : des compétences pratiques et utiles pour l'emploi.", "Competizione di Excel: competenze pratiche e utili per il lavoro.", "Competición de Excel: habilidades prácticas y útiles para el empleo.", "Excel-Wettbewerb: praktische, berufsrelevante Kompetenzen."],
+["Race watch party – no clear SDG link.", "Soirée de diffusion d'une course – pas de lien clair avec un ODD.", "Serata per guardare la gara – nessun legame chiaro con gli SDG.", "Fiesta para ver la carrera – sin relación clara con los ODS.", "Rennen gemeinsam schauen – kein klarer SDG-Bezug."],
+["How geopolitical risk shapes investment: peace, stable institutions and economic growth.", "Comment le risque géopolitique influence l'investissement : paix, institutions stables et croissance économique.", "Come il rischio geopolitico influenza gli investimenti: pace, istituzioni stabili e crescita economica.", "Cómo el riesgo geopolítico influye en la inversión: paz, instituciones estables y crecimiento económico.", "Wie geopolitische Risiken Investitionen beeinflussen: Frieden, stabile Institutionen und Wirtschaftswachstum."],
+["Careers in sustainability: climate action and decent work.", "Carrières dans le développement durable : lutte contre les changements climatiques et travail décent.", "Carriere nella sostenibilità: azione per il clima e lavoro dignitoso.", "Carreras en sostenibilidad: acción por el clima y trabajo decente.", "Karrieren in der Nachhaltigkeit: Klimaschutz und menschenwürdige Arbeit."],
+["Networking lunch for student entrepreneurs: entrepreneurship and innovation.", "Déjeuner networking pour étudiants entrepreneurs : entrepreneuriat et innovation.", "Pranzo di networking per studenti imprenditori: imprenditorialità e innovazione.", "Almuerzo de networking para estudiantes emprendedores: emprendimiento e innovación.", "Networking-Lunch für studentische Gründer: Unternehmertum und Innovation."],
+["Writing EU policy briefs with professors: strong, accountable institutions.", "Rédiger des notes de politique européenne avec des professeurs : institutions efficaces et responsables.", "Scrivere policy brief sull'UE con i professori: istituzioni solide e responsabili.", "Redactar informes de política de la UE con profesores: instituciones sólidas y responsables.", "EU-Policy-Briefs mit Professoren schreiben: starke, rechenschaftspflichtige Institutionen."],
+["Charity concert raising money for a cause.", "Concert caritatif au profit d'une cause.", "Concerto di beneficenza per una causa.", "Concierto benéfico para recaudar fondos para una causa.", "Benefizkonzert für einen guten Zweck."],
+["Party/Social", "Soirée/Social", "Feste/Social", "Fiesta/Social", "Party/Social"],
+["Cultural", "Culture", "Cultura", "Cultura", "Kultur"],
+["Networking", "Networking", "Networking", "Networking", "Networking"],
+["Competition", "Compétition", "Competizione", "Competición", "Wettbewerb"],
+["Afterwork", "Afterwork", "Aperitivo", "Afterwork", "Afterwork"],
+["Charity/Fundraising", "Caritatif/Collecte de fonds", "Beneficenza/Raccolta fondi", "Benéfico/Recaudación", "Wohltätigkeit/Spenden"],
+["Sustainability", "Développement durable", "Sostenibilità", "Sostenibilidad", "Nachhaltigkeit"],
+["Health & Well-being", "Santé et bien-être", "Salute e benessere", "Salud y bienestar", "Gesundheit & Wohlbefinden"],
+["TBD", "À confirmer", "Da definire", "Por confirmar", "Noch offen"],
 ["Women in finance and leadership, with the Minister for Gender Equality: gender equality and reduced inequalities.", "Les femmes dans la finance et le leadership, avec la ministre chargée de l'Égalité femmes-hommes : égalité entre les sexes et inégalités réduites.", "Donne nella finanza e nella leadership, con la ministra per la parità di genere: parità di genere e meno disuguaglianze.", "Mujeres en las finanzas y el liderazgo, con la ministra de Igualdad de Género: igualdad de género y menos desigualdades.", "Frauen in Finanzen und Führung, mit der Ministerin für Gleichstellung: Geschlechtergleichheit und weniger Ungleichheit."],
 ["Generative AI and how to use it well: learning and innovation.", "L'IA générative et comment bien l'utiliser : apprentissage et innovation.", "L'IA generativa e come usarla bene: apprendimento e innovazione.", "La IA generativa y cómo usarla bien: aprendizaje e innovación.", "Generative KI und ihr sinnvoller Einsatz: Lernen und Innovation."],
 ["A talk with a leading figure of the French National Assembly: democratic, strong institutions.", "Rencontre avec une figure majeure de l'Assemblée nationale : institutions démocratiques et efficaces.", "Incontro con una figura di primo piano dell'Assemblea nazionale francese: istituzioni democratiche e solide.", "Charla con una figura destacada de la Asamblea Nacional francesa: instituciones democráticas y sólidas.", "Gespräch mit einer führenden Persönlichkeit der französischen Nationalversammlung: demokratische, starke Institutionen."],
@@ -2342,5 +2397,5 @@ function setLang(l){
 })();
 
 </script>
-</body>
-</html>
+
+</body></html>
